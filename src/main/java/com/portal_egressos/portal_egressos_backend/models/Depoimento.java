@@ -22,10 +22,6 @@ public class Depoimento {
     @JoinColumn(name = "id_egresso", referencedColumnName = "id_egresso", nullable = false)
     private Egresso egresso;
 
-    @ManyToOne
-    @JoinColumn(name = "id_coordenador", referencedColumnName = "id_coordenador")
-    private Coordenador coordenador;
-
     @Column(name = "texto")
     private String texto;
 

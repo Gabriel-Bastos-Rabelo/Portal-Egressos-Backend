@@ -17,12 +17,13 @@ import lombok.Setter;
 
 @Entity
 @Data
-@Setter @Getter
+@Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "egresso", schema = "public")
-public class Egresso{
+public class Egresso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,11 +51,4 @@ public class Egresso{
     @Column(name = "curriculo")
     private String curriculo;
 
-    @ManyToOne
-    @JoinColumn(name = "id_coordenador", referencedColumnName = "id_coordenador")
-    private Coordenador coordenador;
-
-
-
-    
 }

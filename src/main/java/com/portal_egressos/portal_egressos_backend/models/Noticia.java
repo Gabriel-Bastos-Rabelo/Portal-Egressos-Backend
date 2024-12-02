@@ -22,10 +22,6 @@ public class Noticia {
     @JoinColumn(name = "id_egresso", referencedColumnName = "id_egresso", nullable = false)
     private Egresso egresso;
 
-    @ManyToOne
-    @JoinColumn(name = "id_coordenador", referencedColumnName = "id_coordenador")
-    private Coordenador coordenador;
-
     @Column(name = "titulo", nullable = false)
     private String titulo;
 
