@@ -19,12 +19,6 @@ public class Coordenador {
     @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "email", nullable = false, unique = true)
-    private String email;
-
-    @Column(name = "senha", nullable = false)
-    private String senha;
-
     @Column(name = "data_criacao", nullable = false)
     private java.time.LocalDateTime dataCriacao;
 
@@ -34,4 +28,7 @@ public class Coordenador {
     @ManyToOne
     @JoinColumn(name = "id_curso", referencedColumnName = "id_curso")
     private Curso curso;
+
+    @OneToOne(mappedBy ="id_usuario")
+    private Usuario id_usuario;
 }
