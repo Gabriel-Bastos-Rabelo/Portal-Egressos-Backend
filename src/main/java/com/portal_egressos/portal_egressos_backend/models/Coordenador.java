@@ -29,6 +29,7 @@ public class Coordenador {
     @JoinColumn(name = "id_curso", referencedColumnName = "id_curso")
     private Curso curso;
 
-    @OneToOne(mappedBy ="id_usuario")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_usuario")
     private Usuario id_usuario;
 }

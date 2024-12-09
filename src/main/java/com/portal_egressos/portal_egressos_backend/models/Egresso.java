@@ -1,5 +1,6 @@
 package com.portal_egressos.portal_egressos_backend.models;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -48,6 +49,7 @@ public class Egresso {
     @Column(name = "curriculo")
     private String curriculo;
 
-    @OneToOne(mappedBy ="id_usuario")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id_usuario")
     private Usuario id_usuario;
 }
