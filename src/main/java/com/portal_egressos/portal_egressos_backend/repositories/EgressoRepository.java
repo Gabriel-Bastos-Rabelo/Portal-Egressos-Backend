@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 
 @Repository
-public interface EgressoRepository extends JpaRepository<Egresso, Long> {
+public interface EgressoRepository extends JpaRepository<Egresso, Object> {
     
 }
