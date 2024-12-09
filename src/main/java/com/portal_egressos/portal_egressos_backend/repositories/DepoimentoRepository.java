@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 
 @Repository
-public interface DepoimentoRepository extends JpaRepository<Depoimento, Object>{
+public interface DepoimentoRepository extends JpaRepository<Depoimento, Long>{
 
 }

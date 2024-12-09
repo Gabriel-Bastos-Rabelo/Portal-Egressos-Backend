@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
 
 @Repository
-public interface CursoRepository extends JpaRepository<Curso, Object> {
+public interface CursoRepository extends JpaRepository<Curso, Long> {
 
 }

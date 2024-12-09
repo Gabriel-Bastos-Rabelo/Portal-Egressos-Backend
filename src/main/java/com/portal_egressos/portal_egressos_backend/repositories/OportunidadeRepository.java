@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 
 @Repository
-public interface OportunidadeRepository extends JpaRepository<Oportunidade, Object> {
+public interface OportunidadeRepository extends JpaRepository<Oportunidade, Long> {
 
 }

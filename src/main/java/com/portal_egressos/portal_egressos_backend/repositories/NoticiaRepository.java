@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.portal_egressos.portal_egressos_backend.models.Noticia;
 
 @Repository
-public interface NoticiaRepository extends JpaRepository<Noticia, Object> {
+public interface NoticiaRepository extends JpaRepository<Noticia, Long> {
 
 }
