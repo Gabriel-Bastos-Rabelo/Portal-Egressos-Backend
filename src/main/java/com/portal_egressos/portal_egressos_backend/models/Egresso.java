@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,9 +33,6 @@ public class Egresso {
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "descricao")
     private String descricao;
 
@@ -51,4 +48,6 @@ public class Egresso {
     @Column(name = "curriculo")
     private String curriculo;
 
+    @OneToOne(mappedBy ="id_usuario")
+    private Usuario id_usuario;
 }
