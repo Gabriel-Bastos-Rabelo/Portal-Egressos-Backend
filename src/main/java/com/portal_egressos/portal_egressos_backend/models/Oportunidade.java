@@ -1,5 +1,7 @@
 package com.portal_egressos.portal_egressos_backend.models;
 
+import java.math.BigDecimal;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,8 +42,8 @@ public class Oportunidade {
     @Column(name = "data_expiracao")
     private LocalDate dataExpiracao;
 
-    @Column(name = "salario")
-    private String salario;
+    @Column(name = "salario", precision = 10, scale = 2)
+    private BigDecimal salario;
 
     @Column(name = "link")
     private String link;

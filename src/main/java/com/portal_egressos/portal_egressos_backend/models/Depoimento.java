@@ -18,8 +18,8 @@ public class Depoimento {
     @Column(name = "id_depoimento")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_egresso", referencedColumnName = "id_egresso", nullable = false)
+    @OneToOne(optional = false)
+    @JoinColumn(name = "id_egresso", referencedColumnName = "id_egresso", unique = true)
     private Egresso egresso;
 
     @Column(name = "texto")
