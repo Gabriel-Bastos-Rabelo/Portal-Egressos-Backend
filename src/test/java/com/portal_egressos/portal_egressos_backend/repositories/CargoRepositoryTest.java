@@ -1,5 +1,7 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +11,6 @@ import org.springframework.test.context.ActiveProfiles;
 import com.portal_egressos.portal_egressos_backend.models.Cargo;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
-import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -20,9 +21,6 @@ public class CargoRepositoryTest {
 
     @Autowired
     EgressoRepository egressoRepository;
-
-    @Autowired
-    UsuarioRepository usuarioRepository;
 
     @Test
     public void deveVerificarSalvarCargo() {
@@ -55,6 +53,10 @@ public class CargoRepositoryTest {
         //ação
         Cargo cargoSalvo = cargoRepository.save(cargo);
 
+        //rollback
+        cargoRepository.delete(cargoSalvo);
+        egressoRepository.delete(egressoSalvo);
+        
         //verificação
         Assertions.assertNotNull(cargoSalvo);
         Assertions.assertNotNull(cargoSalvo.getId());
@@ -95,10 +97,15 @@ public class CargoRepositoryTest {
                 .anoFim(2023)
                 .build();
 
-        cargoRepository.save(cargo);
+        Cargo cargoSalvo = cargoRepository.save(cargo);
 
+    
         //ação
         Optional<Cargo> cargoLidoOpt = cargoRepository.findById(cargo.getId());
+
+        //rollback
+        cargoRepository.delete(cargoSalvo);
+        egressoRepository.delete(egressoSalvo);
 
         if (cargoLidoOpt.isEmpty()) {
             throw new IllegalArgumentException("Cargo não encontrado");
@@ -152,6 +159,10 @@ public class CargoRepositoryTest {
 
         Cargo cargoAtualizado = cargoRepository.save(cargoSalvo);
 
+        //rollback
+        cargoRepository.delete(cargoAtualizado);
+        egressoRepository.delete(egressoSalvo);
+
         // Verificação
         Assertions.assertNotNull(cargoAtualizado);
         Assertions.assertEquals(cargoSalvo.getId(), cargoAtualizado.getId());
@@ -195,6 +206,9 @@ public class CargoRepositoryTest {
         Cargo cargoSalvo = cargoRepository.save(cargo);
         Long id = cargoSalvo.getId();
         cargoRepository.deleteById(id);
+
+        //rollback
+        egressoRepository.delete(egressoSalvo);
         //verificação
         Optional<Cargo> temp = cargoRepository.findById(id);
         Assertions.assertFalse(temp.isPresent());
