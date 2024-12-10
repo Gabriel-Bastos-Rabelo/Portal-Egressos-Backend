@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 
 @SpringBootTest
-@ActiveProfiles("test2")
+@ActiveProfiles("test")
 public class EgressoRepositoryTest {
     @Autowired
     EgressoRepository repository;
@@ -37,6 +37,10 @@ public class EgressoRepositoryTest {
                                         .build();
         //ação
         Egresso saved = repository.save(egresso);
+
+        //rollback 
+        repository.delete(saved);
+
         //verificação
         Assertions.assertNotNull(saved);
         Assertions.assertEquals(egresso.getNome(), saved.getNome());
@@ -74,6 +78,8 @@ public class EgressoRepositoryTest {
 
         // ação
         List<Egresso> saved = repository.saveAll(egressos);
+
+        //rollback 
         repository.deleteAll(saved);
 
         // verificação
@@ -115,6 +121,10 @@ public class EgressoRepositoryTest {
         saved.setCurriculo("lorem lore lore ipsum");
         Egresso returned = repository.save(saved);
 
+        //rollback 
+        repository.delete(saved);
+        repository.delete(returned);
+
         // verificação
         Assertions.assertNotNull(saved);
         Assertions.assertEquals(saved.getNome(), returned.getNome());
@@ -148,6 +158,9 @@ public class EgressoRepositoryTest {
         repository.deleteById(id);
         Optional<Egresso> temp = repository.findById(id);
 
+        //rollback
+        repository.delete(saved);
+
         // verificação
         Assertions.assertFalse(temp.isPresent());
     }
@@ -158,7 +171,7 @@ public class EgressoRepositoryTest {
         // cenário
         Usuario usuario = Usuario.builder()
                                  .email("teste@teste.com")
-                                 .senha("123456")
+                                 .senha("123")
                                  .build();
 
         Egresso egresso = Egresso.builder().nome("teste")
@@ -171,8 +184,11 @@ public class EgressoRepositoryTest {
                                            .build();
 
         // ação
-        repository.save(egresso);
-        Optional<Egresso> returned = repository.findByName(egresso.getNome());
+        Egresso saved = repository.save(egresso);
+        Optional<Egresso> returned = repository.findByNome(saved.getNome());
+
+        //rollback
+        repository.delete(saved);
 
         // verificação
         Assertions.assertTrue(returned.isPresent());

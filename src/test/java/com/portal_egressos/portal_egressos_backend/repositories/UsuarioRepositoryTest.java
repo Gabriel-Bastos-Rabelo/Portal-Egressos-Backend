@@ -27,6 +27,10 @@ public class UsuarioRepositoryTest {
 
         //ação
         Usuario saved = repository.save(user);
+
+        //rollback
+        repository.delete(saved);
+
         //verificação
         Assertions.assertNotNull(saved);
         Assertions.assertEquals(user.getEmail(), saved.getEmail());
@@ -47,6 +51,8 @@ public class UsuarioRepositoryTest {
 
         // ação
         List<Usuario> saved = repository.saveAll(users);
+
+        //rollback
         repository.deleteAll(saved);
 
         // verificação
@@ -71,6 +77,9 @@ public class UsuarioRepositoryTest {
         saved.setSenha("testesenha");
         Usuario returned = repository.save(saved);
 
+        //rollback
+        repository.delete(saved);
+
         // verificação
         Assertions.assertNotNull(returned);
         Assertions.assertEquals(saved.getId(), returned.getId());
@@ -92,6 +101,9 @@ public class UsuarioRepositoryTest {
         repository.deleteById(id);
         Optional<Usuario> temp = repository.findById(id);
 
+        //rollback
+        repository.delete(saved);
+
         // verificação
         Assertions.assertFalse(temp.isPresent());
     }
@@ -105,8 +117,11 @@ public class UsuarioRepositoryTest {
                                         .build();
 
         // ação
-        repository.save(user);
+        Usuario saved = repository.save(user);
         Optional<Usuario> returned = repository.findByEmail(user.getEmail());
+
+        //rollback
+        repository.delete(saved);
 
         // verificação
         Assertions.assertTrue(returned.isPresent());

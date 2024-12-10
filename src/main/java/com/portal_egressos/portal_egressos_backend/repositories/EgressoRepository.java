@@ -10,6 +10,6 @@ import com.portal_egressos.portal_egressos_backend.models.Egresso;
 @Repository
 public interface EgressoRepository extends JpaRepository<Egresso, Long> {
 
-        Optional<Egresso> findByName(String nome);
+        Optional<Egresso> findByNome(String nome);
 
 }
