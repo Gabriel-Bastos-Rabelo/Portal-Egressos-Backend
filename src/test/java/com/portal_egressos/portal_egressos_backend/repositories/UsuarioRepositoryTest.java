@@ -40,8 +40,8 @@ public class UsuarioRepositoryTest {
         List<Usuario> users = new ArrayList<Usuario>();
         for (int i = 0; i < 3; i++) {
             users.add(
-                    Usuario.builder().email("teste@teste.com")
-                                        .senha("123")
+                    Usuario.builder().email("teste@teste.com" + i)
+                                        .senha("123" + i)
                                         .build());
         }
 
@@ -98,7 +98,7 @@ public class UsuarioRepositoryTest {
 
 
     @Test
-    public void deveObterEgressoPorEmail() {
+    public void deveObterUsuarioPorEmail() {
         // cenário
         Usuario user = Usuario.builder().email("teste@teste.com")
                                         .senha("123")
