@@ -44,9 +44,6 @@ public class CargoRepositoryTest {
 
         Egresso egressoSalvo = egressoRepository.save(egresso);
 
-        Usuario usuario2 = usuarioRepository.findById(usuario.getId()).orElseThrow(() -> new IllegalArgumentException("Cargo não encontrado"));
-        System.out.println(usuario2);
-
         Cargo cargo = Cargo.builder()
                 .egresso(egressoSalvo)
                 .descricao("Desenvolvedor de Software")
