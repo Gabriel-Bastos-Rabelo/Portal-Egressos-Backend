@@ -49,7 +49,7 @@ public class Egresso {
     @Column(name = "curriculo")
     private String curriculo;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_usuario")
-    private Usuario id_usuario;
+    @OneToOne(cascade = CascadeType.ALL, optional=false)
+    @JoinColumn(name = "id_usuario", referencedColumnName="id_usuario", unique = true)
+    private Usuario usuario;
 }
