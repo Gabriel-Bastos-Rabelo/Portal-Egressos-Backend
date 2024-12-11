@@ -66,10 +66,20 @@ public class DepoimentoRepositoryTest {
         egressoRepository.delete(egresso);
         usuarioRepository.delete(usuario);
 
-        // verificação
+        // Verificação
         Assertions.assertNotNull(depoimentoSalvo);
         Assertions.assertEquals(depoimento.getTexto(), depoimentoSalvo.getTexto());
+        Assertions.assertEquals(depoimento.getData(), depoimentoSalvo.getData());
         Assertions.assertEquals(depoimento.getEgresso().getId(), depoimentoSalvo.getEgresso().getId());
+
+        // Verificar os dados do Egresso associado
+        Assertions.assertEquals(egresso.getNome(), depoimentoSalvo.getEgresso().getNome());
+        Assertions.assertEquals(egresso.getDescricao(), depoimentoSalvo.getEgresso().getDescricao());
+        Assertions.assertEquals(egresso.getFoto(), depoimentoSalvo.getEgresso().getFoto());
+        Assertions.assertEquals(egresso.getLinkedin(), depoimentoSalvo.getEgresso().getLinkedin());
+        Assertions.assertEquals(egresso.getInstagram(), depoimentoSalvo.getEgresso().getInstagram());
+        Assertions.assertEquals(egresso.getCurriculo(), depoimentoSalvo.getEgresso().getCurriculo());
+
     }
 
     @Test
@@ -110,6 +120,8 @@ public class DepoimentoRepositoryTest {
         // verificação
         Assertions.assertNotNull(updated);
         Assertions.assertEquals("Depoimento Atualizado", updated.getTexto());
+        Assertions.assertEquals(depoimento.getData(), updated.getData()); 
+        Assertions.assertEquals(depoimento.getEgresso().getId(), updated.getEgresso().getId()); 
     }
 
     @Test
