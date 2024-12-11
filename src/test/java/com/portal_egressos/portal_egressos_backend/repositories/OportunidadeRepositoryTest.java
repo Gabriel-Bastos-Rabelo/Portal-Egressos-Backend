@@ -36,7 +36,6 @@ public class OportunidadeRepositoryTest {
                 .email("teste@teste.com")
                 .senha("123456")
                 .build();
-        usuario = usuarioRepository.save(usuario);
 
         Egresso egresso = Egresso.builder()
                         .nome("Sabryna")
@@ -69,7 +68,6 @@ public class OportunidadeRepositoryTest {
         // Rollback
         repository.delete(oportunidadeSalva);
         egressoRepository.delete(egresso);
-        usuarioRepository.delete(usuario);
 
         // Verificação
         Assertions.assertNotNull(oportunidadeSalva);
@@ -92,7 +90,6 @@ public class OportunidadeRepositoryTest {
                 .email("teste@teste.com")
                 .senha("123456")
                 .build();
-        usuario = usuarioRepository.save(usuario);
 
         Egresso egresso = Egresso.builder()
                         .nome("Sabryna")
@@ -126,7 +123,6 @@ public class OportunidadeRepositoryTest {
         // Rollback
         repository.delete(updated);
         egressoRepository.delete(egresso);
-        usuarioRepository.delete(usuario);
 
         // Verificação
         Assertions.assertNotNull(updated);
@@ -152,7 +148,6 @@ public class OportunidadeRepositoryTest {
                     .senha("123456")
                     .build());
         }
-        usuarios = usuarioRepository.saveAll(usuarios);
 
         List<Egresso> egressos = new ArrayList<>();
         List<Oportunidade> oportunidades = new ArrayList<>();
@@ -194,7 +189,6 @@ public class OportunidadeRepositoryTest {
         // Rollback
         repository.deleteAll(oportunidades);
         egressoRepository.deleteAll(egressos);
-        usuarioRepository.deleteAll(usuarios);
 
         // Verificação
         Assertions.assertNotNull(fetchedOportunidades);
@@ -208,7 +202,6 @@ public class OportunidadeRepositoryTest {
                 .email("teste@teste.com")
                 .senha("123456")
                 .build();
-        usuario = usuarioRepository.save(usuario);
 
         Egresso egresso = Egresso.builder()
                         .nome("Sabryna")
@@ -239,7 +232,6 @@ public class OportunidadeRepositoryTest {
 
         // Rollback
         egressoRepository.delete(egresso);
-        usuarioRepository.delete(usuario);
 
         // Verificação
         Assertions.assertFalse(fetched.isPresent());
@@ -251,7 +243,6 @@ public class OportunidadeRepositoryTest {
                 .email("teste@teste.com")
                 .senha("123456")
                 .build();
-        usuario = usuarioRepository.save(usuario);
 
         Egresso egresso = Egresso.builder()
         .nome("Sabryna")
@@ -285,7 +276,6 @@ public class OportunidadeRepositoryTest {
         // Rollback
         repository.deleteAll(oportunidades);
         egressoRepository.delete(egresso);
-        usuarioRepository.delete(usuario);
 
         // Verificação
         Assertions.assertNotNull(fetched);
@@ -300,7 +290,6 @@ public class OportunidadeRepositoryTest {
                 .email("teste@teste.com")
                 .senha("123456")
                 .build();
-        usuario = usuarioRepository.save(usuario);
 
         Egresso egresso = Egresso.builder()
                         .nome("Sabryna")
@@ -334,7 +323,6 @@ public class OportunidadeRepositoryTest {
         // Rollback
         repository.deleteAll(oportunidades);
         egressoRepository.delete(egresso);
-        usuarioRepository.delete(usuario);
 
         // Verificação
         Assertions.assertNotNull(fetched);

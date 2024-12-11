@@ -64,20 +64,20 @@ public class CursoEgressoRepositoryTest {
             .build();
 
         // ação
-        CursoEgresso salvo = cursoEgressoRepository.save(cursoEgresso);
+        CursoEgresso retornoCursoEgresso = cursoEgressoRepository.save(cursoEgresso);
 
         // verificação
-        Assertions.assertNotNull(salvo);
-        Assertions.assertNotNull(salvo.getId());
-        Assertions.assertEquals(cursoEgresso.getEgresso(), salvo.getEgresso());
-        Assertions.assertEquals(cursoEgresso.getCurso(), salvo.getCurso());
-        Assertions.assertEquals(cursoEgresso.getAnoInicio(), salvo.getAnoInicio());
-        Assertions.assertEquals(cursoEgresso.getAnoFim(), salvo.getAnoFim());
+        Assertions.assertNotNull(retornoCursoEgresso);
+        Assertions.assertNotNull(retornoCursoEgresso.getId());
+        Assertions.assertEquals(cursoEgresso.getEgresso(), retornoCursoEgresso.getEgresso());
+        Assertions.assertEquals(cursoEgresso.getCurso(), retornoCursoEgresso.getCurso());
+        Assertions.assertEquals(cursoEgresso.getAnoInicio(), retornoCursoEgresso.getAnoInicio());
+        Assertions.assertEquals(cursoEgresso.getAnoFim(), retornoCursoEgresso.getAnoFim());
         
         // rollback
-        cursoEgressoRepository.delete(cursoEgresso);
-        cursoRepository.delete(curso);
-        egressoRepository.delete(egresso);
+        cursoEgressoRepository.delete(retornoCursoEgresso);
+        cursoRepository.delete(retornoCurso);
+        egressoRepository.delete(retornoEgresso);
 
     }
     
@@ -122,9 +122,9 @@ public class CursoEgressoRepositoryTest {
         CursoEgresso cursoEgressoAtualizado = cursoEgressoRepository.save(retornoCursoEgresso);
 
         // rollback
-        cursoEgressoRepository.delete(cursoEgressoAtualizado);
-        cursoRepository.delete(curso);
-        egressoRepository.delete(egresso);
+        cursoEgressoRepository.delete(retornoCursoEgresso);
+        cursoRepository.delete(retornoCurso);
+        egressoRepository.delete(retornoEgresso);
 
        // verificação
        Assertions.assertNotNull(cursoEgressoAtualizado);
@@ -174,6 +174,11 @@ public class CursoEgressoRepositoryTest {
         CursoEgresso retornoCursoEgresso = cursoEgressoRepository.save(cursoEgresso);
         cursoEgressoRepository.deleteById(retornoCursoEgresso.getId());
         Optional<CursoEgresso> excluido = cursoEgressoRepository.findById(retornoCursoEgresso.getId());
+
+       //Rollbacks
+       cursoEgressoRepository.delete(retornoCursoEgresso);
+       cursoRepository.delete(retornoCurso);
+       egressoRepository.delete(retornoEgresso);
 
        // verificação
        Assertions.assertFalse(excluido.isPresent());

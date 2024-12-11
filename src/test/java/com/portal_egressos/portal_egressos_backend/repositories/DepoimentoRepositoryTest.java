@@ -38,8 +38,6 @@ public class DepoimentoRepositoryTest {
                         .senha("123456")
                         .build();
         
-        usuario = usuarioRepository.save(usuario);
-
         Egresso egresso = Egresso.builder()
                         .nome("Sabryna")
                         .descricao("estudante de ciencia da computacao")
@@ -64,7 +62,6 @@ public class DepoimentoRepositoryTest {
         // rollback
         repository.delete(depoimentoSalvo);
         egressoRepository.delete(egresso);
-        usuarioRepository.delete(usuario);
 
         // Verificação
         Assertions.assertNotNull(depoimentoSalvo);
@@ -89,7 +86,7 @@ public class DepoimentoRepositoryTest {
                         .email("teste@teste.com")
                         .senha("123456")
                         .build();
-         usuario = usuarioRepository.save(usuario);
+
         Egresso egresso = Egresso.builder()
                         .nome("Sabryna")
                         .descricao("estudante de ciencia da computacao")
@@ -134,7 +131,6 @@ public class DepoimentoRepositoryTest {
                     .senha("123456")
                     .build());
         }
-        usuarios = usuarioRepository.saveAll(usuarios); 
     
         List<Egresso> egressos = new ArrayList<>();
         List<Depoimento> depoimentos = new ArrayList<>();
@@ -167,7 +163,6 @@ public class DepoimentoRepositoryTest {
         // Rollback
         repository.deleteAll(depoimentos);
         egressoRepository.deleteAll(egressos);
-        usuarioRepository.deleteAll(usuarios);
     
         // Verificação
         Assertions.assertNotNull(fetchedDepoimentos);
@@ -181,7 +176,6 @@ public class DepoimentoRepositoryTest {
                         .email("teste@teste.com")
                         .senha("123456")
                         .build();
-        usuario = usuarioRepository.save(usuario);
 
         Egresso egresso = Egresso.builder()
                             .nome("Sabryna")
@@ -207,7 +201,6 @@ public class DepoimentoRepositoryTest {
 
         // rollback
         egressoRepository.delete(egresso);
-        usuarioRepository.delete(usuario);
 
         // verificação
         Assertions.assertFalse(fetched.isPresent());
@@ -223,7 +216,6 @@ public class DepoimentoRepositoryTest {
                     .senha("123456")
                     .build());
         }
-        usuarios = usuarioRepository.saveAll(usuarios);
     
         List<Egresso> egressos = new ArrayList<>();
         List<Depoimento> depoimentos = new ArrayList<>();
@@ -256,7 +248,6 @@ public class DepoimentoRepositoryTest {
         // rollback
         repository.deleteAll(depoimentos);
         egressoRepository.deleteAll(egressos);
-        usuarioRepository.deleteAll(usuarios);
     
         // verificação
         Assertions.assertNotNull(fetched);

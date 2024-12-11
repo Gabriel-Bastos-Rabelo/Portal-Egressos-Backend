@@ -59,6 +59,7 @@ public class CursoRepositoryTest {
 
         //rollback
         cursoRepository.delete(saved);
+        cursoRepository.delete(returned);
 
         // verificação
         Assertions.assertNotNull(returned);
