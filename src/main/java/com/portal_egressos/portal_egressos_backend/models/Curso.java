@@ -21,14 +21,4 @@ public class Curso {
 
     @Column(name = "nivel", nullable = false)
     private String nivel;
-
-    public void setEmail(String string) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setEmail'");
-    }
-
-    public void setSenha(String string) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setSenha'");
-    }
 }

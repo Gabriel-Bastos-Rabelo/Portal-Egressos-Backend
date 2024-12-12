@@ -65,6 +65,11 @@ public class CursoEgressoRepositoryTest {
 
         // ação
         CursoEgresso retornoCursoEgresso = cursoEgressoRepository.save(cursoEgresso);
+        
+        // rollback
+        cursoEgressoRepository.delete(retornoCursoEgresso);
+        cursoRepository.delete(retornoCurso);
+        egressoRepository.delete(retornoEgresso);
 
         // verificação
         Assertions.assertNotNull(retornoCursoEgresso);
@@ -73,12 +78,6 @@ public class CursoEgressoRepositoryTest {
         Assertions.assertEquals(cursoEgresso.getCurso(), retornoCursoEgresso.getCurso());
         Assertions.assertEquals(cursoEgresso.getAnoInicio(), retornoCursoEgresso.getAnoInicio());
         Assertions.assertEquals(cursoEgresso.getAnoFim(), retornoCursoEgresso.getAnoFim());
-        
-        // rollback
-        cursoEgressoRepository.delete(retornoCursoEgresso);
-        cursoRepository.delete(retornoCurso);
-        egressoRepository.delete(retornoEgresso);
-
     }
     
     @Test
