@@ -16,202 +16,199 @@ import com.portal_egressos.portal_egressos_backend.models.Usuario;
 @ActiveProfiles("test")
 public class CargoRepositoryTest {
 
-    @Autowired
-    CargoRepository cargoRepository;
+        @Autowired
+        CargoRepository cargoRepositorio;
 
-    @Autowired
-    EgressoRepository egressoRepository;
+        @Autowired
+        EgressoRepository egressoRepositorio;
 
-    @Test
-    public void deveVerificarSalvarCargo() {
-        //cenário
-        Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("123456")
-                .build();
-        
-        Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .foto("url foto")
-                .linkedin("url linkedin")
-                .instagram("url instagram")
-                .curriculo("curriculo")
-                .usuario(usuario)
-                .build();
+        @Test
+        public void deveVerificarSalvarCargo() {
+                // cenário
+                Usuario usuario = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("123456")
+                                .build();
 
-        Egresso egressoSalvo = egressoRepository.save(egresso);
+                Egresso egresso = Egresso.builder()
+                                .nome("Gabriel Bastos")
+                                .descricao("estudante de ciencia da computacao")
+                                .foto("url foto")
+                                .linkedin("url linkedin")
+                                .instagram("url instagram")
+                                .curriculo("curriculo")
+                                .usuario(usuario)
+                                .build();
 
-        Cargo cargo = Cargo.builder()
-                .egresso(egressoSalvo)
-                .descricao("Desenvolvedor de Software")
-                .local("Empresa X")
-                .anoInicio(2020)
-                .anoFim(2023)
-                .build();
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
-        //ação
-        Cargo cargoSalvo = cargoRepository.save(cargo);
+                Cargo cargo = Cargo.builder()
+                                .egresso(egressoSalvo)
+                                .descricao("Desenvolvedor de Software")
+                                .local("Empresa X")
+                                .anoInicio(2020)
+                                .anoFim(2023)
+                                .build();
 
-        //rollback
-        cargoRepository.delete(cargoSalvo);
-        egressoRepository.delete(egressoSalvo);
-        
-        //verificação
-        Assertions.assertNotNull(cargoSalvo);
-        Assertions.assertNotNull(cargoSalvo.getId());
-        Assertions.assertEquals(cargoSalvo.getEgresso(), egresso);
-        Assertions.assertEquals("Desenvolvedor de Software", cargoSalvo.getDescricao());
-        Assertions.assertEquals("Empresa X", cargoSalvo.getLocal());
-        Assertions.assertEquals(2020, cargoSalvo.getAnoInicio().intValue());
-        Assertions.assertEquals(2023, cargoSalvo.getAnoFim().intValue());
+                // ação
+                Cargo cargoSalvo = cargoRepositorio.save(cargo);
 
+                // rollback
+                cargoRepositorio.delete(cargoSalvo);
+                egressoRepositorio.delete(egressoSalvo);
 
-    }
+                // verificação
+                Assertions.assertNotNull(cargoSalvo);
+                Assertions.assertNotNull(cargoSalvo.getId());
+                Assertions.assertEquals(cargoSalvo.getEgresso(), egresso);
+                Assertions.assertEquals("Desenvolvedor de Software", cargoSalvo.getDescricao());
+                Assertions.assertEquals("Empresa X", cargoSalvo.getLocal());
+                Assertions.assertEquals(2020, cargoSalvo.getAnoInicio().intValue());
+                Assertions.assertEquals(2023, cargoSalvo.getAnoFim().intValue());
 
-    @Test
-    public void deveVerificarLeituraCargo() {
-        //cenário
-        Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("123456")
-                .build();
-        
-        Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .foto("url foto")
-                .linkedin("url linkedin")
-                .instagram("url instagram")
-                .curriculo("curriculo")
-                .usuario(usuario)
-                .build();
-
-        Egresso egressoSalvo = egressoRepository.save(egresso);
-
-        Cargo cargo = Cargo.builder()
-                .egresso(egressoSalvo)
-                .descricao("Desenvolvedor de Software")
-                .local("Empresa X")
-                .anoInicio(2020)
-                .anoFim(2023)
-                .build();
-
-        Cargo cargoSalvo = cargoRepository.save(cargo);
-
-    
-        //ação
-        Optional<Cargo> cargoLidoOpt = cargoRepository.findById(cargo.getId());
-
-        //rollback
-        cargoRepository.delete(cargoSalvo);
-        egressoRepository.delete(egressoSalvo);
-
-        if (cargoLidoOpt.isEmpty()) {
-            throw new IllegalArgumentException("Cargo não encontrado");
         }
 
-        Cargo cargoLido = cargoLidoOpt.get();
+        @Test
+        public void deveVerificarLeituraCargo() {
+                // cenário
+                Usuario usuario = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("123456")
+                                .build();
 
-        //verificação
-        Assertions.assertNotNull(cargoLido);
-        Assertions.assertEquals("Desenvolvedor de Software", cargoLido.getDescricao());
-        Assertions.assertEquals("Empresa X", cargoLido.getLocal());
-        Assertions.assertEquals(2020, cargoLido.getAnoInicio().intValue());
-        Assertions.assertEquals(2023, cargoLido.getAnoFim().intValue());
+                Egresso egresso = Egresso.builder()
+                                .nome("Gabriel Bastos")
+                                .descricao("estudante de ciencia da computacao")
+                                .foto("url foto")
+                                .linkedin("url linkedin")
+                                .instagram("url instagram")
+                                .curriculo("curriculo")
+                                .usuario(usuario)
+                                .build();
 
-    }
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
-    @Test
-    public void deveVerificarAtualizarCargo() {
-        // cenário
-        Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("123456")
-                .build();
+                Cargo cargo = Cargo.builder()
+                                .egresso(egressoSalvo)
+                                .descricao("Desenvolvedor de Software")
+                                .local("Empresa X")
+                                .anoInicio(2020)
+                                .anoFim(2023)
+                                .build();
 
-        Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estundante de ciencia da computacao")
-                .foto("url foto")
-                .linkedin("url linkedin")
-                .instagram("url instagram")
-                .curriculo("curriculo")
-                .usuario(usuario)
-                .build();
-        Egresso egressoSalvo = egressoRepository.save(egresso);
+                Cargo cargoSalvo = cargoRepositorio.save(cargo);
 
-        Cargo cargo = Cargo.builder()
-                .egresso(egressoSalvo)
-                .descricao("Desenvolvedor de Software")
-                .local("Empresa X")
-                .anoInicio(2020)
-                .anoFim(2023)
-                .build();
+                // ação
+                Optional<Cargo> cargoRetornado = cargoRepositorio.findById(cargo.getId());
 
-        Cargo cargoSalvo = cargoRepository.save(cargo);
+                // rollback
+                cargoRepositorio.delete(cargoSalvo);
+                egressoRepositorio.delete(egressoSalvo);
 
-        // ação
-        cargoSalvo.setDescricao("Arquiteto de Software");
-        cargoSalvo.setLocal("Empresa Y");
-        cargoSalvo.setAnoInicio(2019);
-        cargoSalvo.setAnoFim(2024);
+                if (cargoRetornado.isEmpty()) {
+                        throw new IllegalArgumentException("Cargo não encontrado");
+                }
 
-        Cargo cargoAtualizado = cargoRepository.save(cargoSalvo);
+                Cargo cargoLido = cargoRetornado.get();
 
-        //rollback
-        cargoRepository.delete(cargoAtualizado);
-        egressoRepository.delete(egressoSalvo);
+                // verificação
+                Assertions.assertNotNull(cargoLido);
+                Assertions.assertEquals("Desenvolvedor de Software", cargoLido.getDescricao());
+                Assertions.assertEquals("Empresa X", cargoLido.getLocal());
+                Assertions.assertEquals(2020, cargoLido.getAnoInicio().intValue());
+                Assertions.assertEquals(2023, cargoLido.getAnoFim().intValue());
 
-        // Verificação
-        Assertions.assertNotNull(cargoAtualizado);
-        Assertions.assertEquals(cargoSalvo.getId(), cargoAtualizado.getId());
-        Assertions.assertEquals("Arquiteto de Software", cargoAtualizado.getDescricao());
-        Assertions.assertEquals("Empresa Y", cargoAtualizado.getLocal());
-        Assertions.assertEquals(2019, cargoAtualizado.getAnoInicio().intValue());
-        Assertions.assertEquals(2024, cargoAtualizado.getAnoFim().intValue());
-    }
+        }
 
+        @Test
+        public void deveVerificarAtualizarCargo() {
+                // cenário
+                Usuario usuario = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("123456")
+                                .build();
 
-    @Test
-    public void deveVerificarRemoverCargo() {
-        //cenário
-        Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("123456")
-                .build();
-        
-        Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .foto("url foto")
-                .linkedin("url linkedin")
-                .instagram("url instagram")
-                .curriculo("curriculo")
-                .usuario(usuario)
-                .build();
+                Egresso egresso = Egresso.builder()
+                                .nome("Gabriel Bastos")
+                                .descricao("estundante de ciencia da computacao")
+                                .foto("url foto")
+                                .linkedin("url linkedin")
+                                .instagram("url instagram")
+                                .curriculo("curriculo")
+                                .usuario(usuario)
+                                .build();
 
-        Egresso egressoSalvo = egressoRepository.save(egresso);
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
-        Cargo cargo = Cargo.builder()
-                .egresso(egressoSalvo)
-                .descricao("Desenvolvedor de Software")
-                .local("Empresa X")
-                .anoInicio(2020)
-                .anoFim(2023)
-                .build();
+                Cargo cargo = Cargo.builder()
+                                .egresso(egressoSalvo)
+                                .descricao("Desenvolvedor de Software")
+                                .local("Empresa X")
+                                .anoInicio(2020)
+                                .anoFim(2023)
+                                .build();
 
-        
-        //ação
-        Cargo cargoSalvo = cargoRepository.save(cargo);
-        Long id = cargoSalvo.getId();
-        cargoRepository.deleteById(id);
+                Cargo cargoSalvo = cargoRepositorio.save(cargo);
 
-        //rollback
-        egressoRepository.delete(egressoSalvo);
-        //verificação
-        Optional<Cargo> temp = cargoRepository.findById(id);
-        Assertions.assertFalse(temp.isPresent());
-        
-    }
+                // ação
+                cargoSalvo.setDescricao("Arquiteto de Software");
+                cargoSalvo.setLocal("Empresa Y");
+                cargoSalvo.setAnoInicio(2019);
+                cargoSalvo.setAnoFim(2024);
+
+                Cargo cargoAtualizado = cargoRepositorio.save(cargoSalvo);
+
+                // rollback
+                cargoRepositorio.delete(cargoAtualizado);
+                egressoRepositorio.delete(egressoSalvo);
+
+                // Verificação
+                Assertions.assertNotNull(cargoAtualizado);
+                Assertions.assertEquals(cargoSalvo.getId(), cargoAtualizado.getId());
+                Assertions.assertEquals("Arquiteto de Software", cargoAtualizado.getDescricao());
+                Assertions.assertEquals("Empresa Y", cargoAtualizado.getLocal());
+                Assertions.assertEquals(2019, cargoAtualizado.getAnoInicio().intValue());
+                Assertions.assertEquals(2024, cargoAtualizado.getAnoFim().intValue());
+        }
+
+        @Test
+        public void deveVerificarRemoverCargo() {
+                // cenário
+                Usuario usuario = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("123456")
+                                .build();
+
+                Egresso egresso = Egresso.builder()
+                                .nome("Gabriel Bastos")
+                                .descricao("estudante de ciencia da computacao")
+                                .foto("url foto")
+                                .linkedin("url linkedin")
+                                .instagram("url instagram")
+                                .curriculo("curriculo")
+                                .usuario(usuario)
+                                .build();
+
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
+
+                Cargo cargo = Cargo.builder()
+                                .egresso(egressoSalvo)
+                                .descricao("Desenvolvedor de Software")
+                                .local("Empresa X")
+                                .anoInicio(2020)
+                                .anoFim(2023)
+                                .build();
+
+                // ação
+                Cargo cargoSalvo = cargoRepositorio.save(cargo);
+                Long id = cargoSalvo.getId();
+                cargoRepositorio.deleteById(id);
+
+                // rollback
+                egressoRepositorio.delete(egressoSalvo);
+                // verificação
+                Optional<Cargo> temp = cargoRepositorio.findById(id);
+                Assertions.assertFalse(temp.isPresent());
+
+        }
 }

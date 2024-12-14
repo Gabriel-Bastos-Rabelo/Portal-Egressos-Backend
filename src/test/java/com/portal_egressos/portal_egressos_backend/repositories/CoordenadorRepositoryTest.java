@@ -1,4 +1,5 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
+
 import com.portal_egressos.portal_egressos_backend.models.Coordenador;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
@@ -12,163 +13,158 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-
 @SpringBootTest
 @ActiveProfiles("test")
 public class CoordenadorRepositoryTest {
 
     @Autowired
-    CoordenadorRepository coordenadorRepository;
+    CoordenadorRepository coordenadorRepositorio;
 
     @Autowired
-    CursoRepository cursoRepository;
+    CursoRepository cursoRepositorio;
 
     @Test
     public void deveSalvarCoordenador() {
-        //cenário
+        // cenário
         Usuario usuario = Usuario.builder()
-                                 .email("teste@teste.com")
-                                 .senha("123456")
-                                 .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .build();
 
         Curso curso = Curso.builder()
-                            .nome("coordenador")
-                            .nivel("graduação")
-                            .build();
+                .nome("coordenador")
+                .nivel("graduação")
+                .build();
 
-        Curso savedCurso = cursoRepository.save(curso);
+        Curso cursoSalvo = cursoRepositorio.save(curso);
 
         Coordenador coordenador = Coordenador.builder().nome("teste")
-                                            .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))  
-                                            .ativo(true)      
-                                            .curso(savedCurso)
-                                            .usuario(usuario)      
-                                            .build();
-        //ação
-        Coordenador savedCoordenador = coordenadorRepository.save(coordenador);
+                .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
+                .ativo(true)
+                .curso(cursoSalvo)
+                .usuario(usuario)
+                .build();
+        // ação
+        Coordenador coordenadorSalvo = coordenadorRepositorio.save(coordenador);
 
-        //rollback 
-        coordenadorRepository.delete(savedCoordenador);
-        cursoRepository.delete(savedCurso);
+        // rollback
+        coordenadorRepositorio.delete(coordenadorSalvo);
+        cursoRepositorio.delete(cursoSalvo);
 
-        //verificação
-        Assertions.assertNotNull(savedCoordenador);
-        Assertions.assertEquals(coordenador.getNome(), savedCoordenador.getNome());
-        Assertions.assertEquals(coordenador.getDataCriacao(), savedCoordenador.getDataCriacao());
-        Assertions.assertEquals(coordenador.getAtivo(), savedCoordenador.getAtivo());
+        // verificação
+        Assertions.assertNotNull(coordenadorSalvo);
+        Assertions.assertEquals(coordenador.getNome(), coordenadorSalvo.getNome());
+        Assertions.assertEquals(coordenador.getDataCriacao(), coordenadorSalvo.getDataCriacao());
+        Assertions.assertEquals(coordenador.getAtivo(), coordenadorSalvo.getAtivo());
     }
-
 
     @Test
     public void deveAtualizarCoordenador() {
-        //cenário
+        // cenário
         Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .build();
 
         Curso curso = Curso.builder()
-                            .nome("coordenador")
-                            .nivel("graduação")
-                            .build();
+                .nome("coordenador")
+                .nivel("graduação")
+                .build();
 
-        Curso savedCurso = cursoRepository.save(curso);
+        Curso cursoSalvo = cursoRepositorio.save(curso);
 
         Coordenador coordenador = Coordenador.builder().nome("teste")
-                                            .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))  
-                                            .ativo(true)      
-                                            .curso(savedCurso)
-                                            .usuario(usuario)      
-                                            .build();
+                .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
+                .ativo(true)
+                .curso(cursoSalvo)
+                .usuario(usuario)
+                .build();
 
         // ação
-        Coordenador savedCoordenador = coordenadorRepository.save(coordenador);
-        savedCoordenador.setNome("teste2@teste.com");
-        savedCoordenador.setDataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0));
-        savedCoordenador.setAtivo(false);
-        Coordenador returnedCoordenador = coordenadorRepository.save(savedCoordenador);
+        Coordenador coordenadorSalvo = coordenadorRepositorio.save(coordenador);
+        coordenadorSalvo.setNome("teste2@teste.com");
+        coordenadorSalvo.setDataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0));
+        coordenadorSalvo.setAtivo(false);
+        Coordenador returnedCoordenador = coordenadorRepositorio.save(coordenadorSalvo);
 
-        //rollback 
-        coordenadorRepository.delete(savedCoordenador);
-        cursoRepository.delete(savedCurso);
+        // rollback
+        coordenadorRepositorio.delete(coordenadorSalvo);
+        cursoRepositorio.delete(cursoSalvo);
 
         // verificação
-        Assertions.assertNotNull(savedCoordenador);
-        Assertions.assertEquals(savedCoordenador.getNome(), returnedCoordenador.getNome());
-        Assertions.assertEquals(savedCoordenador.getDataCriacao(), returnedCoordenador.getDataCriacao());
-        Assertions.assertEquals(savedCoordenador.getAtivo(), returnedCoordenador.getAtivo());
+        Assertions.assertNotNull(coordenadorSalvo);
+        Assertions.assertEquals(coordenadorSalvo.getNome(), returnedCoordenador.getNome());
+        Assertions.assertEquals(coordenadorSalvo.getDataCriacao(), returnedCoordenador.getDataCriacao());
+        Assertions.assertEquals(coordenadorSalvo.getAtivo(), returnedCoordenador.getAtivo());
     }
-
 
     @Test
     public void deveRemoverCoordenador() {
-        //cenário
+        // cenário
         Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .build();
 
         Curso curso = Curso.builder()
-                            .nome("coordenador")
-                            .nivel("graduação")
-                            .build();
+                .nome("coordenador")
+                .nivel("graduação")
+                .build();
 
-        Curso savedCurso = cursoRepository.save(curso);
+        Curso cursoSalvo = cursoRepositorio.save(curso);
 
         Coordenador coordenador = Coordenador.builder().nome("teste")
-                                            .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))  
-                                            .ativo(true)      
-                                            .curso(savedCurso)
-                                            .usuario(usuario)      
-                                            .build();
+                .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
+                .ativo(true)
+                .curso(cursoSalvo)
+                .usuario(usuario)
+                .build();
         // ação
-        Coordenador savedCoordenador = coordenadorRepository.save(coordenador);
-        Long id = savedCoordenador.getId();
-        coordenadorRepository.deleteById(id);
-        Optional<Coordenador> temp = coordenadorRepository.findById(id);
+        Coordenador coordenadorSalvo = coordenadorRepositorio.save(coordenador);
+        Long id = coordenadorSalvo.getId();
+        coordenadorRepositorio.deleteById(id);
+        Optional<Coordenador> temp = coordenadorRepositorio.findById(id);
 
-        //rollback
-        coordenadorRepository.delete(savedCoordenador);
-        cursoRepository.delete(savedCurso);
+        // rollback
+        coordenadorRepositorio.delete(coordenadorSalvo);
+        cursoRepositorio.delete(cursoSalvo);
 
         // verificação
         Assertions.assertFalse(temp.isPresent());
     }
 
-
     @Test
     public void deveObterCoordenadorPorNome() {
-        //cenário
+        // cenário
         Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .build();
 
         Curso curso = Curso.builder()
-                            .nome("coordenador")
-                            .nivel("graduação")
-                            .build();
+                .nome("coordenador")
+                .nivel("graduação")
+                .build();
 
-        Curso savedCurso = cursoRepository.save(curso);
+        Curso cursoSalvo = cursoRepositorio.save(curso);
 
         Coordenador coordenador = Coordenador.builder().nome("teste")
-                                            .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))  
-                                            .ativo(true)      
-                                            .curso(savedCurso)
-                                            .usuario(usuario)      
-                                            .build();
+                .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
+                .ativo(true)
+                .curso(cursoSalvo)
+                .usuario(usuario)
+                .build();
 
         // ação
-        Coordenador savedCoordenador = coordenadorRepository.save(coordenador);
-        Optional<Coordenador> returned = coordenadorRepository.findByNome(savedCoordenador.getNome());
+        Coordenador coordenadorSalvo = coordenadorRepositorio.save(coordenador);
+        Optional<Coordenador> returned = coordenadorRepositorio.findByNome(coordenadorSalvo.getNome());
 
-        //rollback
-        coordenadorRepository.delete(savedCoordenador);
-        cursoRepository.delete(savedCurso);
+        // rollback
+        coordenadorRepositorio.delete(coordenadorSalvo);
+        cursoRepositorio.delete(cursoSalvo);
 
         // verificação
         Assertions.assertTrue(returned.isPresent());
         Assertions.assertEquals(coordenador.getNome(), returned.get().getNome());
     }
 }
-

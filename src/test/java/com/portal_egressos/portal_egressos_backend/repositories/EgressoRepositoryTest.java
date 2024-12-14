@@ -1,4 +1,5 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
+
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
@@ -12,187 +13,182 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-
 @SpringBootTest
 @ActiveProfiles("test")
 public class EgressoRepositoryTest {
+
     @Autowired
-    EgressoRepository repository;
+    EgressoRepository repositorio;
 
     @Test
     public void deveSalvarEgresso() {
-        //cenário
+        // cenário
         Usuario usuario = Usuario.builder()
-                                 .email("teste@teste.com")
-                                 .senha("123456")
-                                 .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .build();
 
         Egresso egresso = Egresso.builder().nome("teste")
-                                        .descricao("lorem ipsum lore")  
-                                        .foto("urlteste")      
-                                        .linkedin("teste_linkedin")      
-                                        .instagram("teste_instagram")      
-                                        .curriculo("lorem ipsum lore")
-                                        .usuario(usuario)      
-                                        .build();
-        //ação
-        Egresso saved = repository.save(egresso);
+                .descricao("lorem ipsum lore")
+                .foto("urlteste")
+                .linkedin("teste_linkedin")
+                .instagram("teste_instagram")
+                .curriculo("lorem ipsum lore")
+                .usuario(usuario)
+                .build();
+        // ação
+        Egresso egressoSalvo = repositorio.save(egresso);
 
-        //rollback 
-        repository.delete(saved);
+        // rollback
+        repositorio.delete(egressoSalvo);
 
-        //verificação
-        Assertions.assertNotNull(saved);
-        Assertions.assertEquals(egresso.getNome(), saved.getNome());
-        Assertions.assertEquals(egresso.getDescricao(), saved.getDescricao());
-        Assertions.assertEquals(egresso.getFoto(), saved.getFoto());
-        Assertions.assertEquals(egresso.getLinkedin(), saved.getLinkedin());
-        Assertions.assertEquals(egresso.getInstagram(), saved.getInstagram());
-        Assertions.assertEquals(egresso.getCurriculo(), saved.getCurriculo());
+        // verificação
+        Assertions.assertNotNull(egressoSalvo);
+        Assertions.assertEquals(egresso.getNome(), egressoSalvo.getNome());
+        Assertions.assertEquals(egresso.getDescricao(), egressoSalvo.getDescricao());
+        Assertions.assertEquals(egresso.getFoto(), egressoSalvo.getFoto());
+        Assertions.assertEquals(egresso.getLinkedin(), egressoSalvo.getLinkedin());
+        Assertions.assertEquals(egresso.getInstagram(), egressoSalvo.getInstagram());
+        Assertions.assertEquals(egresso.getCurriculo(), egressoSalvo.getCurriculo());
     }
 
-    
     @Test
     public void deveSalvarVariosEgressos() {
         // cenário
-        List<Usuario> users = new ArrayList<Usuario>();
+        List<Usuario> usuarios = new ArrayList<Usuario>();
         for (int i = 0; i < 3; i++) {
-            users.add(
+            usuarios.add(
                     Usuario.builder().email("teste@teste.com" + i)
-                                     .senha("123" + i)
-                                     .build());
+                            .senha("123" + i)
+                            .build());
         }
 
         List<Egresso> egressos = new ArrayList<Egresso>();
         for (int i = 0; i < 3; i++) {
             egressos.add(
                     Egresso.builder().nome("teste")
-                                     .descricao("lorem ipsum lore")  
-                                     .foto("urlteste")      
-                                     .linkedin("teste_linkedin")      
-                                     .instagram("teste_instagram")      
-                                     .curriculo("lorem ipsum lore")
-                                     .usuario(users.get(i))      
-                                     .build());
+                            .descricao("lorem ipsum lore")
+                            .foto("urlteste")
+                            .linkedin("teste_linkedin")
+                            .instagram("teste_instagram")
+                            .curriculo("lorem ipsum lore")
+                            .usuario(usuarios.get(i))
+                            .build());
         }
 
         // ação
-        List<Egresso> saved = repository.saveAll(egressos);
+        List<Egresso> egressosSalvos = repositorio.saveAll(egressos);
 
-        //rollback 
-        repository.deleteAll(saved);
+        // rollback
+        repositorio.deleteAll(egressosSalvos);
 
         // verificação
-        Assertions.assertNotNull(saved);
-        Assertions.assertEquals(egressos.size(), saved.size());
+        Assertions.assertNotNull(egressosSalvos);
+        Assertions.assertEquals(egressos.size(), egressosSalvos.size());
         for (int i = 0; i < egressos.size(); i++) {
-            Assertions.assertEquals(egressos.get(i).getDescricao(), saved.get(i).getDescricao());
-            Assertions.assertEquals(egressos.get(i).getFoto(), saved.get(i).getFoto());
-            Assertions.assertEquals(egressos.get(i).getLinkedin(), saved.get(i).getLinkedin());
-            Assertions.assertEquals(egressos.get(i).getInstagram(), saved.get(i).getInstagram());
-            Assertions.assertEquals(egressos.get(i).getCurriculo(), saved.get(i).getCurriculo());
+            Assertions.assertEquals(egressos.get(i).getDescricao(), egressosSalvos.get(i).getDescricao());
+            Assertions.assertEquals(egressos.get(i).getFoto(), egressosSalvos.get(i).getFoto());
+            Assertions.assertEquals(egressos.get(i).getLinkedin(), egressosSalvos.get(i).getLinkedin());
+            Assertions.assertEquals(egressos.get(i).getInstagram(), egressosSalvos.get(i).getInstagram());
+            Assertions.assertEquals(egressos.get(i).getCurriculo(), egressosSalvos.get(i).getCurriculo());
         }
     }
-
 
     @Test
     public void deveAtualizarEgresso() {
         // cenário
         Usuario usuario = Usuario.builder()
-                                 .email("teste@teste.com")
-                                 .senha("123456")
-                                 .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .build();
 
         Egresso egresso = Egresso.builder().nome("teste")
-                                           .descricao("lorem ipsum lore")  
-                                           .foto("urlteste")      
-                                           .linkedin("teste_linkedin")      
-                                           .instagram("teste_instagram")      
-                                           .curriculo("lorem ipsum lore")
-                                           .usuario(usuario)      
-                                           .build();
+                .descricao("lorem ipsum lore")
+                .foto("urlteste")
+                .linkedin("teste_linkedin")
+                .instagram("teste_instagram")
+                .curriculo("lorem ipsum lore")
+                .usuario(usuario)
+                .build();
         // ação
-        Egresso saved = repository.save(egresso);
-        saved.setNome("teste2@teste.com");
-        saved.setDescricao("lorem lore lore ipsum ");
-        saved.setFoto("testeUrl");
-        saved.setLinkedin("linkedin_teste");
-        saved.setInstagram("instagram_teste");
-        saved.setCurriculo("lorem lore lore ipsum");
-        Egresso returned = repository.save(saved);
+        Egresso egressoSalvo = repositorio.save(egresso);
+        egressoSalvo.setNome("teste2@teste.com");
+        egressoSalvo.setDescricao("lorem lore lore ipsum ");
+        egressoSalvo.setFoto("testeUrl");
+        egressoSalvo.setLinkedin("linkedin_teste");
+        egressoSalvo.setInstagram("instagram_teste");
+        egressoSalvo.setCurriculo("lorem lore lore ipsum");
+        Egresso egressoRetornado = repositorio.save(egressoSalvo);
 
-        //rollback 
-        repository.delete(saved);
-        repository.delete(returned);
+        // rollback
+        repositorio.delete(egressoSalvo);
+        repositorio.delete(egressoRetornado);
 
         // verificação
-        Assertions.assertNotNull(saved);
-        Assertions.assertEquals(saved.getNome(), returned.getNome());
-        Assertions.assertEquals(saved.getDescricao(), returned.getDescricao());
-        Assertions.assertEquals(saved.getFoto(), returned.getFoto());
-        Assertions.assertEquals(saved.getLinkedin(), returned.getLinkedin());
-        Assertions.assertEquals(saved.getInstagram(), returned.getInstagram());
-        Assertions.assertEquals(saved.getCurriculo(), returned.getCurriculo());
+        Assertions.assertNotNull(egressoSalvo);
+        Assertions.assertEquals(egressoSalvo.getNome(), egressoRetornado.getNome());
+        Assertions.assertEquals(egressoSalvo.getDescricao(), egressoRetornado.getDescricao());
+        Assertions.assertEquals(egressoSalvo.getFoto(), egressoRetornado.getFoto());
+        Assertions.assertEquals(egressoSalvo.getLinkedin(), egressoRetornado.getLinkedin());
+        Assertions.assertEquals(egressoSalvo.getInstagram(), egressoRetornado.getInstagram());
+        Assertions.assertEquals(egressoSalvo.getCurriculo(), egressoRetornado.getCurriculo());
     }
-
 
     @Test
     public void deveRemoverEgresso() {
         // cenário
         Usuario usuario = Usuario.builder()
-                                 .email("teste@teste.com")
-                                 .senha("123456")
-                                 .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .build();
 
         Egresso egresso = Egresso.builder().nome("teste")
-                                           .descricao("lorem ipsum lore")  
-                                           .foto("urlteste")      
-                                           .linkedin("teste_linkedin")      
-                                           .instagram("teste_instagram")      
-                                           .curriculo("lorem ipsum lore")
-                                           .usuario(usuario)      
-                                           .build();
+                .descricao("lorem ipsum lore")
+                .foto("urlteste")
+                .linkedin("teste_linkedin")
+                .instagram("teste_instagram")
+                .curriculo("lorem ipsum lore")
+                .usuario(usuario)
+                .build();
         // ação
-        Egresso saved = repository.save(egresso);
-        Long id = saved.getId();
-        repository.deleteById(id);
-        Optional<Egresso> temp = repository.findById(id);
+        Egresso egressoSalvo = repositorio.save(egresso);
+        Long id = egressoSalvo.getId();
+        repositorio.deleteById(id);
+        Optional<Egresso> temp = repositorio.findById(id);
 
-        //rollback
-        repository.delete(saved);
+        // rollback
+        repositorio.delete(egressoSalvo);
 
         // verificação
         Assertions.assertFalse(temp.isPresent());
     }
 
-
     @Test
     public void deveObterEgressoPorNome() {
         // cenário
         Usuario usuario = Usuario.builder()
-                                 .email("teste@teste.com")
-                                 .senha("123")
-                                 .build();
+                .email("teste@teste.com")
+                .senha("123")
+                .build();
 
         Egresso egresso = Egresso.builder().nome("teste")
-                                           .descricao("lorem ipsum lore")  
-                                           .foto("urlteste")      
-                                           .linkedin("teste_linkedin")      
-                                           .instagram("teste_instagram")      
-                                           .curriculo("lorem ipsum lore")
-                                           .usuario(usuario)      
-                                           .build();
+                .descricao("lorem ipsum lore")
+                .foto("urlteste")
+                .linkedin("teste_linkedin")
+                .instagram("teste_instagram")
+                .curriculo("lorem ipsum lore")
+                .usuario(usuario)
+                .build();
 
         // ação
-        Egresso saved = repository.save(egresso);
-        Optional<Egresso> returned = repository.findByNome(saved.getNome());
+        Egresso egressoSalvo = repositorio.save(egresso);
+        Optional<Egresso> egressoRetornado = repositorio.findByNome(egressoSalvo.getNome());
 
-        //rollback
-        repository.delete(saved);
+        // rollback
+        repositorio.delete(egressoSalvo);
 
         // verificação
-        Assertions.assertTrue(returned.isPresent());
-        Assertions.assertEquals(egresso.getNome(), returned.get().getNome());
+        Assertions.assertTrue(egressoRetornado.isPresent());
+        Assertions.assertEquals(egresso.getNome(), egressoRetornado.get().getNome());
     }
 }
-

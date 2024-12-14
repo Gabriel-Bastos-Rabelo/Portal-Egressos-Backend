@@ -10,34 +10,31 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.portal_egressos.portal_egressos_backend.models.Curso;
 
-
-
 @SpringBootTest
 @ActiveProfiles("test")
 public class CursoRepositoryTest {
 
     @Autowired
-    CursoRepository cursoRepository;
+    CursoRepository cursoRepositorio;
 
     @Test
     public void deveVerificarSalvarCurso() {
-        //cenário
+        // cenário
         Curso curso = Curso.builder()
                 .nome("Curso Teste")
                 .nivel("Nivel Teste")
                 .build();
 
-        //ação
-        Curso cursoSalvo = cursoRepository.save(curso);
+        // ação
+        Curso cursoSalvo = cursoRepositorio.save(curso);
 
-        //rollback
-        cursoRepository.delete(cursoSalvo);
-        
+        // rollback
+        cursoRepositorio.delete(cursoSalvo);
+
         // verificação
         Assertions.assertNotNull(cursoSalvo);
         Assertions.assertEquals(curso.getNome(), cursoSalvo.getNome());
         Assertions.assertEquals(curso.getNivel(), cursoSalvo.getNivel());
-
 
     }
 
@@ -50,21 +47,21 @@ public class CursoRepositoryTest {
                 .build();
 
         // ação
-        Curso saved = cursoRepository.save(curso);
+        Curso cursoSalvo = cursoRepositorio.save(curso);
 
-        saved.setNome("Nome atualizado");
-        saved.setNivel("Nivel atualizado");
+        cursoSalvo.setNome("Nome atualizado");
+        cursoSalvo.setNivel("Nivel atualizado");
 
-        Curso returned = cursoRepository.save(saved);
+        Curso cursoRetornado = cursoRepositorio.save(cursoSalvo);
 
-        //rollback
-        cursoRepository.delete(saved);
-        cursoRepository.delete(returned);
+        // rollback
+        cursoRepositorio.delete(cursoSalvo);
+        cursoRepositorio.delete(cursoRetornado);
 
         // verificação
-        Assertions.assertNotNull(returned);
-        Assertions.assertEquals(saved.getNome(), returned.getNome());
-        Assertions.assertEquals(saved.getNivel(), returned.getNivel());
+        Assertions.assertNotNull(cursoRetornado);
+        Assertions.assertEquals(cursoSalvo.getNome(), cursoRetornado.getNome());
+        Assertions.assertEquals(cursoSalvo.getNivel(), cursoRetornado.getNivel());
     }
 
     @Test
@@ -76,13 +73,13 @@ public class CursoRepositoryTest {
                 .build();
 
         // ação
-        Curso saved = cursoRepository.save(curso);
-        Long id = saved.getId();
-        cursoRepository.deleteById(id);
-        Optional<Curso> temp = cursoRepository.findById(id);
+        Curso cursoSalvo = cursoRepositorio.save(curso);
+        Long id = cursoSalvo.getId();
+        cursoRepositorio.deleteById(id);
+        Optional<Curso> temp = cursoRepositorio.findById(id);
 
-        //rollback
-        cursoRepository.delete(saved);
+        // rollback
+        cursoRepositorio.delete(cursoSalvo);
 
         // verificação
         Assertions.assertFalse(temp.isPresent());
@@ -96,19 +93,18 @@ public class CursoRepositoryTest {
                 .nivel("nivel teste")
                 .build();
 
-        Curso saved = cursoRepository.save(curso);
+        Curso cursoSalvo = cursoRepositorio.save(curso);
 
         // ação
-        Optional<Curso> returned = cursoRepository.findByNivel(curso.getNivel());
+        Optional<Curso> cursoRetornado = cursoRepositorio.findByNivel(curso.getNivel());
 
         // rollback
-        cursoRepository.delete(saved);
+        cursoRepositorio.delete(cursoSalvo);
 
         // verificação
-        Assertions.assertTrue(returned.isPresent());
-        Assertions.assertEquals(curso.getNivel(), returned.get().getNivel());
+        Assertions.assertTrue(cursoRetornado.isPresent());
+        Assertions.assertEquals(curso.getNivel(), cursoRetornado.get().getNivel());
 
     }
-
 
 }
