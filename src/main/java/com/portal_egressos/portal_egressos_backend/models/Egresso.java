@@ -1,5 +1,7 @@
 package com.portal_egressos.portal_egressos_backend.models;
 
+import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -52,4 +55,9 @@ public class Egresso {
     @OneToOne( cascade = CascadeType.ALL, optional=false)
     @JoinColumn(name = "id_usuario", referencedColumnName="id_usuario", unique = true)
     private Usuario usuario;
+
+    @OneToMany(mappedBy = "egresso")
+    private List<CursoEgresso> egressoCursos;
+
+ 
 }
