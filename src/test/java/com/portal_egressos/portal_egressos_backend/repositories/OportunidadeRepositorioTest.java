@@ -1,5 +1,6 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
 
+import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
@@ -32,6 +33,7 @@ public class OportunidadeRepositorioTest {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
                                 .senha("123456")
+                                .role(UserRole.EGRESSO)
                                 .build();
 
                 Egresso egresso = Egresso.builder()
@@ -86,6 +88,7 @@ public class OportunidadeRepositorioTest {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
                                 .senha("123456")
+                                .role(UserRole.EGRESSO)
                                 .build();
 
                 Egresso egresso = Egresso.builder()
@@ -146,6 +149,7 @@ public class OportunidadeRepositorioTest {
                         usuarios.add(Usuario.builder()
                                         .email("usuario" + i + "@teste.com")
                                         .senha("123456")
+                                        .role(UserRole.EGRESSO)
                                         .build());
                 }
 
@@ -200,6 +204,7 @@ public class OportunidadeRepositorioTest {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
                                 .senha("123456")
+                                .role(UserRole.EGRESSO)
                                 .build();
 
                 Egresso egresso = Egresso.builder()
@@ -245,6 +250,7 @@ public class OportunidadeRepositorioTest {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
                                 .senha("123456")
+                                .role(UserRole.EGRESSO)
                                 .build();
 
                 Egresso egresso = Egresso.builder()
@@ -293,6 +299,7 @@ public class OportunidadeRepositorioTest {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
                                 .senha("123456")
+                                .role(UserRole.EGRESSO)
                                 .build();
 
                 Egresso egresso = Egresso.builder()

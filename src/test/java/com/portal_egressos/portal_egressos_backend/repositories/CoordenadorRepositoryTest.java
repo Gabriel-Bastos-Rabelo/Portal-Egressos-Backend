@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.portal_egressos.portal_egressos_backend.enums.UserRole;
+
 @SpringBootTest
 @ActiveProfiles("test")
 public class CoordenadorRepositoryTest {
@@ -29,6 +31,7 @@ public class CoordenadorRepositoryTest {
         Usuario usuario = Usuario.builder()
                 .email("teste@teste.com")
                 .senha("123456")
+                .role(UserRole.COORDENADOR)
                 .build();
 
         Curso curso = Curso.builder()
@@ -64,6 +67,7 @@ public class CoordenadorRepositoryTest {
         Usuario usuario = Usuario.builder()
                 .email("teste@teste.com")
                 .senha("123456")
+                .role(UserRole.COORDENADOR)
                 .build();
 
         Curso curso = Curso.builder()
@@ -104,6 +108,7 @@ public class CoordenadorRepositoryTest {
         Usuario usuario = Usuario.builder()
                 .email("teste@teste.com")
                 .senha("123456")
+                .role(UserRole.COORDENADOR)
                 .build();
 
         Curso curso = Curso.builder()
@@ -139,6 +144,7 @@ public class CoordenadorRepositoryTest {
         Usuario usuario = Usuario.builder()
                 .email("teste@teste.com")
                 .senha("123456")
+                .role(UserRole.COORDENADOR)
                 .build();
 
         Curso curso = Curso.builder()

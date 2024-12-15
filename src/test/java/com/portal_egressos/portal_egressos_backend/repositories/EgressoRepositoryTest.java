@@ -1,5 +1,6 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
 
+import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
@@ -26,6 +27,7 @@ public class EgressoRepositoryTest {
         Usuario usuario = Usuario.builder()
                 .email("teste@teste.com")
                 .senha("123456")
+                .role(UserRole.EGRESSO)
                 .build();
 
         Egresso egresso = Egresso.builder().nome("teste")
@@ -60,6 +62,7 @@ public class EgressoRepositoryTest {
             usuarios.add(
                     Usuario.builder().email("teste@teste.com" + i)
                             .senha("123" + i)
+                            .role(UserRole.EGRESSO)
                             .build());
         }
 
@@ -100,6 +103,7 @@ public class EgressoRepositoryTest {
         Usuario usuario = Usuario.builder()
                 .email("teste@teste.com")
                 .senha("123456")
+                .role(UserRole.EGRESSO)
                 .build();
 
         Egresso egresso = Egresso.builder().nome("teste")
@@ -140,6 +144,7 @@ public class EgressoRepositoryTest {
         Usuario usuario = Usuario.builder()
                 .email("teste@teste.com")
                 .senha("123456")
+                .role(UserRole.EGRESSO)
                 .build();
 
         Egresso egresso = Egresso.builder().nome("teste")
@@ -169,6 +174,7 @@ public class EgressoRepositoryTest {
         Usuario usuario = Usuario.builder()
                 .email("teste@teste.com")
                 .senha("123")
+                .role(UserRole.EGRESSO)
                 .build();
 
         Egresso egresso = Egresso.builder().nome("teste")
