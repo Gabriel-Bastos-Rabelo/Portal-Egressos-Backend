@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Noticia;
 import com.portal_egressos.portal_egressos_backend.repositories.NoticiaRepository;
@@ -37,6 +38,9 @@ public class NoticiaService {
         if(noticia.getLinkNoticia() == null || noticia.getLinkNoticia().isEmpty()){
             throw new RegraNegocioRunTime("O link da notícia é obrigatório.");
         }
+        if(noticia.getStatus() == null){
+            throw new RegraNegocioRunTime("O status da notícia é obrigatório.");
+        }
     }
     
     @Transactional
@@ -45,13 +49,24 @@ public class NoticiaService {
         return noticiaRepository.save(noticia);
     }
 
-    public List<Noticia> listarTodos() {
+    public List<Noticia> listarTodas(){
         return noticiaRepository.findAllByOrderByDataPublicacaoDesc();
+    }
+
+    public List<Noticia> listarTodasAprovadas() {
+        return noticiaRepository.findAllByStatusOrderByDataPublicacaoDesc(Status.APPROVED);
     }
 
     public List<Noticia> listarNoticiasUltimos30Dias() {
         LocalDate dataLimite = LocalDate.now().minusDays(30);
-        return noticiaRepository.findByDataPublicacaoAfterOrderByDataPublicacaoDesc(dataLimite);
+        return noticiaRepository.findByStatusAndDataPublicacaoAfterOrderByDataPublicacaoDesc(Status.APPROVED, dataLimite);
+    }
+
+    @Transactional
+    public Noticia atualizarStatusAprovada(Long id) {
+        Noticia noticia = buscarPorId(id);
+        noticia.setStatus(Status.APPROVED);     
+        return noticiaRepository.save(noticia);  
     }
 
     public Noticia buscarPorId(Long id) {
