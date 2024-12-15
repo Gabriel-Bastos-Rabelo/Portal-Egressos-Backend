@@ -9,4 +9,6 @@ import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 public interface OportunidadeRepository extends JpaRepository<Oportunidade, Long> {
     List<Oportunidade> findByTituloContaining(String titulo);
     List<Oportunidade> findAllByOrderByDataPublicacaoDesc();
+    List<Oportunidade> findByEgressoNomeContaining(String nome);
+
 }

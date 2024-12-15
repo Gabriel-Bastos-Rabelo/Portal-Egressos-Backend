@@ -16,11 +16,11 @@ public class DepoimentoService {
 
     @Autowired
     private DepoimentoRepository depoimentoRepository;
-    
+
     @Autowired
     private EgressoRepository egressoRepository;
- 
-    //Salvar Depoimento
+
+    // Salvar Depoimento
     public Depoimento salvarDepoimento(Depoimento depoimento) {
         if (depoimento.getTexto() == null || depoimento.getTexto().isEmpty()) {
             throw new RegraNegocioRunTime("A mensagem do depoimento não pode estar vazia.");
@@ -30,14 +30,15 @@ public class DepoimentoService {
         }
 
         Egresso egresso = egressoRepository.findById(depoimento.getEgresso().getId())
-                .orElseThrow(() -> new RegraNegocioRunTime("Egresso com ID " + depoimento.getEgresso().getId() + " não encontrado."));
-        
+                .orElseThrow(() -> new RegraNegocioRunTime(
+                        "Egresso com ID " + depoimento.getEgresso().getId() + " não encontrado."));
+
         depoimento.setEgresso(egresso);
         return depoimentoRepository.save(depoimento);
 
     }
 
-    //Atualizar Depoimento
+    // Atualizar Depoimento
 
     public Depoimento atualizarDepoimento(Long id, Depoimento novoDepoimento) {
         return depoimentoRepository.findById(id)
@@ -47,7 +48,8 @@ public class DepoimentoService {
                     }
                     if (novoDepoimento.getEgresso() != null && novoDepoimento.getEgresso().getId() != null) {
                         Egresso egresso = egressoRepository.findById(novoDepoimento.getEgresso().getId())
-                                .orElseThrow(() -> new RegraNegocioRunTime("Egresso com ID " + novoDepoimento.getEgresso().getId() + " não encontrado."));
+                                .orElseThrow(() -> new RegraNegocioRunTime(
+                                        "Egresso com ID " + novoDepoimento.getEgresso().getId() + " não encontrado."));
                         depoimento.setEgresso(egresso);
                     }
 
@@ -57,12 +59,11 @@ public class DepoimentoService {
                 .orElseThrow(() -> new RegraNegocioRunTime("Depoimento com ID " + id + " não encontrado."));
     }
 
-   //Verificar Depoimento
+    // Verificar Depoimento
 
-   public Depoimento verificarDepoimento(Long id) {
-    return depoimentoRepository.findById(id)
-            .orElseThrow(() -> new RegraNegocioRunTime("Depoimento com ID " + id + " não encontrado."));
+    public Depoimento verificarDepoimento(Long id) {
+        return depoimentoRepository.findById(id)
+                .orElseThrow(() -> new RegraNegocioRunTime("Depoimento com ID " + id + " não encontrado."));
+    }
+
 }
-
-}
-
