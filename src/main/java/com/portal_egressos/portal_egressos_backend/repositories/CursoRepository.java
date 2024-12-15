@@ -21,4 +21,12 @@ public interface CursoRepository extends JpaRepository<Curso, Long> {
         @Param("cursoId") Long cursoId
     );
 
+    
+    @Query (" select COUNT(e) from Egresso e JOIN e.egressoCursos c WHERE c.curso.id = :cursoId ")
+    int obterQuantidadeDeEgressosPorCurso(
+        @Param("cursoId") Long cursoId
+    );
+
+
+
 }
