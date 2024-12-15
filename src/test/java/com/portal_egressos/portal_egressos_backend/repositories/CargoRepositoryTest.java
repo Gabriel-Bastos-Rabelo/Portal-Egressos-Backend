@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.models.Cargo;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
@@ -28,6 +29,7 @@ public class CargoRepositoryTest {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
                                 .senha("123456")
+                                .role(UserRole.EGRESSO)
                                 .build();
 
                 Egresso egresso = Egresso.builder()
@@ -74,6 +76,7 @@ public class CargoRepositoryTest {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
                                 .senha("123456")
+                                .role(UserRole.EGRESSO)
                                 .build();
 
                 Egresso egresso = Egresso.builder()
@@ -126,6 +129,7 @@ public class CargoRepositoryTest {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
                                 .senha("123456")
+                                .role(UserRole.EGRESSO)
                                 .build();
 
                 Egresso egresso = Egresso.builder()
@@ -177,6 +181,7 @@ public class CargoRepositoryTest {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
                                 .senha("123456")
+                                .role(UserRole.EGRESSO)
                                 .build();
 
                 Egresso egresso = Egresso.builder()

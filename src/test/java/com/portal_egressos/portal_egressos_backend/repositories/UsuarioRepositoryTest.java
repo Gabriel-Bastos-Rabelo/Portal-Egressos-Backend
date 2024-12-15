@@ -1,5 +1,6 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
 
+import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
@@ -24,6 +26,7 @@ public class UsuarioRepositoryTest {
         // cenário
         Usuario usuario = Usuario.builder().email("teste@teste.com")
                 .senha("123")
+                .role(UserRole.EGRESSO)
                 .build();
 
         // ação
@@ -46,6 +49,7 @@ public class UsuarioRepositoryTest {
             usuarios.add(
                     Usuario.builder().email("teste@teste.com" + i)
                             .senha("123" + i)
+                            .role(UserRole.EGRESSO)
                             .build());
         }
 
@@ -68,6 +72,7 @@ public class UsuarioRepositoryTest {
         // cenário
         Usuario usuario = Usuario.builder().email("teste@teste.com")
                 .senha("123")
+                .role(UserRole.EGRESSO)
                 .build();
 
         // ação
@@ -91,6 +96,7 @@ public class UsuarioRepositoryTest {
         // cenário
         Usuario usuario = Usuario.builder().email("teste@teste.com")
                 .senha("123")
+                .role(UserRole.EGRESSO)
                 .build();
 
         // ação
@@ -111,17 +117,18 @@ public class UsuarioRepositoryTest {
         // cenário
         Usuario usuario = Usuario.builder().email("teste@teste.com")
                 .senha("123")
+                .role(UserRole.EGRESSO)
                 .build();
 
         // ação
         Usuario usuarioSalvo = repositorio.save(usuario);
-        Optional<Usuario> usuarioRetornado = repositorio.findByEmail(usuario.getEmail());
+        UserDetails usuarioRetornado = repositorio.findByEmail(usuario.getEmail());
 
         // rollback
         repositorio.delete(usuarioSalvo);
 
         // verificação
-        Assertions.assertTrue(usuarioRetornado.isPresent());
-        Assertions.assertEquals(usuario.getEmail(), usuarioRetornado.get().getEmail());
+        Assertions.assertNotNull(usuarioRetornado, "Usuário não foi encontrado.");
+        Assertions.assertEquals(usuarioSalvo.getEmail(), usuarioRetornado.getUsername());
     }
 }
