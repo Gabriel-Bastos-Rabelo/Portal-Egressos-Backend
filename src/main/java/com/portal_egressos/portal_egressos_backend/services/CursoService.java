@@ -49,6 +49,12 @@ public class CursoService {
         return cursoRepo.obterEgressosPorCurso(curso.getId());
         
     }
+
+    public int listarQuantidadeDeEgressosPorCurso (Curso curso){
+        verificarId(curso);
+        return cursoRepo.obterQuantidadeDeEgressosPorCurso(curso.getId());
+    }
+    
     private void verificarId(Curso curso) {
         if ((curso == null) || (curso.getId() == null) || (!cursoRepo.existsById(curso.getId())))
             throw new IllegalArgumentException ("ID de curso inválido!");
