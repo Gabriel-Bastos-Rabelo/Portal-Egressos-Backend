@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
+
 @Entity
 @Data
 @Builder
@@ -39,4 +41,10 @@ public class Noticia {
 
     @Column(name = "link_noticia", nullable = false)
     private String linkNoticia;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
+
+
 }
