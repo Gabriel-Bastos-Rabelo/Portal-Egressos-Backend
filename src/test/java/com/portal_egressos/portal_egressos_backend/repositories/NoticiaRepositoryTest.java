@@ -1,18 +1,19 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Noticia;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
-
-import java.time.LocalDate;
-import java.util.Optional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -48,6 +49,7 @@ public class NoticiaRepositoryTest {
                                 .dataExtracao(LocalDate.of(2024, 12, 10))
                                 .linkNoticia("link da noticia")
                                 .imagemCapa("url imagem capa")
+                                .status(Status.NOT_APPROVED)
                                 .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);
@@ -89,6 +91,7 @@ public class NoticiaRepositoryTest {
                                 .dataExtracao(LocalDate.of(2024, 12, 10))
                                 .linkNoticia("link da noticia")
                                 .imagemCapa("url imagem capa")
+                                .status(Status.NOT_APPROVED)
                                 .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);
@@ -133,6 +136,7 @@ public class NoticiaRepositoryTest {
                                 .dataExtracao(LocalDate.of(2024, 12, 10))
                                 .linkNoticia("link da noticia")
                                 .imagemCapa("url imagem capa")
+                                .status(Status.NOT_APPROVED)
                                 .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);
@@ -172,6 +176,7 @@ public class NoticiaRepositoryTest {
                                 .dataExtracao(LocalDate.of(2024, 12, 10))
                                 .linkNoticia("link da noticia")
                                 .imagemCapa("url imagem capa")
+                                .status(Status.NOT_APPROVED)
                                 .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);
