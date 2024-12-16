@@ -16,10 +16,6 @@ public class EgressoService {
 
     EgressoRepository egressoRepositorio;
 
-    public boolean efetuarLogin(String email, String senha) {
-        return true;
-    }
-
     @Transactional
     public Egresso salvarEgresso(Egresso egresso) {
         verificarEgresso(egresso);
