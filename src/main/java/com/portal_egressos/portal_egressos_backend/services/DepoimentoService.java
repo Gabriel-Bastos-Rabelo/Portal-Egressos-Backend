@@ -6,64 +6,69 @@ import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.repositories.DepoimentoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class DepoimentoService {
 
     @Autowired
-    private DepoimentoRepository depoimentoRepository;
+    private DepoimentoRepository depoimentoRepositorio;
 
     @Autowired
-    private EgressoRepository egressoRepository;
+    private EgressoRepository egressoRepositorio;
 
-    // Salvar Depoimento
     public Depoimento salvarDepoimento(Depoimento depoimento) {
+        verificarDepoimento(depoimento);
+        return depoimentoRepositorio.save(depoimento);
+    }
+
+    public Depoimento atualizarDepoimento(Depoimento depoimentoAtualizado) {
+        Optional<Depoimento> depoimentoExistente = depoimentoRepositorio.findById(depoimentoAtualizado.getId());
+
+        if (depoimentoExistente.isPresent()) {
+            Depoimento depoimento = depoimentoExistente.get();
+            if(!depoimentoAtualizado.getTexto().isEmpty()){
+                depoimento.setTexto(depoimentoAtualizado.getTexto());
+            }
+            if(depoimentoAtualizado.getData() != null){
+                depoimento.setData(depoimentoAtualizado.getData());
+            }
+            return depoimentoRepositorio.save(depoimento);
+        }else {
+            throw new RegraNegocioRunTime("Oportunidade não encontrada.");
+        }
+    }
+
+    public Depoimento verificarDepoimentoId(Depoimento depoimento) {
+        return depoimentoRepositorio.findById(depoimento.getId())
+                .orElseThrow(() -> new RegraNegocioRunTime("Depoimento com ID " + depoimento.getId() + " não encontrado."));
+    }
+
+    public List<Depoimento> listarDepoimentos(){
+        return depoimentoRepositorio.findAll();
+    }
+
+    public List<Depoimento> listarDepoimentoPorEgresso(Long idEgresso){
+        Optional<Egresso> egressoExistente = egressoRepositorio.findById(idEgresso);
+
+        if(!egressoExistente.isPresent()){
+            throw new RegraNegocioRunTime("Egresso com id " + idEgresso + " não encontrado");
+            
+        }
+        Egresso egresso = egressoExistente.get();
+        return depoimentoRepositorio.findByEgresso(egresso);
+    }
+
+    public void verificarDepoimento(Depoimento depoimento) {
         if (depoimento.getTexto() == null || depoimento.getTexto().isEmpty()) {
-            throw new RegraNegocioRunTime("A mensagem do depoimento não pode estar vazia.");
+            throw new RegraNegocioRunTime("A mensagem do depoimento deve ser informada.");
         }
         if (depoimento.getEgresso() == null || depoimento.getEgresso().getId() == null) {
-            throw new RegraNegocioRunTime("É necessário informar o egresso autor do depoimento.");
+            throw new RegraNegocioRunTime("O autor do depoimento deve ser informado.");
         }
-
-        Egresso egresso = egressoRepository.findById(depoimento.getEgresso().getId())
-                .orElseThrow(() -> new RegraNegocioRunTime(
-                        "Egresso com ID " + depoimento.getEgresso().getId() + " não encontrado."));
-
-        depoimento.setEgresso(egresso);
-        return depoimentoRepository.save(depoimento);
-
     }
-
-    // Atualizar Depoimento
-
-    public Depoimento atualizarDepoimento(Long id, Depoimento novoDepoimento) {
-        return depoimentoRepository.findById(id)
-                .map(depoimento -> {
-                    if (novoDepoimento.getTexto() == null || novoDepoimento.getTexto().isEmpty()) {
-                        throw new RegraNegocioRunTime("A mensagem do depoimento não pode estar vazia.");
-                    }
-                    if (novoDepoimento.getEgresso() != null && novoDepoimento.getEgresso().getId() != null) {
-                        Egresso egresso = egressoRepository.findById(novoDepoimento.getEgresso().getId())
-                                .orElseThrow(() -> new RegraNegocioRunTime(
-                                        "Egresso com ID " + novoDepoimento.getEgresso().getId() + " não encontrado."));
-                        depoimento.setEgresso(egresso);
-                    }
-
-                    depoimento.setTexto(novoDepoimento.getTexto());
-                    return depoimentoRepository.save(depoimento);
-                })
-                .orElseThrow(() -> new RegraNegocioRunTime("Depoimento com ID " + id + " não encontrado."));
-    }
-
-    // Verificar Depoimento
-
-    public Depoimento verificarDepoimento(Long id) {
-        return depoimentoRepository.findById(id)
-                .orElseThrow(() -> new RegraNegocioRunTime("Depoimento com ID " + id + " não encontrado."));
-    }
-
 }

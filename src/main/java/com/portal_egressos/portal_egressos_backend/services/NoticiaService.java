@@ -17,67 +17,67 @@ import jakarta.transaction.Transactional;
 public class NoticiaService {
 
     @Autowired
-    NoticiaRepository noticiaRepository;
+    NoticiaRepository noticiaRepositorio;
     
     private void verificarNoticia(Noticia noticia){
         if(noticia == null){
             throw new RegraNegocioRunTime("A notícia não pode ser nula.");
         }
         if(noticia.getTitulo() == null || noticia.getTitulo().isEmpty()){
-            throw new RegraNegocioRunTime("O título da notícia é obrigatório.");
+            throw new RegraNegocioRunTime("O título da notícia deve ser informado.");
         }
         if(noticia.getDescricao() == null || noticia.getDescricao().isEmpty()){
-            throw new RegraNegocioRunTime("A descrição da notícia é obrigatória.");
+            throw new RegraNegocioRunTime("A descrição da notícia deve ser informada.");
         }
         if(noticia.getDataPublicacao() == null){
-            throw new RegraNegocioRunTime("A data de publicação é obrigatória.");
+            throw new RegraNegocioRunTime("A data de publicação deve ser informada.");
         }
         if(noticia.getDataExtracao() == null){
-            throw new RegraNegocioRunTime("A data de extração é obrigatória.");
+            throw new RegraNegocioRunTime("A data de extração deve ser informada.");
         }
         if(noticia.getLinkNoticia() == null || noticia.getLinkNoticia().isEmpty()){
-            throw new RegraNegocioRunTime("O link da notícia é obrigatório.");
+            throw new RegraNegocioRunTime("O link da notícia deve ser informado.");
         }
         if(noticia.getStatus() == null){
-            throw new RegraNegocioRunTime("O status da notícia é obrigatório.");
+            throw new RegraNegocioRunTime("O status da notícia deve ser informado.");
         }
     }
     
     @Transactional
-    public Noticia salvar(Noticia noticia) {
+    public Noticia salvarNoticia(Noticia noticia) {
         verificarNoticia(noticia);
-        return noticiaRepository.save(noticia);
+        return noticiaRepositorio.save(noticia);
     }
 
-    public List<Noticia> listarTodas(){
-        return noticiaRepository.findAllByOrderByDataPublicacaoDesc();
+    public List<Noticia> listarNoticias(){
+        return noticiaRepositorio.findAllByOrderByDataPublicacaoDesc();
     }
 
-    public List<Noticia> listarTodasAprovadas() {
-        return noticiaRepository.findAllByStatusOrderByDataPublicacaoDesc(Status.APPROVED);
+    public List<Noticia> listarNoticiasAprovadas() {
+        return noticiaRepositorio.findAllByStatusOrderByDataPublicacaoDesc(Status.APPROVED);
     }
 
     public List<Noticia> listarNoticiasUltimos30Dias() {
         LocalDate dataLimite = LocalDate.now().minusDays(30);
-        return noticiaRepository.findByStatusAndDataPublicacaoAfterOrderByDataPublicacaoDesc(Status.APPROVED, dataLimite);
+        return noticiaRepositorio.findByStatusAndDataPublicacaoAfterOrderByDataPublicacaoDesc(Status.APPROVED, dataLimite);
     }
 
     @Transactional
     public Noticia atualizarStatusAprovada(Long id) {
-        Noticia noticia = buscarPorId(id);
+        Noticia noticia = buscarPorNoticiaId(id);
         noticia.setStatus(Status.APPROVED);     
-        return noticiaRepository.save(noticia);  
+        return noticiaRepositorio.save(noticia);  
     }
 
-    public Noticia buscarPorId(Long id) {
-        return noticiaRepository.findById(id)
+    public Noticia buscarPorNoticiaId(Long id) {
+        return noticiaRepositorio.findById(id)
                 .orElseThrow(() -> new RegraNegocioRunTime("Notícia não encontrada para o ID: " + id));
     }
 
     @Transactional
-    public void remover(Long id) {
-        Noticia noticia = buscarPorId(id);
-        noticiaRepository.delete(noticia);
+    public void removerNoticia(Long id) {
+        Noticia noticia = buscarPorNoticiaId(id);
+        noticiaRepositorio.delete(noticia);
     }
 
 }

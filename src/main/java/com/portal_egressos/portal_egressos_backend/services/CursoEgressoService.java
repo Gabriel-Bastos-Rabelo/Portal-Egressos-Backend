@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.repositories.CursoEgressoRepository;
 
@@ -17,7 +18,7 @@ public class CursoEgressoService {
     private CursoEgressoRepository cursoEgressoRepo;
 
     @Transactional 
-    public CursoEgresso salvar (CursoEgresso cursoEgresso){
+    public CursoEgresso salvar(CursoEgresso cursoEgresso){
         verificarCursoEgresso(cursoEgresso);
         return cursoEgressoRepo.save(cursoEgresso);
     }
@@ -30,30 +31,29 @@ public class CursoEgressoService {
     }
 
     @Transactional 
-    public void  remover (CursoEgresso cursoEgresso){
+    public void  remover(CursoEgresso cursoEgresso){
         verificarId(cursoEgresso);
         cursoEgressoRepo.delete(cursoEgresso);
     }
 
-    @Transactional 
     public Optional<CursoEgresso> buscarPorId(Long id){
         return cursoEgressoRepo.findById(id);
     }
 
     public void verificarId(CursoEgresso cursoEgresso){
         if((cursoEgresso == null) || (cursoEgresso.getId() == null) || (!cursoEgressoRepo.existsById(cursoEgresso.getId())))
-            throw new IllegalArgumentException("ID inválido!");
+            throw new RegraNegocioRunTime("ID inválido.");
     }
 
     public void verificarCursoEgresso ( CursoEgresso cursoEgresso){
         if (cursoEgresso == null)
-            throw new IllegalArgumentException("Curso informado é inválido!");
+            throw new IllegalArgumentException("Curso informado é inválido.");
         if ((cursoEgresso.getAnoInicio() == null) || (cursoEgresso.getAnoInicio() <= 0))
-            throw new IllegalArgumentException("Ano de início do curso deve ser informada!");
+            throw new IllegalArgumentException("Ano de início do curso deve ser informado.");
         if ((cursoEgresso.getAnoFim() == null) || (cursoEgresso.getAnoFim() <= 0))
-            throw new IllegalArgumentException("Ano de conclusão do curso deve ser informada!");
+            throw new IllegalArgumentException("Ano de conclusão do curso deve ser informado.");
         if (cursoEgresso.getAnoFim() < cursoEgresso.getAnoInicio()) 
-            throw new IllegalArgumentException("Ano de conclusão não pode ser anterior ao ano de início!");
+            throw new IllegalArgumentException("Ano de conclusão não pode ser anterior ao ano de início.");
             
     }
     

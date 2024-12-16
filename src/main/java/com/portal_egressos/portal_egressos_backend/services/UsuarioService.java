@@ -11,15 +11,15 @@ import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepositor
 public class UsuarioService implements UserDetailsService{
     
     @Autowired
-    UsuarioRepository usuarioRepository;
+    UsuarioRepository usuarioRepositorio;
 
 
     @Override
     public UserDetails loadUserByUsername(String login) {
-        UserDetails user = usuarioRepository.findByEmail(login);
+        UserDetails user = usuarioRepositorio.findByEmail(login);
 
         if (user == null) {
-            throw new RegraNegocioRunTime("Conta não encontrada");
+            throw new RegraNegocioRunTime("Conta não encontrada.");
         }
         
         return user; 

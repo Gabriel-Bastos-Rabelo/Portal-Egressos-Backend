@@ -15,64 +15,64 @@ import jakarta.transaction.Transactional;
 public class CargoService {
 
     @Autowired
-    CargoRepository cargoRepository;
+    CargoRepository cargoRepositorio;
 
     private void verificarCargo(Cargo cargo){
         if(cargo == null){
-            throw new RegraNegocioRunTime("O cargo não pode ser nulo.");
+            throw new RegraNegocioRunTime("Cargo inválido.");
         }
         if(cargo.getDescricao() == null || cargo.getDescricao().isEmpty()){
-            throw new RegraNegocioRunTime("A descrição do cargo é obrigatória.");
+            throw new RegraNegocioRunTime("A descrição do cargo deve ser informada.");
         }
         if(cargo.getLocal() == null || cargo.getLocal().isEmpty()){
-            throw new RegraNegocioRunTime("O local do cargo é obrigatório.");
+            throw new RegraNegocioRunTime("O local do cargo deve ser informado.");
         }
         if(cargo.getAnoInicio() == null){
-            throw new RegraNegocioRunTime("O ano de início do cargo é obrigatório.");
+            throw new RegraNegocioRunTime("O ano de início do cargo deve ser informado.");
         }
     }
 
     @Transactional
-    public Cargo salvar(Cargo cargo){
+    public Cargo salvarCargo(Cargo cargo){
         verificarCargo(cargo);
-        return cargoRepository.save(cargo);
+        return cargoRepositorio.save(cargo);
     }
 
     public Cargo buscarPorId(Long id){
-        return cargoRepository.findById(id)
+        return cargoRepositorio.findById(id)
                 .orElseThrow(() -> new RegraNegocioRunTime("Cargo não encontrado para o ID: " + id));
     }
 
-
-    public void remover(Long id){
+    @Transactional
+    public void removerCargo(Long id){
         Cargo cargo = buscarPorId(id);
-        cargoRepository.delete(cargo);
+        cargoRepositorio.delete(cargo);
     }
 
-    public List<Cargo> listarTodos() {
-        return cargoRepository.findAllByOrderByAnoInicioAsc();
+    public List<Cargo> listarCargos() {
+        return cargoRepositorio.findAllByOrderByAnoInicioAsc();
     }
 
 
-    public List<Cargo> listarPorEgressoId(Long egressoId) {
-        return cargoRepository.findByEgressoIdOrderByAnoInicioAsc(egressoId);
+    public List<Cargo> listarCargoPorEgressoId(Long egressoId) {
+        return cargoRepositorio.findByEgressoIdOrderByAnoInicioAsc(egressoId);
     }
 
     @Transactional
-    public Cargo atualizar(Long id, Cargo cargoAtualizado) {
+    public Cargo atualizarCargo(Long id, Cargo cargo) {
         Cargo cargoExistente = buscarPorId(id); 
 
-        if (cargoAtualizado.getDescricao() != null && !cargoAtualizado.getDescricao().isEmpty()) {
-            cargoExistente.setDescricao(cargoAtualizado.getDescricao());
+        if (cargo.getDescricao() != null && !cargo.getDescricao().isEmpty()) {
+            cargoExistente.setDescricao(cargo.getDescricao());
         }
-        if (cargoAtualizado.getLocal() != null && !cargoAtualizado.getLocal().isEmpty()) {
-            cargoExistente.setLocal(cargoAtualizado.getLocal());
+        if (cargo.getLocal() != null && !cargo.getLocal().isEmpty()) {
+            cargoExistente.setLocal(cargo.getLocal());
         }
-        if (cargoAtualizado.getAnoInicio() != null) {
-            cargoExistente.setAnoInicio(cargoAtualizado.getAnoInicio());
+        if (cargo.getAnoInicio() != null) {
+            cargoExistente.setAnoInicio(cargo.getAnoInicio());
         }
 
-        return cargoRepository.save(cargoExistente);
+        return cargoRepositorio.save(cargoExistente);
     }
 
 

@@ -34,11 +34,32 @@ public class EgressoService {
     public Egresso atualizarEgresso(Egresso egresso) {
         verificarEgresso(egresso);
         verificarEgressoId(egresso);
+
+        Egresso egressoExistente = egressoRepositorio.findById(egresso.getId()).get();
+
         if (egresso.getUsuario().getSenha() == null || egresso.getUsuario().getSenha().isEmpty()) {
-            Egresso egressoDb = egressoRepositorio.findById(egresso.getId()).get();
-            egresso.getUsuario().setSenha(egressoDb.getUsuario().getSenha());
+            egresso.getUsuario().setSenha(egressoExistente.getUsuario().getSenha());
         }
-        return egressoRepositorio.save(egresso);
+        if (egresso.getNome() != null && !egresso.getNome().isEmpty()){
+            egressoExistente.setNome(egresso.getNome());
+        }
+        if (egresso.getDescricao() != null && !egresso.getDescricao().isEmpty()){
+            egressoExistente.setDescricao(egresso.getDescricao());
+        }
+        if (egresso.getFoto() != null && !egresso.getFoto().isEmpty()){
+            egressoExistente.setFoto(egresso.getFoto());
+        }
+        if (egresso.getLinkedin() != null && !egresso.getLinkedin().isEmpty()){
+            egressoExistente.setLinkedin(egresso.getLinkedin());
+        }
+        if (egresso.getInstagram() != null && !egresso.getInstagram().isEmpty()){
+            egressoExistente.setInstagram(egresso.getInstagram());
+        }
+        if (egresso.getCurriculo() != null && !egresso.getCurriculo().isEmpty()){
+            egressoExistente.setCurriculo(egresso.getCurriculo());
+        }
+
+        return egressoRepositorio.save(egressoExistente);
     }
 
     @Transactional

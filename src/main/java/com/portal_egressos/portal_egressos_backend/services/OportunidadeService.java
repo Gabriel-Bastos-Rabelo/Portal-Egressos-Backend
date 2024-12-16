@@ -13,36 +13,56 @@ import java.util.Optional;
 public class OportunidadeService {
 
     @Autowired
-    private OportunidadeRepository oportunidadeRepository;
+    private OportunidadeRepository oportunidadeRepositorio;
 
     public Oportunidade salvarOportunidade(Oportunidade oportunidade) {
         validarCamposObrigatorios(oportunidade);
-        return oportunidadeRepository.save(oportunidade);
+        return oportunidadeRepositorio.save(oportunidade);
     }
 
     public Oportunidade atualizarOportunidade(Long id, Oportunidade oportunidadeAtualizada) {
-        Optional<Oportunidade> oportunidadeExistente = oportunidadeRepository.findById(id);
+        Optional<Oportunidade> oportunidadeExistente = oportunidadeRepositorio.findById(id);
+
         if (oportunidadeExistente.isPresent()) {
             Oportunidade oportunidade = oportunidadeExistente.get();
-            oportunidade.setTitulo(oportunidadeAtualizada.getTitulo());
-            oportunidade.setDescricao(oportunidadeAtualizada.getDescricao());
-            oportunidade.setLocal(oportunidadeAtualizada.getLocal());
-            oportunidade.setTipo(oportunidadeAtualizada.getTipo());
-            oportunidade.setDataPublicacao(oportunidadeAtualizada.getDataPublicacao());
-            oportunidade.setDataExpiracao(oportunidadeAtualizada.getDataExpiracao());
-            oportunidade.setSalario(oportunidadeAtualizada.getSalario());
-            oportunidade.setLink(oportunidadeAtualizada.getLink());
-            oportunidade.setStatus(oportunidadeAtualizada.getStatus());
-            return oportunidadeRepository.save(oportunidade);
+            if(!oportunidadeAtualizada.getTitulo().isEmpty()){
+                oportunidade.setTitulo(oportunidadeAtualizada.getTitulo());
+            }
+            if(!oportunidadeAtualizada.getDescricao().isEmpty()){
+                oportunidade.setDescricao(oportunidadeAtualizada.getDescricao());
+            }
+            if(!oportunidadeAtualizada.getLocal().isEmpty()){
+                oportunidade.setLocal(oportunidadeAtualizada.getLocal());
+            }
+            if(!oportunidadeAtualizada.getTipo().isEmpty()){
+                oportunidade.setTipo(oportunidadeAtualizada.getTipo());
+            }
+            if(oportunidadeAtualizada.getDataPublicacao() != null){
+                oportunidade.setDataPublicacao(oportunidadeAtualizada.getDataPublicacao());
+            }
+            if(oportunidadeAtualizada.getDataExpiracao() != null){
+                oportunidade.setDataExpiracao(oportunidadeAtualizada.getDataExpiracao());
+            }
+            if(oportunidadeAtualizada.getSalario() != null){
+                oportunidade.setSalario(oportunidadeAtualizada.getSalario());
+            }
+            if(!oportunidadeAtualizada.getLink().isEmpty()){
+                oportunidade.setLink(oportunidadeAtualizada.getLink());
+            }
+            if(!oportunidadeAtualizada.getStatus().isEmpty()){
+                oportunidade.setStatus(oportunidadeAtualizada.getStatus());
+            }
+
+            return oportunidadeRepositorio.save(oportunidade);
         } else {
-            throw new RegraNegocioRunTime("Oportunidade não encontrada");
+            throw new RegraNegocioRunTime("Oportunidade não encontrada.");
         }
     }
 
     // Remover Oportunidade
     public void removerOportunidade(Long id) {
-        if (oportunidadeRepository.existsById(id)) {
-            oportunidadeRepository.deleteById(id);
+        if (oportunidadeRepositorio.existsById(id)) {
+            oportunidadeRepositorio.deleteById(id);
         } else {
             throw new RegraNegocioRunTime("Oportunidade não encontrada com o ID: " + id);
         }
@@ -50,13 +70,13 @@ public class OportunidadeService {
 
     // Verificar Oportunidade por ID
     public Oportunidade verificarOportunidade(Long id) {
-        return oportunidadeRepository.findById(id)
+        return oportunidadeRepositorio.findById(id)
                 .orElseThrow(() -> new RegraNegocioRunTime("Oportunidade não encontrada com o ID: " + id));
     }
 
     // Verificar Oportunidade por título
     public List<Oportunidade> buscarPorTitulo(String titulo) {
-        List<Oportunidade> oportunidades = oportunidadeRepository.findByTituloContaining(titulo);
+        List<Oportunidade> oportunidades = oportunidadeRepositorio.findByTituloContaining(titulo);
         if (oportunidades.isEmpty()) {
             throw new RegraNegocioRunTime("Nenhuma oportunidade encontrada com o título: " + titulo);
         }
@@ -65,7 +85,7 @@ public class OportunidadeService {
 
     // Verificar Oportunidade por Data
     public List<Oportunidade> listarOportunidadesOrdenadasPorData() {
-        List<Oportunidade> oportunidades = oportunidadeRepository.findAllByOrderByDataPublicacaoDesc();
+        List<Oportunidade> oportunidades = oportunidadeRepositorio.findAllByOrderByDataPublicacaoDesc();
         if (oportunidades.isEmpty()) {
             throw new RegraNegocioRunTime("Nenhuma oportunidade encontrada.");
         }
@@ -74,7 +94,7 @@ public class OportunidadeService {
 
     // Método para buscar oportunidades pelo nome do egresso
     public List<Oportunidade> buscarPorNomeEgresso(String nome) {
-        List<Oportunidade> oportunidades = oportunidadeRepository.findByEgressoNomeContaining(nome);
+        List<Oportunidade> oportunidades = oportunidadeRepositorio.findByEgressoNomeContaining(nome);
         if (oportunidades.isEmpty()) {
             throw new RegraNegocioRunTime("Nenhuma oportunidade encontrada para o egresso com o nome: " + nome);
         }
@@ -84,25 +104,25 @@ public class OportunidadeService {
     // Método validar os campos obrigatórios
     private void validarCamposObrigatorios(Oportunidade oportunidade) {
         if (oportunidade.getEgresso() == null) {
-            throw new RegraNegocioRunTime("O campo 'egresso' é obrigatório.");
+            throw new RegraNegocioRunTime("O egresso deve ser informado.");
         }
         if (oportunidade.getTitulo() == null || oportunidade.getTitulo().isEmpty()) {
-            throw new RegraNegocioRunTime("O campo 'titulo' é obrigatório.");
+            throw new RegraNegocioRunTime("O titulo deve ser informado.");
         }
         if (oportunidade.getDescricao() == null || oportunidade.getDescricao().isEmpty()) {
-            throw new RegraNegocioRunTime("O campo 'descricao' é obrigatório.");
+            throw new RegraNegocioRunTime("A descricao deve ser informado.");
         }
         if (oportunidade.getLocal() == null || oportunidade.getLocal().isEmpty()) {
-            throw new RegraNegocioRunTime("O campo 'local' é obrigatório.");
+            throw new RegraNegocioRunTime("O local deve ser informado.");
         }
         if (oportunidade.getTipo() == null || oportunidade.getTipo().isEmpty()) {
-            throw new RegraNegocioRunTime("O campo 'tipo' é obrigatório.");
+            throw new RegraNegocioRunTime("O tipo deve ser informado.");
         }
         if (oportunidade.getDataPublicacao() == null) {
-            throw new RegraNegocioRunTime("O campo 'dataPublicacao' é obrigatório.");
+            throw new RegraNegocioRunTime("A data da publicacao deve ser informado.");
         }
         if (oportunidade.getStatus() == null || oportunidade.getStatus().isEmpty()) {
-            throw new RegraNegocioRunTime("O campo 'status' é obrigatório.");
+            throw new RegraNegocioRunTime("O status deve ser informado.");
         }
     }
 

@@ -22,11 +22,23 @@ public class CoordenadorService {
     public Coordenador atualizarCoordenador(Coordenador coordenador) {
         verificarCoordenador(coordenador);
         verificarCoordenadorId(coordenador);
+        
+        Coordenador coordenadorExistente = coordenadorRepositorio.findById(coordenador.getId()).get();
+
         if (coordenador.getUsuario().getSenha() == null || coordenador.getUsuario().getSenha().isEmpty()) {
-            Coordenador coordenadorDb = coordenadorRepositorio.findById(coordenador.getId()).get();
-            coordenador.getUsuario().setSenha(coordenadorDb.getUsuario().getSenha());
+            coordenador.getUsuario().setSenha(coordenadorExistente.getUsuario().getSenha());
         }
-        return coordenadorRepositorio.save(coordenador);
+        if (coordenador.getNome() != null && !coordenador.getNome().isEmpty()){
+            coordenadorExistente.setNome(coordenador.getNome());
+        }
+        if (coordenador.getDataCriacao() != null){
+            coordenadorExistente.setDataCriacao(coordenador.getDataCriacao());
+        }
+        if (coordenador.getAtivo() != null){
+            coordenadorExistente.setAtivo(coordenador.getAtivo());
+        }
+        
+        return coordenadorRepositorio.save(coordenadorExistente);
     }
 
     @Transactional

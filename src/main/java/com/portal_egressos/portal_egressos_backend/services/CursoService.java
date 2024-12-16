@@ -15,60 +15,60 @@ import jakarta.transaction.Transactional;
 @Service
 public class CursoService {
     @Autowired
-    private CursoRepository cursoRepo;
+    private CursoRepository cursoRepositorio;
 
     @Transactional
-    public Curso salvar(Curso curso){
+    public Curso salvarCurso(Curso curso){
         verificarCurso(curso);
-        return cursoRepo.save(curso);
+        return cursoRepositorio.save(curso);
     }
 
     @Transactional
-    public Curso atualizar(Curso curso){
+    public Curso atualizarCurso(Curso curso){
         verificarCurso(curso);
-        verificarId(curso);
-                return cursoRepo.save(curso);
+        verificarCursoId(curso);
+                return cursoRepositorio.save(curso);
     }
 
     @Transactional 
-    public void remover(Curso curso){
-        verificarId(curso);
-        cursoRepo.delete(curso);
+    public void removerCurso(Curso curso){
+        verificarCursoId(curso);
+        cursoRepositorio.delete(curso);
     }
     
     public List<Curso> listarCursos() {
-        return cursoRepo.findAll();
+        return cursoRepositorio.findAll();
     }
 
     public Optional<Curso> buscarPorId(Long id){
-        return cursoRepo.findById(id);
+        return cursoRepositorio.findById(id);
     }
 
     public List<Egresso> listarEgressosPorCurso(Curso curso){
-        verificarId(curso);
-        return cursoRepo.obterEgressosPorCurso(curso.getId());
+        verificarCursoId(curso);
+        return cursoRepositorio.obterEgressosPorCurso(curso.getId());
         
     }
 
     public int listarQuantidadeDeEgressosPorCurso (Curso curso){
-        verificarId(curso);
-        return cursoRepo.obterQuantidadeDeEgressosPorCurso(curso.getId());
+        verificarCursoId(curso);
+        return cursoRepositorio.obterQuantidadeDeEgressosPorCurso(curso.getId());
     }
     
-    private void verificarId(Curso curso) {
-        if ((curso == null) || (curso.getId() == null) || (!cursoRepo.existsById(curso.getId())))
+    private void verificarCursoId(Curso curso) {
+        if ((curso == null) || (curso.getId() == null) || (!cursoRepositorio.existsById(curso.getId())))
             throw new IllegalArgumentException ("ID de curso inválido!");
     }
 
     private void verificarCurso(Curso curso){
         if (curso == null)
-            throw new IllegalArgumentException("Um curso válido deve ser infromado!");
+            throw new IllegalArgumentException("Um curso válido deve ser infromado.");
         
         if((curso.getNome() == null ) || (curso.getNome().equals("")))
-            throw new IllegalArgumentException("Nome do curso deve ser informado!");
+            throw new IllegalArgumentException("Nome do curso deve ser informado.");
         
         if((curso.getNivel() == null ) || (curso.getNivel().toString().equals("")))
-            throw new IllegalArgumentException("Nível do curso deve ser informado!");
+            throw new IllegalArgumentException("Nível do curso deve ser informado.");
         
     }
 }
