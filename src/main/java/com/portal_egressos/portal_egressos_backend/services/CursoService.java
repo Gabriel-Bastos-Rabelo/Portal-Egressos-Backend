@@ -25,9 +25,17 @@ public class CursoService {
 
     @Transactional
     public Curso atualizarCurso(Curso curso){
-        verificarCurso(curso);
         verificarCursoId(curso);
-                return cursoRepositorio.save(curso);
+
+        Curso cursoExistente = cursoRepositorio.findById(curso.getId()).get();
+
+        if(curso.getNome() != null && !curso.getNome().isEmpty()){
+            cursoExistente.setNome(curso.getNome());
+        }
+        if(curso.getNivel() != null && !curso.getNivel().isEmpty()){
+            cursoExistente.setNivel(curso.getNivel());
+        }
+        return cursoRepositorio.save(cursoExistente);
     }
 
     @Transactional 
