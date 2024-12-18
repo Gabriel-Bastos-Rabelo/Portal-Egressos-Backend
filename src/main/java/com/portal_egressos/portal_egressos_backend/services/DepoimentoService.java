@@ -1,16 +1,17 @@
 package com.portal_egressos.portal_egressos_backend.services;
 
-import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
-import com.portal_egressos.portal_egressos_backend.models.Depoimento;
-import com.portal_egressos.portal_egressos_backend.models.Egresso;
-import com.portal_egressos.portal_egressos_backend.repositories.DepoimentoRepository;
-import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
-
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
+import com.portal_egressos.portal_egressos_backend.models.Depoimento;
+import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.repositories.DepoimentoRepository;
+import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 
 @Service
 public class DepoimentoService {
@@ -21,31 +22,37 @@ public class DepoimentoService {
     @Autowired
     private EgressoRepository egressoRepositorio;
 
+    @Transactional
     public Depoimento salvarDepoimento(Depoimento depoimento) {
         verificarDepoimento(depoimento);
         return depoimentoRepositorio.save(depoimento);
     }
 
+    @Transactional
     public Depoimento atualizarDepoimento(Depoimento depoimentoAtualizado) {
-        Optional<Depoimento> depoimentoExistente = depoimentoRepositorio.findById(depoimentoAtualizado.getId());
+        verificarDepoimentoId(depoimentoAtualizado);
+        Depoimento depoimentoExistente = depoimentoRepositorio.findById(depoimentoAtualizado.getId()).get();
 
-        if (depoimentoExistente.isPresent()) {
-            Depoimento depoimento = depoimentoExistente.get();
-            if(!depoimentoAtualizado.getTexto().isEmpty()){
-                depoimento.setTexto(depoimentoAtualizado.getTexto());
-            }
-            if(depoimentoAtualizado.getData() != null){
-                depoimento.setData(depoimentoAtualizado.getData());
-            }
-            return depoimentoRepositorio.save(depoimento);
-        }else {
-            throw new RegraNegocioRunTime("Oportunidade não encontrada.");
+        if(!depoimentoAtualizado.getTexto().isEmpty()){
+            depoimentoExistente.setTexto(depoimentoAtualizado.getTexto());
+        }
+        if(depoimentoAtualizado.getData() != null){
+            depoimentoExistente.setData(depoimentoAtualizado.getData());
+        }
+        return depoimentoRepositorio.save(depoimentoExistente);
+    }
+
+    public void verificarDepoimentoId(Depoimento depoimento) {
+        if ((depoimento == null) || (depoimento.getId() == null)
+                || !(depoimentoRepositorio.existsById(depoimento.getId()))) {
+            throw new RegraNegocioRunTime("ID de depoimento é inválido.");
         }
     }
 
-    public Depoimento verificarDepoimentoId(Depoimento depoimento) {
-        return depoimentoRepositorio.findById(depoimento.getId())
-                .orElseThrow(() -> new RegraNegocioRunTime("Depoimento com ID " + depoimento.getId() + " não encontrado."));
+    @Transactional
+    public void removerDepoimento(Depoimento depoimento){
+        verificarDepoimentoId(depoimento);
+        depoimentoRepositorio.delete(depoimento);
     }
 
     public List<Depoimento> listarDepoimentos(){

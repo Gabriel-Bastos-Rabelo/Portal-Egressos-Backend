@@ -63,10 +63,18 @@ public class NoticiaService {
     }
 
     @Transactional
-    public Noticia atualizarStatusAprovada(Long id) {
-        Noticia noticia = buscarPorNoticiaId(id);
+    public Noticia atualizarStatusAprovada(Noticia noticiaAtualizada) {
+        verificarNoticia(noticiaAtualizada);
+        Noticia noticia = buscarPorNoticiaId(noticiaAtualizada.getId());
         noticia.setStatus(Status.APPROVED);     
         return noticiaRepositorio.save(noticia);  
+    }
+
+    public void verificarNoticiaId(Noticia noticia) {
+        if ((noticia == null) || (noticia.getId() == null)
+                || !(noticiaRepositorio.existsById(noticia.getId()))) {
+            throw new RegraNegocioRunTime("ID da noticia é inválido.");
+        }
     }
 
     public Noticia buscarPorNoticiaId(Long id) {
@@ -75,8 +83,8 @@ public class NoticiaService {
     }
 
     @Transactional
-    public void removerNoticia(Long id) {
-        Noticia noticia = buscarPorNoticiaId(id);
+    public void removerNoticia(Noticia noticia) {
+        verificarNoticiaId(noticia);
         noticiaRepositorio.delete(noticia);
     }
 

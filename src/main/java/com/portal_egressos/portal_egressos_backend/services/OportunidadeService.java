@@ -1,13 +1,15 @@
 package com.portal_egressos.portal_egressos_backend.services;
 
-import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
-import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
-import com.portal_egressos.portal_egressos_backend.repositories.OportunidadeRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
+import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
+import com.portal_egressos.portal_egressos_backend.repositories.OportunidadeRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class OportunidadeService {
@@ -15,63 +17,61 @@ public class OportunidadeService {
     @Autowired
     private OportunidadeRepository oportunidadeRepositorio;
 
+    @Transactional
     public Oportunidade salvarOportunidade(Oportunidade oportunidade) {
         validarCamposObrigatorios(oportunidade);
         return oportunidadeRepositorio.save(oportunidade);
     }
 
-    public Oportunidade atualizarOportunidade(Long id, Oportunidade oportunidadeAtualizada) {
-        Optional<Oportunidade> oportunidadeExistente = oportunidadeRepositorio.findById(id);
+    @Transactional
+    public Oportunidade atualizarOportunidade(Oportunidade oportunidadeAtualizada) {
+        verificarOportunidadeId(oportunidadeAtualizada);
+        Oportunidade oportunidadeExistente = oportunidadeRepositorio.findById(oportunidadeAtualizada.getId()).get();
 
-        if (oportunidadeExistente.isPresent()) {
-            Oportunidade oportunidade = oportunidadeExistente.get();
-            if(!oportunidadeAtualizada.getTitulo().isEmpty()){
-                oportunidade.setTitulo(oportunidadeAtualizada.getTitulo());
-            }
-            if(!oportunidadeAtualizada.getDescricao().isEmpty()){
-                oportunidade.setDescricao(oportunidadeAtualizada.getDescricao());
-            }
-            if(!oportunidadeAtualizada.getLocal().isEmpty()){
-                oportunidade.setLocal(oportunidadeAtualizada.getLocal());
-            }
-            if(!oportunidadeAtualizada.getTipo().isEmpty()){
-                oportunidade.setTipo(oportunidadeAtualizada.getTipo());
-            }
-            if(oportunidadeAtualizada.getDataPublicacao() != null){
-                oportunidade.setDataPublicacao(oportunidadeAtualizada.getDataPublicacao());
-            }
-            if(oportunidadeAtualizada.getDataExpiracao() != null){
-                oportunidade.setDataExpiracao(oportunidadeAtualizada.getDataExpiracao());
-            }
-            if(oportunidadeAtualizada.getSalario() != null){
-                oportunidade.setSalario(oportunidadeAtualizada.getSalario());
-            }
-            if(!oportunidadeAtualizada.getLink().isEmpty()){
-                oportunidade.setLink(oportunidadeAtualizada.getLink());
-            }
-            if(!oportunidadeAtualizada.getStatus().isEmpty()){
-                oportunidade.setStatus(oportunidadeAtualizada.getStatus());
-            }
-
-            return oportunidadeRepositorio.save(oportunidade);
-        } else {
-            throw new RegraNegocioRunTime("Oportunidade não encontrada.");
+        if(!oportunidadeAtualizada.getTitulo().isEmpty()){
+            oportunidadeExistente.setTitulo(oportunidadeAtualizada.getTitulo());
         }
+        if(!oportunidadeAtualizada.getDescricao().isEmpty()){
+            oportunidadeExistente.setDescricao(oportunidadeAtualizada.getDescricao());
+        }
+        if(!oportunidadeAtualizada.getLocal().isEmpty()){
+            oportunidadeExistente.setLocal(oportunidadeAtualizada.getLocal());
+        }
+        if(!oportunidadeAtualizada.getTipo().isEmpty()){
+            oportunidadeExistente.setTipo(oportunidadeAtualizada.getTipo());
+        }
+        if(oportunidadeAtualizada.getDataPublicacao() != null){
+            oportunidadeExistente.setDataPublicacao(oportunidadeAtualizada.getDataPublicacao());
+        }
+        if(oportunidadeAtualizada.getDataExpiracao() != null){
+            oportunidadeExistente.setDataExpiracao(oportunidadeAtualizada.getDataExpiracao());
+        }
+        if(oportunidadeAtualizada.getSalario() != null){
+            oportunidadeExistente.setSalario(oportunidadeAtualizada.getSalario());
+        }
+        if(!oportunidadeAtualizada.getLink().isEmpty()){
+            oportunidadeExistente.setLink(oportunidadeAtualizada.getLink());
+        }
+        if(!oportunidadeAtualizada.getStatus().isEmpty()){
+            oportunidadeExistente.setStatus(oportunidadeAtualizada.getStatus());
+        }
+
+        return oportunidadeRepositorio.save(oportunidadeExistente);
     }
 
     // Remover Oportunidade
-    public void removerOportunidade(Long id) {
-        if (oportunidadeRepositorio.existsById(id)) {
-            oportunidadeRepositorio.deleteById(id);
-        } else {
-            throw new RegraNegocioRunTime("Oportunidade não encontrada com o ID: " + id);
-        }
+    @Transactional
+    public void removerOportunidade(Oportunidade oportunidade) {
+        verificarOportunidadeId(oportunidade);
+        oportunidadeRepositorio.delete(oportunidade);
     }
 
     // Verificar Oportunidade por ID
-    public Oportunidade verificarOportunidade(Long id) {
-        return oportunidadeRepositorio.findById(id)
-                .orElseThrow(() -> new RegraNegocioRunTime("Oportunidade não encontrada com o ID: " + id));
+    public void verificarOportunidadeId(Oportunidade oportunidade) {
+        if ((oportunidade == null) || (oportunidade.getId() == null)
+                || !(oportunidadeRepositorio.existsById(oportunidade.getId()))) {
+            throw new RegraNegocioRunTime("ID de oportunidade é inválido.");
+        }
     }
 
     // Verificar Oportunidade por título

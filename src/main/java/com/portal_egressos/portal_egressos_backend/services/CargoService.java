@@ -16,7 +16,6 @@ public class CargoService {
 
     @Autowired
     CargoRepository cargoRepositorio;
-
     private void verificarCargo(Cargo cargo){
         if(cargo == null){
             throw new RegraNegocioRunTime("Cargo inválido.");
@@ -38,14 +37,16 @@ public class CargoService {
         return cargoRepositorio.save(cargo);
     }
 
-    public Cargo buscarPorId(Long id){
-        return cargoRepositorio.findById(id)
-                .orElseThrow(() -> new RegraNegocioRunTime("Cargo não encontrado para o ID: " + id));
+    public void verificarCargoId(Cargo cargo){
+        if ((cargo == null) || (cargo.getId() == null)
+                || !(cargoRepositorio.existsById(cargo.getId()))) {
+            throw new RegraNegocioRunTime("ID do cargo é inválido.");
+        }
     }
 
     @Transactional
-    public void removerCargo(Long id){
-        Cargo cargo = buscarPorId(id);
+    public void removerCargo(Cargo cargo){
+        verificarCargoId(cargo);
         cargoRepositorio.delete(cargo);
     }
 
@@ -59,8 +60,9 @@ public class CargoService {
     }
 
     @Transactional
-    public Cargo atualizarCargo(Long id, Cargo cargo) {
-        Cargo cargoExistente = buscarPorId(id); 
+    public Cargo atualizarCargo(Cargo cargo) {
+        verificarCargoId(cargo);
+        Cargo cargoExistente = cargoRepositorio.findById(cargo.getId()).get(); 
 
         if (cargo.getDescricao() != null && !cargo.getDescricao().isEmpty()) {
             cargoExistente.setDescricao(cargo.getDescricao());

@@ -1,32 +1,43 @@
 package com.portal_egressos.portal_egressos_backend.services;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
-import com.portal_egressos.portal_egressos_backend.repositories.CoordenadorRepository;
 import com.portal_egressos.portal_egressos_backend.models.Coordenador;
-
-import org.springframework.transaction.annotation.Transactional;
+import com.portal_egressos.portal_egressos_backend.repositories.CoordenadorRepository;
 
 public class CoordenadorService {
 
-    CoordenadorRepository coordenadorRepositorio;
+    @Autowired
+    private CoordenadorRepository coordenadorRepositorio;
 
     @Transactional
     public Coordenador salvarCoordenador(Coordenador coordenador) {
         verificarCoordenador(coordenador);
+        Optional<Coordenador> coordenadorExistente = coordenadorRepositorio.findByUsuarioEmail(coordenador.getUsuario().getEmail());
+        if (coordenadorExistente.isPresent()) {
+            throw new RegraNegocioRunTime("Já existe um coordenador cadastrado com este email.");
+        }
+
+        String senhaEncriptada = new BCryptPasswordEncoder().encode(coordenador.getUsuario().getSenha());
+
+        coordenador.getUsuario().setSenha(senhaEncriptada);
         return coordenadorRepositorio.save(coordenador);
     }
 
     @Transactional
     public Coordenador atualizarCoordenador(Coordenador coordenador) {
-        verificarCoordenador(coordenador);
         verificarCoordenadorId(coordenador);
         
         Coordenador coordenadorExistente = coordenadorRepositorio.findById(coordenador.getId()).get();
-
-        if (coordenador.getUsuario().getSenha() == null || coordenador.getUsuario().getSenha().isEmpty()) {
-            coordenador.getUsuario().setSenha(coordenadorExistente.getUsuario().getSenha());
+        if(coordenador.getUsuario().getSenha() != null && !coordenador.getUsuario().getSenha().isEmpty()){
+            String senhaEncriptada = new BCryptPasswordEncoder().encode(coordenador.getUsuario().getSenha());
+            coordenadorExistente.getUsuario().setSenha(senhaEncriptada);
         }
         if (coordenador.getNome() != null && !coordenador.getNome().isEmpty()){
             coordenadorExistente.setNome(coordenador.getNome());
@@ -56,6 +67,9 @@ public class CoordenadorService {
         }
         if (coordenador.getUsuario().getEmail() == null) {
             throw new RegraNegocioRunTime("Email do coordenador deve ser informado.");
+        }
+        if(coordenador.getUsuario().getSenha() == null){
+            throw new RegraNegocioRunTime("Senha do coordenador deve ser informado.");
         }
 
     }

@@ -11,5 +11,6 @@ import com.portal_egressos.portal_egressos_backend.models.Coordenador;
 public interface CoordenadorRepository extends JpaRepository<Coordenador, Long>{
         
     Optional<Coordenador> findByNome(String nome);
+    Optional<Coordenador> findByUsuarioEmail(String nome);
 
 }
