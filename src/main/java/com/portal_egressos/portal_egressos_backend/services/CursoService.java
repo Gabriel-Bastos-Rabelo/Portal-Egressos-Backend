@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.repositories.CursoRepository;
@@ -65,18 +66,18 @@ public class CursoService {
     
     private void verificarCursoId(Curso curso) {
         if ((curso == null) || (curso.getId() == null) || (!cursoRepositorio.existsById(curso.getId())))
-            throw new IllegalArgumentException ("ID de curso inválido!");
+            throw new RegraNegocioRunTime("ID de curso inválido!");
     }
 
     private void verificarCurso(Curso curso){
         if (curso == null)
-            throw new IllegalArgumentException("Um curso válido deve ser infromado.");
+            throw new RegraNegocioRunTime("Um curso válido deve ser infromado.");
         
         if((curso.getNome() == null ) || (curso.getNome().equals("")))
-            throw new IllegalArgumentException("Nome do curso deve ser informado.");
+            throw new RegraNegocioRunTime("Nome do curso deve ser informado.");
         
         if((curso.getNivel() == null ) || (curso.getNivel().toString().equals("")))
-            throw new IllegalArgumentException("Nível do curso deve ser informado.");
+            throw new RegraNegocioRunTime("Nível do curso deve ser informado.");
         
     }
 }

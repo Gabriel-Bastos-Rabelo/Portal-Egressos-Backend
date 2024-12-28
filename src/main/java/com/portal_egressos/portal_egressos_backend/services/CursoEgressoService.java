@@ -47,13 +47,13 @@ public class CursoEgressoService {
 
     public void verificarCursoEgresso ( CursoEgresso cursoEgresso){
         if (cursoEgresso == null)
-            throw new IllegalArgumentException("Curso informado é inválido.");
+            throw new RegraNegocioRunTime("Curso informado é inválido.");
         if ((cursoEgresso.getAnoInicio() == null) || (cursoEgresso.getAnoInicio() <= 0))
-            throw new IllegalArgumentException("Ano de início do curso deve ser informado.");
+            throw new RegraNegocioRunTime("Ano de início do curso deve ser informado.");
         if ((cursoEgresso.getAnoFim() == null) || (cursoEgresso.getAnoFim() <= 0))
-            throw new IllegalArgumentException("Ano de conclusão do curso deve ser informado.");
+            throw new RegraNegocioRunTime("Ano de conclusão do curso deve ser informado.");
         if (cursoEgresso.getAnoFim() < cursoEgresso.getAnoInicio()) 
-            throw new IllegalArgumentException("Ano de conclusão não pode ser anterior ao ano de início.");
+            throw new RegraNegocioRunTime("Ano de conclusão não pode ser anterior ao ano de início.");
             
     }
     
