@@ -8,28 +8,31 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Service;
 
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Coordenador;
 import com.portal_egressos.portal_egressos_backend.repositories.CoordenadorRepository;
 
+@Service
 public class CoordenadorService {
 
     @Autowired
     private CoordenadorRepository coordenadorRepositorio;
 
-    private static final String EMAIL_PATTERN = 
-        "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
-        + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+            + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     private static final Pattern pattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
 
     @Transactional
     public Coordenador salvarCoordenador(Coordenador coordenador) {
         verificarCoordenador(coordenador);
-        Optional<Coordenador> coordenadorExistente = coordenadorRepositorio.findByUsuarioEmail(coordenador.getUsuario().getEmail());
+        Optional<Coordenador> coordenadorExistente = coordenadorRepositorio
+                .findByUsuarioEmail(coordenador.getUsuario().getEmail());
         if (coordenadorExistente.isPresent()) {
-            throw new RegraNegocioRunTime(String.format("Coordenador com email '%s' já existe.", coordenador.getUsuario().getEmail()));
+            throw new RegraNegocioRunTime(
+                    String.format("Coordenador com email '%s' já existe.", coordenador.getUsuario().getEmail()));
         }
 
         String senhaEncriptada = new BCryptPasswordEncoder().encode(coordenador.getUsuario().getSenha());
@@ -41,22 +44,22 @@ public class CoordenadorService {
     @Transactional
     public Coordenador atualizarCoordenador(Coordenador coordenador) {
         verificarCoordenadorId(coordenador);
-        
+
         Coordenador coordenadorExistente = coordenadorRepositorio.findById(coordenador.getId()).get();
-        if(coordenador.getUsuario().getSenha() != null && !coordenador.getUsuario().getSenha().isEmpty()){
+        if (coordenador.getUsuario().getSenha() != null && !coordenador.getUsuario().getSenha().isEmpty()) {
             String senhaEncriptada = new BCryptPasswordEncoder().encode(coordenador.getUsuario().getSenha());
             coordenadorExistente.getUsuario().setSenha(senhaEncriptada);
         }
-        if (coordenador.getNome() != null && !coordenador.getNome().isEmpty()){
+        if (coordenador.getNome() != null && !coordenador.getNome().isEmpty()) {
             coordenadorExistente.setNome(coordenador.getNome());
         }
-        if (coordenador.getDataCriacao() != null){
+        if (coordenador.getDataCriacao() != null) {
             coordenadorExistente.setDataCriacao(coordenador.getDataCriacao());
         }
-        if (coordenador.getAtivo() != null){
+        if (coordenador.getAtivo() != null) {
             coordenadorExistente.setAtivo(coordenador.getAtivo());
         }
-        
+
         return coordenadorRepositorio.save(coordenadorExistente);
     }
 
@@ -79,24 +82,24 @@ public class CoordenadorService {
         if (coordenador.getUsuario().getEmail() == null) {
             throw new RegraNegocioRunTime("Email do coordenador deve ser informado.");
         }
-        if(!validarEmail(coordenador.getUsuario().getEmail())){
+        if (!validarEmail(coordenador.getUsuario().getEmail())) {
             throw new RegraNegocioRunTime("Email informado é inválido");
         }
-        if(coordenador.getUsuario().getSenha() == null){
+        if (coordenador.getUsuario().getSenha() == null) {
             throw new RegraNegocioRunTime("Senha do coordenador deve ser informado.");
         }
-        if(!validarSenha(coordenador.getUsuario().getSenha())){
+        if (!validarSenha(coordenador.getUsuario().getSenha())) {
             throw new RegraNegocioRunTime("Senha informada deve ter no mínimo 8 caracteres");
         }
 
     }
 
-    private boolean validarEmail(String email){
+    private boolean validarEmail(String email) {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
 
-    private boolean validarSenha(String senha){
+    private boolean validarSenha(String senha) {
         return senha != null && senha.length() >= 8;
     }
 
