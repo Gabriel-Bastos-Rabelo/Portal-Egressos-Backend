@@ -19,6 +19,9 @@ public class OportunidadeService {
 
     @Transactional
     public Oportunidade salvarOportunidade(Oportunidade oportunidade) {
+        if (oportunidade == null) {
+            throw new RegraNegocioRunTime("A oportunidade não pode ser nula.");
+        }
         validarCamposObrigatorios(oportunidade);
         return oportunidadeRepositorio.save(oportunidade);
     }

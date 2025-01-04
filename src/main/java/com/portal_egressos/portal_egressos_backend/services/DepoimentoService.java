@@ -25,6 +25,10 @@ public class DepoimentoService {
     @Transactional
     public Depoimento salvarDepoimento(Depoimento depoimento) {
         verificarDepoimento(depoimento);
+        List<Depoimento> depoimentosExistentes = depoimentoRepositorio.findByEgresso(depoimento.getEgresso());
+        if (!depoimentosExistentes.isEmpty()) {
+            throw new RegraNegocioRunTime("O egresso já possui um depoimento cadastrado.");
+        }
         return depoimentoRepositorio.save(depoimento);
     }
 
