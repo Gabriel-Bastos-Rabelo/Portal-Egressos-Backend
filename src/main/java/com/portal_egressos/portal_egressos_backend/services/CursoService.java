@@ -80,4 +80,9 @@ public class CursoService {
             throw new RegraNegocioRunTime("Nível do curso deve ser informado.");
         
     }
+
+    public Curso save(Curso curso) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'save'");
+    }
 }
