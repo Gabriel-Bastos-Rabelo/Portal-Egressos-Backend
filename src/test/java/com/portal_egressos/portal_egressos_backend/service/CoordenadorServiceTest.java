@@ -82,7 +82,7 @@ public class CoordenadorServiceTest {
 
         Curso cursoSalvo = cursoRepositorio.save(curso);
 
-        Coordenador coordenador = Coordenador.builder().nome("teste")
+        Coordenador coordenador = Coordenador.builder()
                 .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
                 .ativo(true)
                 .curso(cursoSalvo)
@@ -108,7 +108,7 @@ public class CoordenadorServiceTest {
 
         Curso cursoSalvo = cursoRepositorio.save(curso);
 
-        Coordenador coordenador = Coordenador.builder()
+        Coordenador coordenador = Coordenador.builder().nome("teste")
                 .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
                 .ativo(true)
                 .curso(cursoSalvo)
@@ -134,7 +134,7 @@ public class CoordenadorServiceTest {
 
         Curso cursoSalvo = cursoRepositorio.save(curso);
 
-        Coordenador coordenador = Coordenador.builder()
+        Coordenador coordenador = Coordenador.builder().nome("teste")
                 .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
                 .ativo(true)
                 .curso(cursoSalvo)
@@ -174,7 +174,6 @@ public class CoordenadorServiceTest {
         coordenadorSalvo.setDataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0));
         coordenadorSalvo.setAtivo(false);
         coordenadorSalvo.getUsuario().setEmail("teste2@teste.com");
-        coordenadorSalvo.getUsuario().setSenha("87654321");
         Coordenador coordRetornado = coordService.salvarCoordenador(coordenadorSalvo);
 
         // rollback
@@ -186,6 +185,7 @@ public class CoordenadorServiceTest {
         Assertions.assertEquals(coordenadorSalvo.getNome(), coordRetornado.getNome());
         Assertions.assertEquals(coordenadorSalvo.getDataCriacao(), coordRetornado.getDataCriacao());
         Assertions.assertEquals(coordenadorSalvo.getAtivo(), coordRetornado.getAtivo());
+        Assertions.assertEquals(coordenadorSalvo.getUsuario().getEmail(), coordRetornado.getUsuario().getEmail());
     }
 
     @Test
