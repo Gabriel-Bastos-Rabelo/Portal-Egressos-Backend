@@ -32,6 +32,85 @@ public class CursoEgressoTest {
     @Autowired 
     CursoEgressoService cursoEgressoService;
 
+    @Autowired
+    CursoEgressoRepository cursoEgressoRepo;
+
+    @Test
+    @Transactional
+    public void deveSalvarCursoEgresso() {
+        // Cenário: Criar cursos, egressos e associá-los
+        List<Curso> cursos = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            cursos.add(Curso.builder()
+                            .nome("Curso teste" + (i + 1))
+                            .nivel("Nível teste" + (i + 1))
+                            .build());
+        }
+
+        List<Curso> retornoCurso = new ArrayList<>();
+        for (Curso curso : cursos) {
+            retornoCurso.add(cursoService.salvarCurso(curso));
+        }
+
+        List<Usuario> usuarios = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            usuarios.add(Usuario.builder()
+                                .email("teste" + i + "@teste.com")
+                                .senha("senha123" + i)
+                                .role(UserRole.EGRESSO)
+                                .build());
+        }
+
+        List<Egresso> egressos = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            egressos.add(Egresso.builder()
+                                .nome("Egresso Teste" + (i + 1))
+                                .descricao("lorem ipsum lore")
+                                .foto("urlteste")
+                                .linkedin("https://www.linkedin.com/in/usuario" + (i + 1))
+                                .instagram("https://www.instagram.com/usuario" + (i + 1))
+                                .curriculo("lorem ipsum lore")
+                                .usuario(usuarios.get(i))
+                                .build());
+        }
+
+        List<Egresso> retornoEgresso = new ArrayList<>();
+        for (Egresso egresso : egressos) {
+            retornoEgresso.add(egressoService.salvarEgresso(egresso));
+        }
+
+        // Ação
+        List<CursoEgresso> cursoEgressos = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            CursoEgresso cursoEgresso = CursoEgresso.builder()
+                                                    .egresso(retornoEgresso.get(i))
+                                                    .curso(retornoCurso.get(i))
+                                                    .anoInicio(2020)
+                                                    .anoFim(2023)
+                                                    .build();
+
+            cursoEgressos.add(cursoEgressoService.salvar(cursoEgresso));
+        }
+
+        // Rollback
+        for (CursoEgresso cursoEgresso : cursoEgressos) {
+            cursoEgressoService.remover(cursoEgresso);
+        }
+        for (Curso curso : retornoCurso) {
+            cursoService.removerCurso(curso);
+        }
+        for (Egresso egresso : retornoEgresso) {
+            egressoService.removerEgresso(egresso);
+        }
+
+        // Verificação
+        for (CursoEgresso cursoEgresso : cursoEgressos) {
+            Assertions.assertThat(cursoEgresso.getId()).isNotNull();  
+            Assertions.assertThat(cursoEgresso.getAnoInicio()).isEqualTo(2020); 
+            Assertions.assertThat(cursoEgresso.getAnoFim()).isEqualTo(2023); 
+        }
+    }
+
     @Test
     @Transactional
     public void deveAtualizarCursoEgresso() {
@@ -115,6 +194,71 @@ public class CursoEgressoTest {
             Assertions.assertThat(cursoEgresso.getAnoFim()).isEqualTo(2024);
         }
 
+    }
+
+    @Test
+    @Transactional
+    public void deveRemoverCursoEgresso() {
+        // Cenário
+        List<Curso> cursos = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            cursos.add(Curso.builder()
+                            .nome("Curso teste" + (i + 1))
+                            .nivel("Nível teste" + (i + 1))
+                            .build());
+        }
+
+        List<Curso> retornoCurso = new ArrayList<>();
+        for (Curso curso : cursos) {
+            retornoCurso.add(cursoService.salvarCurso(curso));
+        }
+
+        List<Usuario> usuarios = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            usuarios.add(Usuario.builder()
+                                .email("teste" + i + "@teste.com")
+                                .senha("senha123" + i)
+                                .role(UserRole.EGRESSO)
+                                .build());
+        }
+
+        List<Egresso> egressos = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            egressos.add(Egresso.builder()
+                                .nome("Egresso Teste" + (i + 1))
+                                .descricao("lorem ipsum lore")
+                                .foto("urlteste")
+                                .linkedin("https://www.linkedin.com/in/usuario" + (i + 1))
+                                .instagram("https://www.instagram.com/usuario" + (i + 1))
+                                .curriculo("lorem ipsum lore")
+                                .usuario(usuarios.get(i))
+                                .build());
+        }
+
+        List<Egresso> retornoEgresso = new ArrayList<>();
+        for (Egresso egresso : egressos) {
+            retornoEgresso.add(egressoService.salvarEgresso(egresso));
+        }
+
+        List<CursoEgresso> cursoEgressos = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            CursoEgresso cursoEgresso = CursoEgresso.builder()
+                                                    .egresso(retornoEgresso.get(i))
+                                                    .curso(retornoCurso.get(i))
+                                                    .anoInicio(2020)
+                                                    .anoFim(2023)
+                                                    .build();
+            cursoEgressos.add(cursoEgressoService.salvar(cursoEgresso));
+        }
+
+        //ação
+        CursoEgresso cursoEgressoARemover = cursoEgressos.get(0);
+        cursoEgressoService.remover(cursoEgressoARemover);
+
+        // Verificação
+        List<CursoEgresso> cursoEgressoRemovido = cursoEgressoRepo.findAll();
+        Assertions.assertThat(cursoEgressoRemovido).doesNotContain(cursoEgressoARemover); 
+        
     }
 
 }
