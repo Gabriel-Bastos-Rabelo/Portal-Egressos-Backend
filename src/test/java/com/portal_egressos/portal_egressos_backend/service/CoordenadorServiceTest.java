@@ -14,7 +14,6 @@ import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Coordenador;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
-import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.CoordenadorRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.CursoRepository;
