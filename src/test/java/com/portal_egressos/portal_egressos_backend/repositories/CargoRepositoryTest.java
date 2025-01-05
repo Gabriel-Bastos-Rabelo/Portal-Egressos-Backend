@@ -13,6 +13,8 @@ import com.portal_egressos.portal_egressos_backend.models.Cargo;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
+import jakarta.transaction.Transactional;
+
 @SpringBootTest
 @ActiveProfiles("test")
 public class CargoRepositoryTest {
@@ -24,6 +26,7 @@ public class CargoRepositoryTest {
         EgressoRepository egressoRepositorio;
 
         @Test
+        @Transactional
         public void deveVerificarSalvarCargo() {
                 // cenário
                 Usuario usuario = Usuario.builder()
@@ -71,6 +74,7 @@ public class CargoRepositoryTest {
         }
 
         @Test
+        @Transactional
         public void deveVerificarLeituraCargo() {
                 // cenário
                 Usuario usuario = Usuario.builder()
@@ -124,6 +128,7 @@ public class CargoRepositoryTest {
         }
 
         @Test
+        @Transactional
         public void deveVerificarAtualizarCargo() {
                 // cenário
                 Usuario usuario = Usuario.builder()
@@ -176,6 +181,7 @@ public class CargoRepositoryTest {
         }
 
         @Test
+        @Transactional
         public void deveVerificarRemoverCargo() {
                 // cenário
                 Usuario usuario = Usuario.builder()

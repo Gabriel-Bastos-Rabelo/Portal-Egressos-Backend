@@ -10,6 +10,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import com.portal_egressos.portal_egressos_backend.models.Curso;
 
+import jakarta.transaction.Transactional;
+
 @SpringBootTest
 @ActiveProfiles("test")
 public class CursoRepositoryTest {
@@ -18,6 +20,7 @@ public class CursoRepositoryTest {
     CursoRepository cursoRepositorio;
 
     @Test
+    @Transactional
     public void deveVerificarSalvarCurso() {
         // cenário
         Curso curso = Curso.builder()
@@ -39,6 +42,7 @@ public class CursoRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void deveAtualizarCurso() {
         // cenário
         Curso curso = Curso.builder()
@@ -65,6 +69,7 @@ public class CursoRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void deveRemoverCurso() {
         // cenário
         Curso curso = Curso.builder()
@@ -86,6 +91,7 @@ public class CursoRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void deveObterCursoPorNivel() {
         // cenário
         Curso curso = Curso.builder()

@@ -5,6 +5,8 @@ import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
+import jakarta.transaction.Transactional;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ public class OportunidadeRepositorioTest {
         EgressoRepository egressoRepositorio;
 
         @Test
+        @Transactional
         public void deveVerificarSalvarOportunidade() {
                 // Construção
                 Usuario usuario = Usuario.builder()
@@ -83,6 +86,7 @@ public class OportunidadeRepositorioTest {
         }
 
         @Test
+        @Transactional
         public void deveAtualizarOportunidade() {
                 // Construção
                 Usuario usuario = Usuario.builder()
@@ -142,6 +146,7 @@ public class OportunidadeRepositorioTest {
         }
 
         @Test
+        @Transactional
         public void deveListarUsuariosEOportunidades() {
                 // Construção
                 List<Usuario> usuarios = new ArrayList<>();
@@ -199,6 +204,7 @@ public class OportunidadeRepositorioTest {
         }
 
         @Test
+        @Transactional
         public void deveRemoverOportunidade() {
                 // Construção
                 Usuario usuario = Usuario.builder()
@@ -245,6 +251,7 @@ public class OportunidadeRepositorioTest {
         }
 
         @Test
+        @Transactional
         public void deveBuscarPorTituloContendoPalavraChave() {
                 // Construção
                 Usuario usuario = Usuario.builder()
@@ -294,6 +301,7 @@ public class OportunidadeRepositorioTest {
         }
 
         @Test
+        @Transactional
         public void deveListarOportunidadesOrdenadasPorDataPublicacao() {
                 // Construção
                 Usuario usuario = Usuario.builder()

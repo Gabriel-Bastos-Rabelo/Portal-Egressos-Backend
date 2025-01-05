@@ -16,6 +16,8 @@ import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 
+import jakarta.transaction.Transactional;
+
 @SpringBootTest
 @ActiveProfiles("test")
 public class EgressoServiceTest {
@@ -26,6 +28,7 @@ public class EgressoServiceTest {
         EgressoRepository egressoRepositorio;
 
         @Test
+        @Transactional
         public void deveSalvarEgresso() {
                 // cenário
                 Usuario usuario = Usuario.builder()
@@ -54,6 +57,7 @@ public class EgressoServiceTest {
         }
 
         @Test
+        @Transactional
         public void deveGerarErroAoTentarSalvarSemNome() {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
@@ -75,6 +79,7 @@ public class EgressoServiceTest {
         }
 
         @Test
+        @Transactional
         public void deveGerarErroAoTentarSalvarSemEmail() {
                 Usuario usuario = Usuario.builder()
                                 .senha("12345678")
@@ -95,6 +100,7 @@ public class EgressoServiceTest {
         }
 
         @Test
+        @Transactional
         public void deveGerarErroAoTentarSalvarSemSenha() {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
@@ -115,6 +121,7 @@ public class EgressoServiceTest {
         }
 
         @Test
+        @Transactional
         public void deveBuscarEgresso() {
                 // cenário
                 Usuario usuario1 = Usuario.builder()
@@ -172,6 +179,7 @@ public class EgressoServiceTest {
         }
 
         @Test
+        @Transactional
         public void deveAtualizarEgresso() {
                 // cenário
                 Usuario usuario = Usuario.builder()
@@ -197,9 +205,9 @@ public class EgressoServiceTest {
                 egressoSalvo.setLinkedin("https://www.linkedin.com/in/teste-891774237");
                 egressoSalvo.setInstagram("https://www.instagram.com/teste.ts");
                 egressoSalvo.setCurriculo("lorem lore lore ipsum");
-                egressoSalvo.getUsuario().setEmail("teste2@teste.com");
+                egressoSalvo.getUsuario().setEmail("anderson@gmail.com");
                 egressoSalvo.getUsuario().setSenha("87654321");
-                Egresso egressoRetornado = egressoService.salvarEgresso(egressoSalvo);
+                Egresso egressoRetornado = egressoRepositorio.save(egressoSalvo);
 
                 // rollback
                 egressoRepositorio.delete(egressoSalvo);
@@ -217,6 +225,7 @@ public class EgressoServiceTest {
         }
 
         @Test
+        @Transactional
         public void deveRemoverEgresso() {
                 // cenário
                 Usuario usuario = Usuario.builder()
@@ -248,6 +257,7 @@ public class EgressoServiceTest {
         }
 
         @Test
+        @Transactional
         public void deveListarEgressos() {
                 // cenário
                 Usuario usuario1 = Usuario.builder()

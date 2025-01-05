@@ -17,6 +17,7 @@ import com.portal_egressos.portal_egressos_backend.repositories.CargoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.services.CargoService;
 
+import jakarta.transaction.Transactional;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -31,53 +32,55 @@ public class CargoServiceTest {
     @Autowired
     EgressoRepository egressoRepositorio;
 
-    
     @Test
-    public void deveSalvarCargo(){
+    @Transactional
+    public void deveSalvarCargo() {
         Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .role(UserRole.EGRESSO)
-                                .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .role(UserRole.EGRESSO)
+                .build();
 
         Egresso egresso = Egresso.builder()
-                        .nome("Gabriel Bastos")
-                        .descricao("estudante de ciencia da computacao")
-                        .foto("url foto")
-                        .linkedin("url linkedin")
-                        .instagram("url instagram")
-                        .curriculo("curriculo")
-                        .usuario(usuario)
-                        .build();
+                .nome("Gabriel Bastos")
+                .descricao("estudante de ciencia da computacao")
+                .foto("url foto")
+                .linkedin("url linkedin")
+                .instagram("url instagram")
+                .curriculo("curriculo")
+                .usuario(usuario)
+                .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
         Cargo cargo = Cargo.builder()
-                        .egresso(egressoSalvo)
-                        .descricao("Desenvolvedor de Software")
-                        .local("Empresa X")
-                        .anoInicio(2020)
-                        .anoFim(2023)
-                        .build();
+                .egresso(egressoSalvo)
+                .descricao("Desenvolvedor de Software")
+                .local("Empresa X")
+                .anoInicio(2020)
+                .anoFim(2023)
+                .build();
 
         Cargo cargoSalvo = cargoService.salvarCargo(cargo);
 
-        //verificação
+        // verificação
         Assertions.assertNotNull(cargoSalvo);
         Assertions.assertNotNull(cargoSalvo.getId());
 
-        //rollback
+        // rollback
         cargoRepositorio.delete(cargoSalvo);
         egressoRepositorio.delete(egressoSalvo);
-        
+
     }
 
     @Test
-    public void deveGerarErroAoTentarSalvarCargoNulo(){
+    @Transactional
+    public void deveGerarErroAoTentarSalvarCargoNulo() {
         Assertions.assertThrows(RegraNegocioRunTime.class, () -> cargoService.salvarCargo(null), "Cargo inválido.");
     }
 
     @Test
+    @Transactional
     public void deveGerarErroAoTentarSalvarCargoSemDescricao() {
         Cargo cargo = Cargo.builder()
                 .local("Empresa X")
@@ -85,10 +88,12 @@ public class CargoServiceTest {
                 .anoFim(2023)
                 .build();
 
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> cargoService.salvarCargo(cargo), "A descrição do cargo deve ser informada.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> cargoService.salvarCargo(cargo),
+                "A descrição do cargo deve ser informada.");
     }
 
     @Test
+    @Transactional
     public void deveGerarErroAoTentarSalvarCargoSemLocal() {
         Cargo cargo = Cargo.builder()
                 .descricao("Desenvolvedor de Software")
@@ -96,10 +101,12 @@ public class CargoServiceTest {
                 .anoFim(2023)
                 .build();
 
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> cargoService.salvarCargo(cargo), "O local do cargo deve ser informado.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> cargoService.salvarCargo(cargo),
+                "O local do cargo deve ser informado.");
     }
-    
+
     @Test
+    @Transactional
     public void deveGerarErroAoTentarSalvarCargoSemAnoInicio() {
         Cargo cargo = Cargo.builder()
                 .descricao("Desenvolvedor de Software")
@@ -107,10 +114,12 @@ public class CargoServiceTest {
                 .anoFim(2023)
                 .build();
 
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> cargoService.salvarCargo(cargo), "O ano de início do cargo deve ser informado.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> cargoService.salvarCargo(cargo),
+                "O ano de início do cargo deve ser informado.");
     }
 
     @Test
+    @Transactional
     public void deveObterListaCargosPorIdEgresso() {
         Usuario usuario = Usuario.builder()
                 .email("teste2@teste.com")
@@ -145,12 +154,14 @@ public class CargoServiceTest {
     }
 
     @Test
+    @Transactional
     public void deveObterListaCargosVaziaQuandoNaoHouverEgressoComId() {
         List<Cargo> cargos = cargoService.listarCargoPorEgressoId(999L);
         Assertions.assertTrue(cargos.isEmpty());
     }
 
     @Test
+    @Transactional
     public void deveAtualizarCargo() {
         Usuario usuario = Usuario.builder()
                 .email("teste3@teste.com")
@@ -187,11 +198,13 @@ public class CargoServiceTest {
     }
 
     @Test
+    @Transactional
     public void deveGerarErroAoTentarAtualizarCargoNulo() {
         Assertions.assertThrows(RegraNegocioRunTime.class, () -> cargoService.atualizarCargo(null), "Cargo inválido.");
     }
 
     @Test
+    @Transactional
     public void deveRemoverCargo() {
         Usuario usuario = Usuario.builder()
                 .email("teste4@teste.com")
@@ -224,10 +237,10 @@ public class CargoServiceTest {
     }
 
     @Test
+    @Transactional
     public void deveGerarErroAoTentarRemoverCargoNulo() {
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> cargoService.removerCargo(null), "ID do cargo é inválido.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> cargoService.removerCargo(null),
+                "ID do cargo é inválido.");
     }
-
-
 
 }

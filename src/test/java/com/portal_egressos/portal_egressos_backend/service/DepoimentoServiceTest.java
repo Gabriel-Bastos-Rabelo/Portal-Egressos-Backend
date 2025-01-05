@@ -21,235 +21,242 @@ import com.portal_egressos.portal_egressos_backend.repositories.DepoimentoReposi
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.services.DepoimentoService;
 
+import jakarta.transaction.Transactional;
+
 @SpringBootTest
 @ActiveProfiles("test")
 public class DepoimentoServiceTest {
 
-    @Autowired
-    DepoimentoService depoimentoService;
+        @Autowired
+        DepoimentoService depoimentoService;
 
-    @Autowired
-    DepoimentoRepository depoimentoRepositorio;
+        @Autowired
+        DepoimentoRepository depoimentoRepositorio;
 
-    @Autowired
-    EgressoRepository egressoRepositorio;
+        @Autowired
+        EgressoRepository egressoRepositorio;
 
-    @Test
-    public void deveSalvarDepoimento() {
-         // Cenário
-         Usuario usuario = Usuario.builder()
-         .email("teste@teste.com")
-         .senha("123456")
-         .role(UserRole.EGRESSO)
-         .build();
+        @Test
+        @Transactional
+        public void deveSalvarDepoimento() {
+                // Cenário
+                Usuario usuario = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("123456")
+                                .role(UserRole.EGRESSO)
+                                .build();
 
-        Egresso egresso = Egresso.builder()
-                .nome("Egresso")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
+                Egresso egresso = Egresso.builder()
+                                .nome("Egresso")
+                                .descricao("estudante de ciencia da computacao")
+                                .usuario(usuario)
+                                .build();
 
-        Egresso egressoSalvo = egressoRepositorio.save(egresso);
-        
-        Depoimento depoimento = Depoimento.builder()
-                    .egresso(egressoSalvo)
-                    .texto("Depoimento Teste.")
-                    .data(LocalDate.now())
-                    .build();
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
-        //Ação
-        Depoimento depoimentoSalvo = depoimentoService.salvarDepoimento(depoimento);
+                Depoimento depoimento = Depoimento.builder()
+                                .egresso(egressoSalvo)
+                                .texto("Depoimento Teste.")
+                                .data(LocalDate.now())
+                                .build();
 
-        // Verificação
-        Assertions.assertNotNull(depoimentoSalvo);
-        Assertions.assertNotNull(depoimentoSalvo.getId());
+                // Ação
+                Depoimento depoimentoSalvo = depoimentoService.salvarDepoimento(depoimento);
 
-        // Rollback
-        depoimentoRepositorio.delete(depoimentoSalvo);
-        egressoRepositorio.delete(egressoSalvo);
-    }
+                // Verificação
+                Assertions.assertNotNull(depoimentoSalvo);
+                Assertions.assertNotNull(depoimentoSalvo.getId());
 
-    @Test
-    public void deveGerarErroAoSalvarSemTexto() {
-         // Cenário
-         Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("123456")
-                .role(UserRole.EGRESSO)
-                .build();
-
-        Egresso egresso = Egresso.builder()
-                .nome("Egresso")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
-
-        Egresso egressoSalvo = egressoRepositorio.save(egresso);
-        
-        Depoimento depoimento = Depoimento.builder()
-                    .egresso(egressoSalvo)
-                    .data(LocalDate.now())
-                    .build();
-
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> depoimentoService.salvarDepoimento(depoimento),
-        "O texto do depoimento deve ser infomado.");
-    }
-    @Test
-    public void deveAtualizarDepoimento() {
-        // Cenário
-        Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("123456")
-                .role(UserRole.EGRESSO)
-                .build();
-
-        Egresso egresso = Egresso.builder()
-                .nome("Egresso")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
-
-        Egresso egressoSalvo = egressoRepositorio.save(egresso);
-
-        Depoimento depoimento = Depoimento.builder()
-                .texto("Depoimento Teste.")
-                .data(LocalDate.now())
-                .egresso(egressoSalvo)
-                .build();
-
-        Depoimento depoimentoSalvo = depoimentoService.salvarDepoimento(depoimento);
-
-        // Ação
-        depoimentoSalvo.setTexto("Depoimento atualizado.");
-        Depoimento depoimentoAtualizado = depoimentoService.atualizarDepoimento(depoimentoSalvo);
-
-        // Rollback
-        depoimentoRepositorio.delete(depoimentoAtualizado);
-        egressoRepositorio.delete(egressoSalvo);
-
-        // Verificação
-        Assertions.assertNotNull(depoimentoSalvo);
-        Assertions.assertEquals(depoimentoSalvo.getTexto(), depoimentoAtualizado.getTexto());
-    }
-
-    @Test
-    public void deveRemoverDepoimento() {
-        // Cenário
-        Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("123456")
-                .role(UserRole.EGRESSO)
-                .build();
-
-        Egresso egresso = Egresso.builder()
-                .nome("Egresso")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
-
-        Egresso egressoSalvo = egressoRepositorio.save(egresso);
-
-        Depoimento depoimento = Depoimento.builder()
-                .texto("Depoimento Teste.")
-                .data(LocalDate.now())
-                .egresso(egressoSalvo)
-                .build();
-
-        Depoimento depoimentoSalvo = depoimentoService.salvarDepoimento(depoimento);
- 
-        // Ação
-        depoimentoService.removerDepoimento(depoimentoSalvo);
-        Optional<Depoimento> depoimentoRemovido = depoimentoRepositorio.findById(depoimentoSalvo.getId());
-
-        // Verificação
-        Assertions.assertFalse(depoimentoRemovido.isPresent());
-
-        // Rollback
-        egressoRepositorio.delete(egressoSalvo);
-    }
-
-    @Test
-    public void deveListarDepoimentosPorDataDesc() {
-        // Cenário
-        List<Egresso> egressos = new ArrayList<>();
-        List<Depoimento> depoimentosSalvos = new ArrayList<>();
-
-        for (int i = 1; i <= 3; i++) {
-            Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("12345")
-                .role(UserRole.EGRESSO)
-                .build();
-
-            Egresso egresso = Egresso.builder()
-                    .nome("Egresso")
-                    .descricao("estudante de ciencia da computacao")
-                    .usuario(usuario)
-                    .build();
-            egressos.add(egressoRepositorio.save(egresso));
-
-            Depoimento depoimento = Depoimento.builder()
-                    .texto("Depoimento do Egresso " + i + ".")
-                    .data(LocalDate.now())
-                    .egresso(egressos.get(i - 1))
-                    .build();
-
-            depoimentosSalvos.add(depoimentoRepositorio.save(depoimento));
+                // Rollback
+                depoimentoRepositorio.delete(depoimentoSalvo);
+                egressoRepositorio.delete(egressoSalvo);
         }
 
-        // Ação
-        List<Depoimento> depoimentos = depoimentoRepositorio.findAllByOrderByDataDesc();
+        @Test
+        @Transactional
+        public void deveGerarErroAoSalvarSemTexto() {
+                // Cenário
+                Usuario usuario = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("123456")
+                                .role(UserRole.EGRESSO)
+                                .build();
 
-        // Rollback
-        depoimentosSalvos.forEach(depoimentoRepositorio::delete);
-        egressos.forEach(egressoRepositorio::delete);
+                Egresso egresso = Egresso.builder()
+                                .nome("Egresso")
+                                .descricao("estudante de ciencia da computacao")
+                                .usuario(usuario)
+                                .build();
 
-        // Verificação
-        Assertions.assertNotNull(depoimentos);
-        Assertions.assertEquals(3, depoimentos.size());
-    }
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
+                Depoimento depoimento = Depoimento.builder()
+                                .egresso(egressoSalvo)
+                                .data(LocalDate.now())
+                                .build();
 
-    @Test
-    public void deveGerarErroAoSalvarSegundoDepoimentoParaMesmoEgresso() {
-        // Cenário
-        Usuario usuario = Usuario.builder()
-        .email("teste@teste.com")
-        .senha("123456")
-        .role(UserRole.EGRESSO)
-        .build();
+                Assertions.assertThrows(RegraNegocioRunTime.class, () -> depoimentoService.salvarDepoimento(depoimento),
+                                "O texto do depoimento deve ser infomado.");
+        }
 
-        Egresso egresso = Egresso.builder()
-        .nome("Egresso")
-        .descricao("estudante de ciencia da computacao")
-        .usuario(usuario)
-        .build();
+        @Test
+        @Transactional
+        public void deveAtualizarDepoimento() {
+                // Cenário
+                Usuario usuario = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("123456")
+                                .role(UserRole.EGRESSO)
+                                .build();
 
-        Egresso egressoSalvo = egressoRepositorio.save(egresso);
+                Egresso egresso = Egresso.builder()
+                                .nome("Egresso")
+                                .descricao("estudante de ciencia da computacao")
+                                .usuario(usuario)
+                                .build();
 
-        Depoimento primeiroDepoimento = Depoimento.builder()
-                .texto("Primeiro depoimento.")
-                .data(LocalDate.now())
-                .egresso(egressoSalvo)
-                .build();
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
-        Depoimento segundoDepoimento = Depoimento.builder()
-                .texto("Segundo depoimento.")
-                .data(LocalDate.now())
-                .egresso(egressoSalvo)
-                .build();
+                Depoimento depoimento = Depoimento.builder()
+                                .texto("Depoimento Teste.")
+                                .data(LocalDate.now())
+                                .egresso(egressoSalvo)
+                                .build();
 
-        // Ação
-        depoimentoService.salvarDepoimento(primeiroDepoimento);
+                Depoimento depoimentoSalvo = depoimentoService.salvarDepoimento(depoimento);
 
-        // Verificação
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> {
-            depoimentoService.salvarDepoimento(segundoDepoimento);
-        }, "O egresso já possui um depoimento.");
+                // Ação
+                depoimentoSalvo.setTexto("Depoimento atualizado.");
+                Depoimento depoimentoAtualizado = depoimentoService.atualizarDepoimento(depoimentoSalvo);
 
-        // Rollback
-        depoimentoRepositorio.delete(primeiroDepoimento);
-        egressoRepositorio.delete(egressoSalvo);
-    }
+                // Rollback
+                depoimentoRepositorio.delete(depoimentoAtualizado);
+                egressoRepositorio.delete(egressoSalvo);
+
+                // Verificação
+                Assertions.assertNotNull(depoimentoSalvo);
+                Assertions.assertEquals(depoimentoSalvo.getTexto(), depoimentoAtualizado.getTexto());
+        }
+
+        @Test
+        @Transactional
+        public void deveRemoverDepoimento() {
+                // Cenário
+                Usuario usuario = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("123456")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Egresso egresso = Egresso.builder()
+                                .nome("Egresso")
+                                .descricao("estudante de ciencia da computacao")
+                                .usuario(usuario)
+                                .build();
+
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
+
+                Depoimento depoimento = Depoimento.builder()
+                                .texto("Depoimento Teste.")
+                                .data(LocalDate.now())
+                                .egresso(egressoSalvo)
+                                .build();
+
+                Depoimento depoimentoSalvo = depoimentoService.salvarDepoimento(depoimento);
+
+                // Ação
+                depoimentoService.removerDepoimento(depoimentoSalvo);
+                Optional<Depoimento> depoimentoRemovido = depoimentoRepositorio.findById(depoimentoSalvo.getId());
+
+                // Verificação
+                Assertions.assertFalse(depoimentoRemovido.isPresent());
+
+                // Rollback
+                egressoRepositorio.delete(egressoSalvo);
+        }
+
+        @Test
+        @Transactional
+        public void deveListarDepoimentosPorDataDesc() {
+                // Cenário
+                List<Egresso> egressos = new ArrayList<>();
+                List<Depoimento> depoimentosSalvos = new ArrayList<>();
+
+                for (int i = 1; i <= 3; i++) {
+                        Usuario usuario = Usuario.builder()
+                                        .email("teste@teste.com")
+                                        .senha("12345")
+                                        .role(UserRole.EGRESSO)
+                                        .build();
+
+                        Egresso egresso = Egresso.builder()
+                                        .nome("Egresso")
+                                        .descricao("estudante de ciencia da computacao")
+                                        .usuario(usuario)
+                                        .build();
+                        egressos.add(egressoRepositorio.save(egresso));
+
+                        Depoimento depoimento = Depoimento.builder()
+                                        .texto("Depoimento do Egresso " + i + ".")
+                                        .data(LocalDate.now())
+                                        .egresso(egressos.get(i - 1))
+                                        .build();
+
+                        depoimentosSalvos.add(depoimentoRepositorio.save(depoimento));
+                }
+
+                // Ação
+                List<Depoimento> depoimentos = depoimentoRepositorio.findAllByOrderByDataDesc();
+
+                // Rollback
+                depoimentosSalvos.forEach(depoimentoRepositorio::delete);
+                egressos.forEach(egressoRepositorio::delete);
+
+                // Verificação
+                Assertions.assertNotNull(depoimentos);
+                Assertions.assertEquals(3, depoimentos.size());
+        }
+
+        @Test
+        @Transactional
+        public void deveGerarErroAoSalvarSegundoDepoimentoParaMesmoEgresso() {
+                // Cenário
+                Usuario usuario = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("123456")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Egresso egresso = Egresso.builder()
+                                .nome("Egresso")
+                                .descricao("estudante de ciencia da computacao")
+                                .usuario(usuario)
+                                .build();
+
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
+
+                Depoimento primeiroDepoimento = Depoimento.builder()
+                                .texto("Primeiro depoimento.")
+                                .data(LocalDate.now())
+                                .egresso(egressoSalvo)
+                                .build();
+
+                Depoimento segundoDepoimento = Depoimento.builder()
+                                .texto("Segundo depoimento.")
+                                .data(LocalDate.now())
+                                .egresso(egressoSalvo)
+                                .build();
+
+                // Ação
+                depoimentoService.salvarDepoimento(primeiroDepoimento);
+
+                // Verificação
+                Assertions.assertThrows(RegraNegocioRunTime.class, () -> {
+                        depoimentoService.salvarDepoimento(segundoDepoimento);
+                }, "O egresso já possui um depoimento.");
+
+                // Rollback
+                depoimentoRepositorio.delete(primeiroDepoimento);
+                egressoRepositorio.delete(egressoSalvo);
+        }
 }
-

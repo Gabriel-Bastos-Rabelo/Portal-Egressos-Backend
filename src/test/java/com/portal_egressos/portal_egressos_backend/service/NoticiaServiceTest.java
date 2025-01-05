@@ -19,10 +19,12 @@ import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepositor
 import com.portal_egressos.portal_egressos_backend.repositories.NoticiaRepository;
 import com.portal_egressos.portal_egressos_backend.services.NoticiaService;
 
+import jakarta.transaction.Transactional;
+
 @SpringBootTest
 @ActiveProfiles("test")
 public class NoticiaServiceTest {
-    
+
     @Autowired
     NoticiaRepository noticiaRepositorio;
 
@@ -33,51 +35,54 @@ public class NoticiaServiceTest {
     EgressoRepository egressoRepositorio;
 
     @Test
-    public void deveSalvarNoticia(){
+    @Transactional
+    public void deveSalvarNoticia() {
         Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .role(UserRole.EGRESSO)
-                                .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .role(UserRole.EGRESSO)
+                .build();
 
         Egresso egresso = Egresso.builder()
-                        .nome("Gabriel Bastos")
-                        .descricao("estudante de ciencia da computacao")
-                        .usuario(usuario)
-                        .build();
+                .nome("Gabriel Bastos")
+                .descricao("estudante de ciencia da computacao")
+                .usuario(usuario)
+                .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
         Noticia noticia = Noticia.builder()
-                        .egresso(egressoSalvo)
-                        .titulo("um titulo tql")
-                        .descricao("descricao massa")
-                        .dataPublicacao(LocalDate.of(2024, 12, 10))
-                        .dataExtracao(LocalDate.of(2024, 12, 10))
-                        .linkNoticia("link da noticia")
-                        .imagemCapa("url imagem capa")
-                        .status(Status.NOT_APPROVED)
-                        .build();
+                .egresso(egressoSalvo)
+                .titulo("um titulo tql")
+                .descricao("descricao massa")
+                .dataPublicacao(LocalDate.of(2024, 12, 10))
+                .dataExtracao(LocalDate.of(2024, 12, 10))
+                .linkNoticia("link da noticia")
+                .imagemCapa("url imagem capa")
+                .status(Status.NOT_APPROVED)
+                .build();
 
-        //ação
+        // ação
         Noticia noticiaSalva = noticiaService.salvarNoticia(noticia);
         Assertions.assertNotNull(noticiaSalva);
         Assertions.assertNotNull(noticiaSalva.getId());
 
-        //rollback
+        // rollback
         noticiaRepositorio.delete(noticiaSalva);
         egressoRepositorio.delete(egressoSalvo);
-        
 
     }
 
     @Test
-    public void deveGerarErroAoTentarSalvarNoticiaNula(){
+    @Transactional
+    public void deveGerarErroAoTentarSalvarNoticiaNula() {
 
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(null), "A notícia não pode ser nula.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(null),
+                "A notícia não pode ser nula.");
     }
 
     @Test
+    @Transactional
     public void deveGerarErroAoTentarSalvarNoticiaSemTitulo() {
         Noticia noticia = Noticia.builder()
                 .descricao("Descricao da noticia")
@@ -87,11 +92,12 @@ public class NoticiaServiceTest {
                 .status(Status.NOT_APPROVED)
                 .build();
 
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia), "O título da notícia deve ser informado.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
+                "O título da notícia deve ser informado.");
     }
 
-
     @Test
+    @Transactional
     public void deveGerarErroAoTentarSalvarNoticiaSemDescricao() {
         Noticia noticia = Noticia.builder()
                 .titulo("Titulo da noticia")
@@ -101,10 +107,12 @@ public class NoticiaServiceTest {
                 .status(Status.NOT_APPROVED)
                 .build();
 
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia), "A descrição da notícia deve ser informada.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
+                "A descrição da notícia deve ser informada.");
     }
 
     @Test
+    @Transactional
     public void deveGerarErroAoTentarSalvarNoticiaSemDataPublicacao() {
         Noticia noticia = Noticia.builder()
                 .titulo("Titulo da noticia")
@@ -114,10 +122,12 @@ public class NoticiaServiceTest {
                 .status(Status.NOT_APPROVED)
                 .build();
 
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia), "A data de publicação deve ser informada.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
+                "A data de publicação deve ser informada.");
     }
 
     @Test
+    @Transactional
     public void deveGerarErroAoTentarSalvarNoticiaSemDataExtracao() {
         Noticia noticia = Noticia.builder()
                 .titulo("Titulo da noticia")
@@ -127,10 +137,12 @@ public class NoticiaServiceTest {
                 .status(Status.NOT_APPROVED)
                 .build();
 
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia), "A data de extração deve ser informada.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
+                "A data de extração deve ser informada.");
     }
 
     @Test
+    @Transactional
     public void deveGerarErroAoTentarSalvarNoticiaSemLinkNoticia() {
         Noticia noticia = Noticia.builder()
                 .titulo("Titulo da noticia")
@@ -140,10 +152,12 @@ public class NoticiaServiceTest {
                 .status(Status.NOT_APPROVED)
                 .build();
 
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia), "O link da notícia deve ser informado.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
+                "O link da notícia deve ser informado.");
     }
 
     @Test
+    @Transactional
     public void deveGerarErroAoTentarSalvarNoticiaSemStatus() {
         Noticia noticia = Noticia.builder()
                 .titulo("Titulo da noticia")
@@ -153,10 +167,12 @@ public class NoticiaServiceTest {
                 .linkNoticia("http://link.com")
                 .build();
 
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia), "O status da notícia deve ser informado.");
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
+                "O status da notícia deve ser informado.");
     }
 
     @Test
+    @Transactional
     public void deveObterListaNoticias() {
         List<Noticia> noticias = noticiaService.listarNoticias();
         Assertions.assertNotNull(noticias);
@@ -164,26 +180,27 @@ public class NoticiaServiceTest {
     }
 
     @Test
+    @Transactional
     public void deveObterListaNoticiasVaziaQuandoNaoHouver() {
         noticiaRepositorio.deleteAll();
         List<Noticia> noticias = noticiaService.listarNoticias();
         Assertions.assertTrue(noticias.isEmpty());
     }
 
-
     @Test
+    @Transactional
     public void deveObterListaNoticiasAprovadas() {
         Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .role(UserRole.EGRESSO)
-                                .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .role(UserRole.EGRESSO)
+                .build();
 
         Egresso egresso = Egresso.builder()
-                        .nome("Gabriel Bastos")
-                        .descricao("estudante de ciencia da computacao")
-                        .usuario(usuario)
-                        .build();
+                .nome("Gabriel Bastos")
+                .descricao("estudante de ciencia da computacao")
+                .usuario(usuario)
+                .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
@@ -202,24 +219,25 @@ public class NoticiaServiceTest {
         Assertions.assertFalse(noticias.isEmpty());
         noticias.forEach(n -> Assertions.assertEquals(Status.APPROVED, n.getStatus()));
 
-        //rollback
+        // rollback
         noticiaRepositorio.delete(noticiaSalva);
         egressoRepositorio.delete(egressoSalvo);
     }
 
     @Test
-    public void deveObterListaNoticiasAprovadasVaziaQuandoNaoHouver(){
+    @Transactional
+    public void deveObterListaNoticiasAprovadasVaziaQuandoNaoHouver() {
         Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .role(UserRole.EGRESSO)
-                                .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .role(UserRole.EGRESSO)
+                .build();
 
         Egresso egresso = Egresso.builder()
-                        .nome("Gabriel Bastos")
-                        .descricao("estudante de ciencia da computacao")
-                        .usuario(usuario)
-                        .build();
+                .nome("Gabriel Bastos")
+                .descricao("estudante de ciencia da computacao")
+                .usuario(usuario)
+                .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
@@ -235,24 +253,25 @@ public class NoticiaServiceTest {
         Noticia noticiaSalva = noticiaRepositorio.save(noticia);
         List<Noticia> noticias = noticiaService.listarNoticiasAprovadas();
         Assertions.assertTrue(noticias.isEmpty());
-        //rollback
+        // rollback
         noticiaRepositorio.delete(noticiaSalva);
         egressoRepositorio.delete(egressoSalvo);
     }
 
     @Test
+    @Transactional
     public void deveAtualizarStatusNoticiaParaAprovado() {
         Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .role(UserRole.EGRESSO)
-                                .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .role(UserRole.EGRESSO)
+                .build();
 
         Egresso egresso = Egresso.builder()
-                        .nome("Gabriel Bastos")
-                        .descricao("estudante de ciencia da computacao")
-                        .usuario(usuario)
-                        .build();
+                .nome("Gabriel Bastos")
+                .descricao("estudante de ciencia da computacao")
+                .usuario(usuario)
+                .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
         Noticia noticia = Noticia.builder()
@@ -273,28 +292,30 @@ public class NoticiaServiceTest {
         Assertions.assertNotNull(noticiaAtualizada);
         Assertions.assertEquals(Status.APPROVED, noticiaAtualizada.getStatus());
 
-        //rollback
+        // rollback
         noticiaRepositorio.delete(noticiaSalva);
         egressoRepositorio.delete(egressoSalvo);
     }
 
-    public void deveGerarErroAoTentarAtualizarStatusDeNoticiaNula(){
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.atualizarStatusAprovada(null), "A notícia não pode ser nula.");
+    public void deveGerarErroAoTentarAtualizarStatusDeNoticiaNula() {
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.atualizarStatusAprovada(null),
+                "A notícia não pode ser nula.");
     }
 
     @Test
+    @Transactional
     public void deveObterListaNoticiasUltimos30dias() {
         Usuario usuario = Usuario.builder()
-        .email("teste@teste.com")
-        .senha("123456")
-        .role(UserRole.EGRESSO)
-        .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .role(UserRole.EGRESSO)
+                .build();
 
         Egresso egresso = Egresso.builder()
-        .nome("Gabriel Bastos")
-        .descricao("estudante de ciencia da computacao")
-        .usuario(usuario)
-        .build();
+                .nome("Gabriel Bastos")
+                .descricao("estudante de ciencia da computacao")
+                .usuario(usuario)
+                .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
@@ -325,27 +346,27 @@ public class NoticiaServiceTest {
         Assertions.assertEquals(1, noticias.size());
         Assertions.assertEquals("Noticia Recente", noticias.get(0).getTitulo());
 
-        //rollback
+        // rollback
         noticiaRepositorio.delete(noticiaAntiga);
         noticiaRepositorio.delete(noticiaRecente);
         egressoRepositorio.delete(egressoSalvo);
-        
 
     }
 
     @Test
+    @Transactional
     public void deveObterListaNoticiasUltimos30diasVaziaQuandoNaoHouver() {
         Usuario usuario = Usuario.builder()
-        .email("teste@teste.com")
-        .senha("123456")
-        .role(UserRole.EGRESSO)
-        .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .role(UserRole.EGRESSO)
+                .build();
 
         Egresso egresso = Egresso.builder()
-        .nome("Gabriel Bastos")
-        .descricao("estudante de ciencia da computacao")
-        .usuario(usuario)
-        .build();
+                .nome("Gabriel Bastos")
+                .descricao("estudante de ciencia da computacao")
+                .usuario(usuario)
+                .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
         Noticia noticiaAntiga = Noticia.builder()
@@ -363,25 +384,26 @@ public class NoticiaServiceTest {
         List<Noticia> noticias = noticiaService.listarNoticiasUltimos30Dias();
         Assertions.assertTrue(noticias.isEmpty());
 
-        //rollback
+        // rollback
         noticiaRepositorio.delete(noticiaAntiga);
         egressoRepositorio.delete(egressoSalvo);
 
     }
 
     @Test
+    @Transactional
     public void deveRemoverNoticia() {
         Usuario usuario = Usuario.builder()
-        .email("teste@teste.com")
-        .senha("123456")
-        .role(UserRole.EGRESSO)
-        .build();
+                .email("teste@teste.com")
+                .senha("123456")
+                .role(UserRole.EGRESSO)
+                .build();
 
         Egresso egresso = Egresso.builder()
-        .nome("Gabriel Bastos")
-        .descricao("estudante de ciencia da computacao")
-        .usuario(usuario)
-        .build();
+                .nome("Gabriel Bastos")
+                .descricao("estudante de ciencia da computacao")
+                .usuario(usuario)
+                .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
         Noticia noticia = Noticia.builder()
@@ -399,14 +421,16 @@ public class NoticiaServiceTest {
 
         Assertions.assertFalse(noticiaRepositorio.existsById(noticiaSalva.getId()));
 
-        //rollback
+        // rollback
         noticiaRepositorio.delete(noticiaSalva);
         egressoRepositorio.delete(egressoSalvo);
     }
 
     @Test
-    public void deveGerarErroAoTentarRemoverNoticiaNula(){
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.removerNoticia(null), "ID da noticia é inválido.");
+    @Transactional
+    public void deveGerarErroAoTentarRemoverNoticiaNula() {
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.removerNoticia(null),
+                "ID da noticia é inválido.");
     }
 
 }

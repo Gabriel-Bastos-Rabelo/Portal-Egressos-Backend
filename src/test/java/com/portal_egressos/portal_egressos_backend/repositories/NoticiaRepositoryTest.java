@@ -15,6 +15,8 @@ import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Noticia;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
+import jakarta.transaction.Transactional;
+
 @SpringBootTest
 @ActiveProfiles("test")
 public class NoticiaRepositoryTest {
@@ -26,6 +28,7 @@ public class NoticiaRepositoryTest {
         EgressoRepository egressoRepositorio;
 
         @Test
+        @Transactional
         public void deveVerificarSalvarNoticia() {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
@@ -68,6 +71,7 @@ public class NoticiaRepositoryTest {
         }
 
         @Test
+        @Transactional
         public void deveVerificarLeituraNoticia() {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
@@ -113,6 +117,7 @@ public class NoticiaRepositoryTest {
         }
 
         @Test
+        @Transactional
         public void deveVerificarAtualizarNoticia() {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")
@@ -153,6 +158,7 @@ public class NoticiaRepositoryTest {
         }
 
         @Test
+        @Transactional
         public void deveVerificarRemoverNoticia() {
                 Usuario usuario = Usuario.builder()
                                 .email("teste@teste.com")

@@ -3,6 +3,8 @@ package com.portal_egressos.portal_egressos_backend.repositories;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
+import jakarta.transaction.Transactional;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +24,7 @@ public class UsuarioRepositoryTest {
     UsuarioRepository repositorio;
 
     @Test
+    @Transactional
     public void deveSalvarUsuario() {
         // cenário
         Usuario usuario = Usuario.builder().email("teste@teste.com")
@@ -68,6 +71,7 @@ public class UsuarioRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void deveAtualizarUsuario() {
         // cenário
         Usuario usuario = Usuario.builder().email("teste@teste.com")
@@ -92,6 +96,7 @@ public class UsuarioRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void deveRemoverUsuario() {
         // cenário
         Usuario usuario = Usuario.builder().email("teste@teste.com")
@@ -113,6 +118,7 @@ public class UsuarioRepositoryTest {
     }
 
     @Test
+    @Transactional
     public void deveObterUsuarioPorEmail() {
         // cenário
         Usuario usuario = Usuario.builder().email("teste@teste.com")
