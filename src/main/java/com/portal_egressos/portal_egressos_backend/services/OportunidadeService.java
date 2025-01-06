@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.repositories.OportunidadeRepository;
@@ -55,7 +56,7 @@ public class OportunidadeService {
         if(!oportunidadeAtualizada.getLink().isEmpty()){
             oportunidadeExistente.setLink(oportunidadeAtualizada.getLink());
         }
-        if(!oportunidadeAtualizada.getStatus().isEmpty()){
+        if(oportunidadeAtualizada.getStatus() != null){
             oportunidadeExistente.setStatus(oportunidadeAtualizada.getStatus());
         }
 
@@ -87,10 +88,26 @@ public class OportunidadeService {
     }
 
     // Verificar Oportunidade por Data
-    public List<Oportunidade> listarOportunidadesOrdenadasPorData() {
+    public List<Oportunidade> listarTodasOportunidadesOrdenadasPorData() {
         List<Oportunidade> oportunidades = oportunidadeRepositorio.findAllByOrderByDataPublicacaoDesc();
         if (oportunidades.isEmpty()) {
             throw new RegraNegocioRunTime("Nenhuma oportunidade encontrada.");
+        }
+        return oportunidades;
+    }
+
+    public List<Oportunidade> listarOportunidadesAprovadasOrdenadasPorData() {
+        List<Oportunidade> oportunidades = oportunidadeRepositorio.findAllByStatusOrderByDataPublicacaoDesc(Status.APROVADO);
+        if (oportunidades.isEmpty()) {
+            throw new RegraNegocioRunTime("Nenhuma oportunidade encontrada com status APROVADO.");
+        }
+        return oportunidades;
+    }
+
+    public List<Oportunidade> listarOportunidadesPendentesOrdenadasPorData() {
+        List<Oportunidade> oportunidades = oportunidadeRepositorio.findAllByStatusOrderByDataPublicacaoDesc(Status.PENDENTE);
+        if (oportunidades.isEmpty()) {
+            throw new RegraNegocioRunTime("Nenhuma oportunidade encontrada com status PENDENTE.");
         }
         return oportunidades;
     }
@@ -124,7 +141,7 @@ public class OportunidadeService {
         if (oportunidade.getDataPublicacao() == null) {
             throw new RegraNegocioRunTime("A data da publicacao deve ser informado.");
         }
-        if (oportunidade.getStatus() == null || oportunidade.getStatus().isEmpty()) {
+        if (oportunidade.getStatus() == null) {
             throw new RegraNegocioRunTime("O status deve ser informado.");
         }
     }

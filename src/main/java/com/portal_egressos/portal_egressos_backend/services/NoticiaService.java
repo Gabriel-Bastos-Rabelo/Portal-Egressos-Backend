@@ -54,19 +54,25 @@ public class NoticiaService {
     }
 
     public List<Noticia> listarNoticiasAprovadas() {
-        return noticiaRepositorio.findAllByStatusOrderByDataPublicacaoDesc(Status.APPROVED);
+        return noticiaRepositorio.findAllByStatusOrderByDataPublicacaoDesc(Status.APROVADO);
     }
 
-    public List<Noticia> listarNoticiasUltimos30Dias() {
-        LocalDate dataLimite = LocalDate.now().minusDays(30);
-        return noticiaRepositorio.findByStatusAndDataPublicacaoAfterOrderByDataPublicacaoDesc(Status.APPROVED, dataLimite);
+    public List<Noticia> listarNoticiasPendentes() {
+        return noticiaRepositorio.findAllByStatusOrderByDataPublicacaoDesc(Status.PENDENTE);
     }
+
+    public List<Noticia> listarNoticiasAprovadasUltimos30Dias() {
+        LocalDate dataLimite = LocalDate.now().minusDays(30);
+        return noticiaRepositorio.findByStatusAndDataPublicacaoAfterOrderByDataPublicacaoDesc(Status.APROVADO, dataLimite);
+    }
+
+    
 
     @Transactional
     public Noticia atualizarStatusAprovada(Noticia noticiaAtualizada) {
         verificarNoticia(noticiaAtualizada);
         Noticia noticia = buscarPorNoticiaId(noticiaAtualizada.getId());
-        noticia.setStatus(Status.APPROVED);     
+        noticia.setStatus(Status.APROVADO);     
         return noticiaRepositorio.save(noticia);  
     }
 

@@ -86,6 +86,9 @@ public class EgressoService {
         if (egresso.getCurriculo() != null && !egresso.getCurriculo().isEmpty()) {
             egressoExistente.setCurriculo(egresso.getCurriculo());
         }
+        if(egresso.getStatus() != null){
+            egressoExistente.setStatus(egresso.getStatus());
+        }
 
         return egressoRepositorio.save(egressoExistente);
     }
@@ -149,5 +152,22 @@ public class EgressoService {
     public List<Egresso> listarEgressos() {
         return egressoRepositorio.findAll();
     }
+
+    public List<Egresso> listarEgressosAprovados() {
+        List<Egresso> egressosAprovados = egressoRepositorio.findAllByStatus("APROVADO");
+        if (egressosAprovados.isEmpty()) {
+            throw new RegraNegocioRunTime("Nenhum egresso encontrado com status APROVADO.");
+        }
+        return egressosAprovados;
+    }
+
+    public List<Egresso> listarEgressosPendentes() {
+        List<Egresso> egressosPendentes = egressoRepositorio.findAllByStatus("PENDENTE");
+        if (egressosPendentes.isEmpty()) {
+            throw new RegraNegocioRunTime("Nenhum egresso encontrado com status PENDENTE.");
+        }
+        return egressosPendentes;
+    }
+
 
 }
