@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
+
 @Entity
 @Data
 @Builder
@@ -27,4 +29,8 @@ public class Depoimento {
 
     @Column(name = "data")
     private LocalDate data;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
 }
