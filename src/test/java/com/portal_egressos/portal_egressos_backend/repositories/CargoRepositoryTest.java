@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.models.Cargo;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
@@ -43,6 +44,7 @@ public class CargoRepositoryTest {
                                 .instagram("url instagram")
                                 .curriculo("curriculo")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -91,6 +93,7 @@ public class CargoRepositoryTest {
                                 .instagram("url instagram")
                                 .curriculo("curriculo")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -145,6 +148,7 @@ public class CargoRepositoryTest {
                                 .instagram("url instagram")
                                 .curriculo("curriculo")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -198,6 +202,7 @@ public class CargoRepositoryTest {
                                 .instagram("url instagram")
                                 .curriculo("curriculo")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);

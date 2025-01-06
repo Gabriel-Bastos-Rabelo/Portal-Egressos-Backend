@@ -40,6 +40,7 @@ public class NoticiaRepositoryTest {
                                 .nome("Gabriel Bastos")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -52,7 +53,7 @@ public class NoticiaRepositoryTest {
                                 .dataExtracao(LocalDate.of(2024, 12, 10))
                                 .linkNoticia("link da noticia")
                                 .imagemCapa("url imagem capa")
-                                .status(Status.NOT_APPROVED)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);
@@ -63,6 +64,7 @@ public class NoticiaRepositoryTest {
                 Assertions.assertEquals("descricao massa", noticiaSalva.getDescricao());
                 Assertions.assertEquals("link da noticia", noticiaSalva.getLinkNoticia());
                 Assertions.assertEquals("url imagem capa", noticiaSalva.getImagemCapa());
+                Assertions.assertEquals(Status.PENDENTE, noticiaSalva.getStatus());
                 Assertions.assertEquals(LocalDate.of(2024, 12, 10), noticiaSalva.getDataPublicacao());
                 Assertions.assertEquals(LocalDate.of(2024, 12, 10), noticiaSalva.getDataExtracao());
 
@@ -83,6 +85,7 @@ public class NoticiaRepositoryTest {
                                 .nome("Gabriel Bastos")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -95,7 +98,7 @@ public class NoticiaRepositoryTest {
                                 .dataExtracao(LocalDate.of(2024, 12, 10))
                                 .linkNoticia("link da noticia")
                                 .imagemCapa("url imagem capa")
-                                .status(Status.NOT_APPROVED)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);
@@ -109,6 +112,7 @@ public class NoticiaRepositoryTest {
                 Assertions.assertEquals("descricao massa", noticiaLida.getDescricao());
                 Assertions.assertEquals("link da noticia", noticiaLida.getLinkNoticia());
                 Assertions.assertEquals("url imagem capa", noticiaLida.getImagemCapa());
+                Assertions.assertEquals(Status.PENDENTE, noticiaLida.getStatus());
                 Assertions.assertEquals(LocalDate.of(2024, 12, 10), noticiaLida.getDataPublicacao());
                 Assertions.assertEquals(LocalDate.of(2024, 12, 10), noticiaLida.getDataExtracao());
 
@@ -129,6 +133,7 @@ public class NoticiaRepositoryTest {
                                 .nome("Gabriel Bastos")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -141,17 +146,19 @@ public class NoticiaRepositoryTest {
                                 .dataExtracao(LocalDate.of(2024, 12, 10))
                                 .linkNoticia("link da noticia")
                                 .imagemCapa("url imagem capa")
-                                .status(Status.NOT_APPROVED)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);
                 noticiaSalva.setTitulo("Titulo atualizado");
                 noticiaSalva.setDescricao("Descricao atualizada");
+                noticiaSalva.setStatus(Status.APROVADO);
 
                 Noticia noticiaAtualizada = noticiaRepositorio.save(noticiaSalva);
 
                 Assertions.assertEquals("Titulo atualizado", noticiaAtualizada.getTitulo());
                 Assertions.assertEquals("Descricao atualizada", noticiaAtualizada.getDescricao());
+                Assertions.assertEquals(Status.APROVADO, noticiaAtualizada.getStatus());
 
                 noticiaRepositorio.delete(noticiaAtualizada);
                 egressoRepositorio.delete(egressoSalvo);
@@ -170,6 +177,7 @@ public class NoticiaRepositoryTest {
                                 .nome("Gabriel Bastos")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -182,7 +190,7 @@ public class NoticiaRepositoryTest {
                                 .dataExtracao(LocalDate.of(2024, 12, 10))
                                 .linkNoticia("link da noticia")
                                 .imagemCapa("url imagem capa")
-                                .status(Status.NOT_APPROVED)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);

@@ -1,6 +1,9 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -8,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
@@ -39,23 +43,25 @@ public class DepoimentoRepositoryTest {
                                 .role(UserRole.EGRESSO)
                                 .build();
 
-                Egresso egresso = Egresso.builder()
-                                .nome("Sabryna")
-                                .descricao("estudante de ciencia da computacao")
-                                .foto("url foto")
-                                .linkedin("url linkedin")
-                                .instagram("url instagram")
-                                .curriculo("curriculo")
-                                .usuario(usuario)
-                                .build();
+        Egresso egresso = Egresso.builder()
+                .nome("Sabryna")
+                .descricao("estudante de ciencia da computacao")
+                .foto("url foto")
+                .linkedin("url linkedin")
+                .instagram("url instagram")
+                .curriculo("curriculo")
+                .usuario(usuario)
+                .status(Status.PENDENTE)
+                .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
-                Depoimento depoimento = Depoimento.builder()
-                                .egresso(egressoSalvo)
-                                .texto("Depoimento Teste")
-                                .data(LocalDate.now())
-                                .build();
+        Depoimento depoimento = Depoimento.builder()
+                .egresso(egressoSalvo)
+                .texto("Depoimento Teste")
+                .data(LocalDate.now())
+                .status(Status.PENDENTE)
+                .build();
 
                 // ação
                 Depoimento depoimentoSalvo = depoimentoRepositorio.save(depoimento);
@@ -64,11 +70,12 @@ public class DepoimentoRepositoryTest {
                 depoimentoRepositorio.delete(depoimentoSalvo);
                 egressoRepositorio.delete(egressoSalvo);
 
-                // Verificação
-                Assertions.assertNotNull(depoimentoSalvo);
-                Assertions.assertEquals(depoimento.getTexto(), depoimentoSalvo.getTexto());
-                Assertions.assertEquals(depoimento.getData(), depoimentoSalvo.getData());
-                Assertions.assertEquals(depoimento.getEgresso().getId(), depoimentoSalvo.getEgresso().getId());
+        // Verificação
+        Assertions.assertNotNull(depoimentoSalvo);
+        Assertions.assertEquals(depoimento.getTexto(), depoimentoSalvo.getTexto());
+        Assertions.assertEquals(depoimento.getData(), depoimentoSalvo.getData());
+        Assertions.assertEquals(depoimento.getStatus(), depoimentoSalvo.getStatus());
+        Assertions.assertEquals(depoimento.getEgresso().getId(), depoimentoSalvo.getEgresso().getId());
 
                 // Verificar os dados do Egresso associado
                 Assertions.assertEquals(egresso.getNome(), depoimentoSalvo.getEgresso().getNome());
@@ -90,23 +97,25 @@ public class DepoimentoRepositoryTest {
                                 .role(UserRole.EGRESSO)
                                 .build();
 
-                Egresso egresso = Egresso.builder()
-                                .nome("Sabryna")
-                                .descricao("estudante de ciencia da computacao")
-                                .foto("url foto")
-                                .linkedin("url linkedin")
-                                .instagram("url instagram")
-                                .curriculo("curriculo")
-                                .usuario(usuario)
-                                .build();
+        Egresso egresso = Egresso.builder()
+                .nome("Sabryna")
+                .descricao("estudante de ciencia da computacao")
+                .foto("url foto")
+                .linkedin("url linkedin")
+                .instagram("url instagram")
+                .curriculo("curriculo")
+                .usuario(usuario)
+                .status(Status.PENDENTE)
+                .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
-                Depoimento depoimento = Depoimento.builder()
-                                .egresso(egressoSalvo)
-                                .texto("Depoimento Teste")
-                                .data(LocalDate.now())
-                                .build();
+        Depoimento depoimento = Depoimento.builder()
+                .egresso(egressoSalvo)
+                .texto("Depoimento Teste")
+                .data(LocalDate.now())
+                .status(Status.PENDENTE)
+                .build();
 
                 Depoimento depoimentoSalvo = depoimentoRepositorio.save(depoimento);
 
@@ -118,12 +127,13 @@ public class DepoimentoRepositoryTest {
                 depoimentoRepositorio.delete(depoimentoRetornado);
                 egressoRepositorio.delete(egressoSalvo);
 
-                // verificação
-                Assertions.assertNotNull(depoimentoRetornado);
-                Assertions.assertEquals("Depoimento Atualizado", depoimentoRetornado.getTexto());
-                Assertions.assertEquals(depoimento.getData(), depoimentoRetornado.getData());
-                Assertions.assertEquals(depoimento.getEgresso().getId(), depoimentoRetornado.getEgresso().getId());
-        }
+        // verificação
+        Assertions.assertNotNull(depoimentoRetornado);
+        Assertions.assertEquals("Depoimento Atualizado", depoimentoRetornado.getTexto());
+        Assertions.assertEquals(depoimento.getData(), depoimentoRetornado.getData());
+        Assertions.assertEquals(depoimento.getStatus(), depoimentoRetornado.getStatus());
+        Assertions.assertEquals(depoimento.getEgresso().getId(), depoimentoRetornado.getEgresso().getId());
+    }
 
         @Test
         @Transactional
@@ -141,25 +151,27 @@ public class DepoimentoRepositoryTest {
                 List<Egresso> egressos = new ArrayList<>();
                 List<Depoimento> depoimentos = new ArrayList<>();
 
-                for (int i = 0; i < usuarios.size(); i++) {
-                        Egresso egresso = Egresso.builder()
-                                        .nome("Sabryna" + i)
-                                        .descricao("estudante de ciencia da computacao")
-                                        .foto("url foto")
-                                        .linkedin("url linkedin")
-                                        .instagram("url instagram")
-                                        .curriculo("curriculo")
-                                        .usuario(usuarios.get(i))
-                                        .build();
+        for (int i = 0; i < usuarios.size(); i++) {
+            Egresso egresso = Egresso.builder()
+                    .nome("Sabryna" + i)
+                    .descricao("estudante de ciencia da computacao")
+                    .foto("url foto")
+                    .linkedin("url linkedin")
+                    .instagram("url instagram")
+                    .curriculo("curriculo")
+                    .usuario(usuarios.get(i))
+                    .status(Status.PENDENTE)
+                    .build();
 
                         Egresso egressoSalvo = egressoRepositorio.save(egresso);
                         egressos.add(egressoSalvo);
 
-                        Depoimento depoimento = Depoimento.builder()
-                                        .egresso(egressoSalvo)
-                                        .texto("Depoimento do egresso " + i)
-                                        .data(LocalDate.now().minusDays(i))
-                                        .build();
+            Depoimento depoimento = Depoimento.builder()
+                    .egresso(egressoSalvo)
+                    .texto("Depoimento do egresso " + i)
+                    .data(LocalDate.now().minusDays(i))
+                    .status(Status.PENDENTE)
+                    .build();
 
                         Depoimento depoimentoSalvo = depoimentoRepositorio.save(depoimento);
                         depoimentos.add(depoimentoSalvo);
@@ -187,23 +199,25 @@ public class DepoimentoRepositoryTest {
                                 .role(UserRole.EGRESSO)
                                 .build();
 
-                Egresso egresso = Egresso.builder()
-                                .nome("Sabryna")
-                                .descricao("estudante de ciencia da computacao")
-                                .foto("url foto")
-                                .linkedin("url linkedin")
-                                .instagram("url instagram")
-                                .curriculo("curriculo")
-                                .usuario(usuario)
-                                .build();
+        Egresso egresso = Egresso.builder()
+                .nome("Sabryna")
+                .descricao("estudante de ciencia da computacao")
+                .foto("url foto")
+                .linkedin("url linkedin")
+                .instagram("url instagram")
+                .curriculo("curriculo")
+                .usuario(usuario)
+                .status(Status.PENDENTE)
+                .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
-                Depoimento depoimento = Depoimento.builder()
-                                .egresso(egressoSalvo)
-                                .texto("Depoimento Teste")
-                                .data(LocalDate.now())
-                                .build();
+        Depoimento depoimento = Depoimento.builder()
+                .egresso(egressoSalvo)
+                .texto("Depoimento Teste")
+                .data(LocalDate.now())
+                .status(Status.PENDENTE)
+                .build();
 
                 Depoimento depoimentoSalvo = depoimentoRepositorio.save(depoimento);
 
@@ -234,25 +248,27 @@ public class DepoimentoRepositoryTest {
                 List<Egresso> egressos = new ArrayList<>();
                 List<Depoimento> depoimentos = new ArrayList<>();
 
-                for (int i = 0; i < usuarios.size(); i++) {
-                        Egresso egresso = Egresso.builder()
-                                        .nome("Egresso " + i)
-                                        .descricao("Descrição do egresso " + i)
-                                        .foto("url foto")
-                                        .linkedin("url linkedin")
-                                        .instagram("url instagram")
-                                        .curriculo("curriculo")
-                                        .usuario(usuarios.get(i))
-                                        .build();
+        for (int i = 0; i < usuarios.size(); i++) {
+            Egresso egresso = Egresso.builder()
+                    .nome("Egresso " + i)
+                    .descricao("Descrição do egresso " + i)
+                    .foto("url foto")
+                    .linkedin("url linkedin")
+                    .instagram("url instagram")
+                    .curriculo("curriculo")
+                    .usuario(usuarios.get(i))
+                    .status(Status.PENDENTE)
+                    .build();
 
                         Egresso egressoSalvo = egressoRepositorio.save(egresso);
                         egressos.add(egressoSalvo);
 
-                        Depoimento depoimento = Depoimento.builder()
-                                        .egresso(egressoSalvo)
-                                        .texto("Depoimento do egresso " + i)
-                                        .data(LocalDate.now().minusDays(i))
-                                        .build();
+            Depoimento depoimento = Depoimento.builder()
+                    .egresso(egressoSalvo)
+                    .texto("Depoimento do egresso " + i)
+                    .data(LocalDate.now().minusDays(i))
+                    .status(Status.PENDENTE)
+                    .build();
 
                         Depoimento depoimentoRetornado = depoimentoRepositorio.save(depoimento);
                         depoimentos.add(depoimentoRetornado);

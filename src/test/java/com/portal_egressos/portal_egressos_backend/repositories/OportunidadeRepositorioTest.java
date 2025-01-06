@@ -1,9 +1,10 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
 
-import com.portal_egressos.portal_egressos_backend.enums.UserRole;
-import com.portal_egressos.portal_egressos_backend.models.Egresso;
-import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
-import com.portal_egressos.portal_egressos_backend.models.Usuario;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import jakarta.transaction.Transactional;
 
@@ -13,11 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.portal_egressos.portal_egressos_backend.enums.Status;
+import com.portal_egressos.portal_egressos_backend.enums.UserRole;
+import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
+import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -47,6 +48,7 @@ public class OportunidadeRepositorioTest {
                                 .instagram("url instagram")
                                 .curriculo("curriculo")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -61,7 +63,7 @@ public class OportunidadeRepositorioTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
 
                 // Ação
@@ -103,6 +105,7 @@ public class OportunidadeRepositorioTest {
                                 .instagram("url instagram")
                                 .curriculo("curriculo")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -115,7 +118,7 @@ public class OportunidadeRepositorioTest {
                                 .tipo("CLT")
                                 .dataPublicacao(LocalDate.now())
                                 .salario(BigDecimal.valueOf(6000))
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
 
                 Oportunidade oportunidadeSalva = oportunidadeRepositorio.save(oportunidade);
@@ -170,6 +173,7 @@ public class OportunidadeRepositorioTest {
                                         .instagram("url instagram")
                                         .curriculo("curriculo")
                                         .usuario(usuarios.get(i))
+                                        .status(Status.PENDENTE)
                                         .build();
 
                         Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -184,7 +188,7 @@ public class OportunidadeRepositorioTest {
                                                 .tipo("Tipo " + j)
                                                 .dataPublicacao(LocalDate.now().minusDays(j))
                                                 .salario(BigDecimal.valueOf(3000 + j * 1000))
-                                                .status("Ativa")
+                                                .status(Status.APROVADO)
                                                 .build();
                                 Oportunidade oportunidadeSalva = oportunidadeRepositorio.save(oportunidade);
                                 oportunidades.add(oportunidadeSalva);
@@ -221,6 +225,7 @@ public class OportunidadeRepositorioTest {
                                 .instagram("url instagram")
                                 .curriculo("curriculo")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -233,7 +238,7 @@ public class OportunidadeRepositorioTest {
                                 .tipo("CLT")
                                 .dataPublicacao(LocalDate.now())
                                 .salario(BigDecimal.valueOf(6000))
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
 
                 Oportunidade oportunidadeSalva = oportunidadeRepositorio.save(oportunidade);
@@ -268,6 +273,7 @@ public class OportunidadeRepositorioTest {
                                 .instagram("url instagram")
                                 .curriculo("curriculo")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -282,7 +288,7 @@ public class OportunidadeRepositorioTest {
                                         .tipo("Tipo " + i)
                                         .dataPublicacao(LocalDate.now().minusDays(i))
                                         .salario(BigDecimal.valueOf(5000 + i * 1000))
-                                        .status("Ativa")
+                                        .status(Status.APROVADO)
                                         .build());
                 }
                 oportunidadeRepositorio.saveAll(oportunidades);
@@ -318,6 +324,7 @@ public class OportunidadeRepositorioTest {
                                 .instagram("url instagram")
                                 .curriculo("curriculo")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -332,7 +339,7 @@ public class OportunidadeRepositorioTest {
                                         .tipo("Tipo " + i)
                                         .dataPublicacao(LocalDate.now().minusDays(i))
                                         .salario(BigDecimal.valueOf(5000 + i * 1000))
-                                        .status("Ativa")
+                                        .status(Status.APROVADO)
                                         .build());
                 }
                 oportunidadeRepositorio.saveAll(oportunidades);
