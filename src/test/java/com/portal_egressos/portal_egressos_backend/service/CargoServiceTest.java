@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Cargo;
@@ -42,14 +43,15 @@ public class CargoServiceTest {
                 .build();
 
         Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .foto("url foto")
-                .linkedin("url linkedin")
-                .instagram("url instagram")
-                .curriculo("curriculo")
-                .usuario(usuario)
-                .build();
+                        .nome("Gabriel Bastos")
+                        .descricao("estudante de ciencia da computacao")
+                        .foto("url foto")
+                        .linkedin("url linkedin")
+                        .instagram("url instagram")
+                        .curriculo("curriculo")
+                        .usuario(usuario)
+                        .status(Status.PENDENTE)
+                        .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
@@ -131,6 +133,7 @@ public class CargoServiceTest {
                 .nome("Gabriel Bastos")
                 .descricao("Analista de Sistemas")
                 .usuario(usuario)
+                .status(Status.PENDENTE)
                 .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -173,6 +176,7 @@ public class CargoServiceTest {
                 .nome("Gabriel Bastos")
                 .descricao("Gerente de Projetos")
                 .usuario(usuario)
+                .status(Status.PENDENTE)
                 .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -216,6 +220,7 @@ public class CargoServiceTest {
                 .nome("Gabriel Bastos")
                 .descricao("Desenvolvedor")
                 .usuario(usuario)
+                .status(Status.PENDENTE)
                 .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);

@@ -17,6 +17,7 @@ import com.portal_egressos.portal_egressos_backend.repositories.CursoEgressoRepo
 import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 
 import jakarta.transaction.Transactional;
 
@@ -71,6 +72,7 @@ public class CursoEgressoTest {
                                 .instagram("https://www.instagram.com/usuario" + (i + 1))
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuarios.get(i))
+                                .status(Status.PENDENTE)
                                 .build());
         }
 
@@ -149,6 +151,7 @@ public class CursoEgressoTest {
                             .instagram("https://www.instagram.com/usuario" + (i + 1))
                             .curriculo("lorem ipsum lore")
                             .usuario(usuarios.get(i))
+                            .status(Status.PENDENTE)
                             .build());
         }
 
@@ -232,6 +235,7 @@ public class CursoEgressoTest {
                                 .instagram("https://www.instagram.com/usuario" + (i + 1))
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuarios.get(i))
+                                .status(Status.PENDENTE)
                                 .build());
         }
 
