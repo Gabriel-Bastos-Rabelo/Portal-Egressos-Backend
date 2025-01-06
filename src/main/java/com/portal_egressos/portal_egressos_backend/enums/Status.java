@@ -1,8 +1,9 @@
 package com.portal_egressos.portal_egressos_backend.enums;
 
 public enum Status {
-    APPROVED("Approved"),
-    NOT_APPROVED("Not Approved");
+    APROVADO("Aprovado"),
+    NAO_APROVADO("Não aprovado"),
+    PENDENTE("Pendente");
 
     private final String descricao;
 
