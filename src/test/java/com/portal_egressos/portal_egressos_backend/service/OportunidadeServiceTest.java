@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 
@@ -49,6 +50,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+.status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -63,7 +65,7 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
                 // Ação
                 Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
@@ -100,6 +102,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+.status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -113,7 +116,7 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
                 // Verificação
                 Assertions.assertThrows(RegraNegocioRunTime.class,
@@ -135,6 +138,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+.status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -148,7 +152,7 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
 
                 // Verificação
@@ -171,6 +175,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+.status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -184,7 +189,7 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
 
                 // Verificação
@@ -207,6 +212,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+.status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -220,7 +226,7 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
 
                 // Verificação
@@ -243,6 +249,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+.status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -256,7 +263,7 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
                 // Verificação
                 Assertions.assertThrows(RegraNegocioRunTime.class,
@@ -278,6 +285,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+.status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -314,6 +322,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+.status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -328,7 +337,7 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
                 Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
 
@@ -340,7 +349,7 @@ public class OportunidadeServiceTest {
                 oportunidadeSalva.setDataExpiracao(LocalDate.now().plusDays(30));
                 oportunidadeSalva.setSalario(BigDecimal.valueOf(2500));
                 oportunidadeSalva.setLink("Link.atualizado.com");
-                oportunidadeSalva.setStatus("Inativo");
+                oportunidadeSalva.setStatus(Status.NAO_APROVADO);
 
                 Oportunidade oportunidadeAtualizada = oportunidadeService.atualizarOportunidade(oportunidadeSalva);
 
@@ -378,6 +387,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+.status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -392,7 +402,7 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
                 Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
 
@@ -422,6 +432,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+.status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -436,7 +447,7 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
                 Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
 
@@ -467,6 +478,7 @@ public class OportunidadeServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -481,7 +493,7 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(6000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
 
                 Oportunidade oportunidade2 = Oportunidade.builder()
@@ -494,13 +506,13 @@ public class OportunidadeServiceTest {
                                 .dataExpiracao(LocalDate.now().plusDays(30))
                                 .salario(BigDecimal.valueOf(5000))
                                 .link("link vaga")
-                                .status("Ativa")
+                                .status(Status.APROVADO)
                                 .build();
                 oportunidadeRepositorio.save(oportunidade1);
                 oportunidadeRepositorio.save(oportunidade2);
 
                 // Ação
-                List<Oportunidade> oportunidades = oportunidadeService.listarOportunidadesOrdenadasPorData();
+                List<Oportunidade> oportunidades = oportunidadeService.listarTodasOportunidadesOrdenadasPorData();
 
                 // Rollback
                 oportunidadeRepositorio.delete(oportunidade1);
@@ -512,5 +524,136 @@ public class OportunidadeServiceTest {
                 Assertions.assertFalse(oportunidades.isEmpty());
                 Assertions.assertEquals(2, oportunidades.size());
         }
+
+        @Test
+        @Transactional
+        public void deveListarOportunidadesAprovadasOrdenadasPorData() {
+                // Cenário
+                Usuario usuario = Usuario.builder()
+                        .email("teste@teste.com")
+                        .senha("123456")
+                        .role(UserRole.EGRESSO)
+                        .build();
+
+                Egresso egresso = Egresso.builder()
+                        .nome("Egresso Aprovado")
+                        .descricao("Estudante de ciência da computação")
+                        .usuario(usuario)
+                        .status(Status.APROVADO)
+                        .build();
+
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
+
+                Oportunidade oportunidade1 = Oportunidade.builder()
+                        .egresso(egressoSalvo)
+                        .titulo("Desenvolvedor Backend")
+                        .descricao("Desenvolvimento em Java")
+                        .local("Remoto")
+                        .tipo("CLT")
+                        .dataPublicacao(LocalDate.now())
+                        .dataExpiracao(LocalDate.now().plusDays(30))
+                        .salario(BigDecimal.valueOf(6000))
+                        .link("link vaga backend")
+                        .status(Status.APROVADO)
+                        .build();
+
+                Oportunidade oportunidade2 = Oportunidade.builder()
+                        .egresso(egressoSalvo)
+                        .titulo("Desenvolvedor Frontend")
+                        .descricao("Desenvolvimento em React")
+                        .local("Remoto")
+                        .tipo("CLT")
+                        .dataPublicacao(LocalDate.now().minusDays(1))
+                        .dataExpiracao(LocalDate.now().plusDays(30))
+                        .salario(BigDecimal.valueOf(5000))
+                        .link("link vaga frontend")
+                        .status(Status.APROVADO)
+                        .build();
+
+                oportunidadeRepositorio.save(oportunidade1);
+                oportunidadeRepositorio.save(oportunidade2);
+
+                // Ação
+                List<Oportunidade> oportunidades = oportunidadeService.listarOportunidadesAprovadasOrdenadasPorData();
+
+                // Rollback
+                oportunidadeRepositorio.delete(oportunidade1);
+                oportunidadeRepositorio.delete(oportunidade2);
+                egressoRepositorio.delete(egressoSalvo);
+
+                // Verificação
+                Assertions.assertNotNull(oportunidades);
+                Assertions.assertFalse(oportunidades.isEmpty());
+                Assertions.assertEquals(2, oportunidades.size());
+                Assertions.assertTrue(oportunidades.get(0).getDataPublicacao().isAfter(oportunidades.get(1).getDataPublicacao()));
+                oportunidades.forEach(n -> Assertions.assertEquals(Status.APROVADO, n.getStatus()));
+
+        }
+
+        @Test
+        @Transactional
+        public void deveListarOportunidadesPendentesOrdenadasPorData() {
+                // Cenário
+                Usuario usuario = Usuario.builder()
+                        .email("teste2@teste.com")
+                        .senha("123456")
+                        .role(UserRole.EGRESSO)
+                        .build();
+
+                Egresso egresso = Egresso.builder()
+                        .nome("Egresso Pendente")
+                        .descricao("Estudante de engenharia de software")
+                        .usuario(usuario)
+                        .status(Status.PENDENTE)
+                        .build();
+
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
+
+                Oportunidade oportunidade1 = Oportunidade.builder()
+                        .egresso(egressoSalvo)
+                        .titulo("Analista de Dados")
+                        .descricao("Análise de dados em Python")
+                        .local("Híbrido")
+                        .tipo("CLT")
+                        .dataPublicacao(LocalDate.now().minusDays(2))
+                        .dataExpiracao(LocalDate.now().plusDays(15))
+                        .salario(BigDecimal.valueOf(7000))
+                        .link("link vaga analista")
+                        .status(Status.PENDENTE)
+                        .build();
+
+                Oportunidade oportunidade2 = Oportunidade.builder()
+                        .egresso(egressoSalvo)
+                        .titulo("Engenheiro de Software")
+                        .descricao("Desenvolvimento em cloud")
+                        .local("Presencial")
+                        .tipo("PJ")
+                        .dataPublicacao(LocalDate.now().minusDays(1))
+                        .dataExpiracao(LocalDate.now().plusDays(20))
+                        .salario(BigDecimal.valueOf(8000))
+                        .link("link vaga engenheiro")
+                        .status(Status.PENDENTE)
+                        .build();
+
+                oportunidadeRepositorio.save(oportunidade1);
+                oportunidadeRepositorio.save(oportunidade2);
+
+                // Ação
+                List<Oportunidade> oportunidades = oportunidadeService.listarOportunidadesPendentesOrdenadasPorData();
+
+                // Rollback
+                oportunidadeRepositorio.delete(oportunidade1);
+                oportunidadeRepositorio.delete(oportunidade2);
+                egressoRepositorio.delete(egressoSalvo);
+
+                // Verificação
+                Assertions.assertNotNull(oportunidades);
+                Assertions.assertFalse(oportunidades.isEmpty());
+                Assertions.assertEquals(2, oportunidades.size());
+                Assertions.assertTrue(oportunidades.get(0).getDataPublicacao().isAfter(oportunidades.get(1).getDataPublicacao()));
+                oportunidades.forEach(n -> Assertions.assertEquals(Status.PENDENTE, n.getStatus()));
+        }
+
+
 
 }

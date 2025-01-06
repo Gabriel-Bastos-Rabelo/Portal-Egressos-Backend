@@ -12,6 +12,7 @@ import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.repositories.DepoimentoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 
 @Service
 public class DepoimentoService {
@@ -42,6 +43,9 @@ public class DepoimentoService {
         }
         if(depoimentoAtualizado.getData() != null){
             depoimentoExistente.setData(depoimentoAtualizado.getData());
+        }
+        if(depoimentoAtualizado.getStatus() != null){
+            depoimentoExistente.setStatus(depoimentoAtualizado.getStatus());
         }
         return depoimentoRepositorio.save(depoimentoExistente);
     }
@@ -81,5 +85,21 @@ public class DepoimentoService {
         if (depoimento.getEgresso() == null || depoimento.getEgresso().getId() == null) {
             throw new RegraNegocioRunTime("O autor do depoimento deve ser informado.");
         }
+    }
+
+    public List<Depoimento> listarDepoimentosAprovados() {
+        List<Depoimento> depoimentosAprovados = depoimentoRepositorio.findAllByStatus(Status.APROVADO);
+        if (depoimentosAprovados.isEmpty()) {
+            throw new RegraNegocioRunTime("Nenhum depoimento encontrado com status APROVADO.");
+        }
+        return depoimentosAprovados;
+    }
+
+    public List<Depoimento> listarDepoimentosPendentes() {
+        List<Depoimento> depoimentosPendentes = depoimentoRepositorio.findAllByStatus(Status.PENDENTE);
+        if (depoimentosPendentes.isEmpty()) {
+            throw new RegraNegocioRunTime("Nenhum depoimento encontrado com status PENDENTE.");
+        }
+        return depoimentosPendentes;
     }
 }

@@ -2,9 +2,13 @@ package com.portal_egressos.portal_egressos_backend.models;
 
 import java.util.List;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -55,6 +59,10 @@ public class Egresso {
     @OneToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario", unique = true)
     private Usuario usuario;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
 
     @OneToMany(mappedBy = "egresso")
     private List<CursoEgresso> egressoCursos;

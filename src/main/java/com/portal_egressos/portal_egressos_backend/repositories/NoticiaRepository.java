@@ -17,4 +17,6 @@ public interface NoticiaRepository extends JpaRepository<Noticia, Long> {
     List<Noticia> findAllByOrderByDataPublicacaoDesc();
 
     List<Noticia> findByStatusAndDataPublicacaoAfterOrderByDataPublicacaoDesc(Status status, LocalDate dataLimite);
+
+    
 }

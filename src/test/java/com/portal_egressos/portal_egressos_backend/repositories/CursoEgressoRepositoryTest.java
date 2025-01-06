@@ -8,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
-import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
+import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
@@ -46,14 +47,15 @@ public class CursoEgressoRepositoryTest {
                                 .role(UserRole.EGRESSO)
                                 .build();
 
-                Egresso egresso = Egresso.builder().nome("teste")
-                                .descricao("lorem ipsum lore")
-                                .foto("urlteste")
-                                .linkedin("teste_linkedin")
-                                .instagram("teste_instagram")
-                                .curriculo("lorem ipsum lore")
-                                .usuario(usuario)
-                                .build();
+        Egresso egresso = Egresso.builder().nome("teste")
+                .descricao("lorem ipsum lore")
+                .foto("urlteste")
+                .linkedin("teste_linkedin")
+                .instagram("teste_instagram")
+                .curriculo("lorem ipsum lore")
+                .usuario(usuario)
+                                .status(Status.PENDENTE)
+                .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
@@ -98,14 +100,15 @@ public class CursoEgressoRepositoryTest {
                                 .role(UserRole.EGRESSO)
                                 .build();
 
-                Egresso egresso = Egresso.builder().nome("teste")
-                                .descricao("lorem ipsum lore")
-                                .foto("urlteste")
-                                .linkedin("teste_linkedin")
-                                .instagram("teste_instagram")
-                                .curriculo("lorem ipsum lore")
-                                .usuario(usuario)
-                                .build();
+        Egresso egresso = Egresso.builder().nome("teste")
+                .descricao("lorem ipsum lore")
+                .foto("urlteste")
+                .linkedin("teste_linkedin")
+                .instagram("teste_instagram")
+                .curriculo("lorem ipsum lore")
+                .usuario(usuario)
+                                .status(Status.PENDENTE)
+                .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
@@ -151,14 +154,15 @@ public class CursoEgressoRepositoryTest {
                                 .role(UserRole.EGRESSO)
                                 .build();
 
-                Egresso egresso = Egresso.builder().nome("teste")
-                                .descricao("lorem ipsum lore")
-                                .foto("urlteste")
-                                .linkedin("teste_linkedin")
-                                .instagram("teste_instagram")
-                                .curriculo("lorem ipsum lore")
-                                .usuario(usuario)
-                                .build();
+        Egresso egresso = Egresso.builder().nome("teste")
+                .descricao("lorem ipsum lore")
+                .foto("urlteste")
+                .linkedin("teste_linkedin")
+                .instagram("teste_instagram")
+                .curriculo("lorem ipsum lore")
+                .usuario(usuario)
+                                .status(Status.PENDENTE)
+                .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
@@ -201,14 +205,15 @@ public class CursoEgressoRepositoryTest {
                                 .role(UserRole.EGRESSO)
                                 .build();
 
-                Egresso egresso = Egresso.builder().nome("teste")
-                                .descricao("lorem ipsum lore")
-                                .foto("urlteste")
-                                .linkedin("teste_linkedin")
-                                .instagram("teste_instagram")
-                                .curriculo("lorem ipsum lore")
-                                .usuario(usuario)
-                                .build();
+        Egresso egresso = Egresso.builder().nome("teste")
+                .descricao("lorem ipsum lore")
+                .foto("urlteste")
+                .linkedin("teste_linkedin")
+                .instagram("teste_instagram")
+                .curriculo("lorem ipsum lore")
+                .usuario(usuario)
+                                .status(Status.PENDENTE)
+                .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
 

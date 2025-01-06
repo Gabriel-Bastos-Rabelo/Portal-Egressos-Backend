@@ -44,23 +44,24 @@ public class NoticiaServiceTest {
                 .build();
 
         Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
+                        .nome("Gabriel Bastos")
+                        .descricao("estudante de ciencia da computacao")
+                        .usuario(usuario)
+                                .status(Status.PENDENTE)
+                        .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
         Noticia noticia = Noticia.builder()
-                .egresso(egressoSalvo)
-                .titulo("um titulo tql")
-                .descricao("descricao massa")
-                .dataPublicacao(LocalDate.of(2024, 12, 10))
-                .dataExtracao(LocalDate.of(2024, 12, 10))
-                .linkNoticia("link da noticia")
-                .imagemCapa("url imagem capa")
-                .status(Status.NOT_APPROVED)
-                .build();
+                        .egresso(egressoSalvo)
+                        .titulo("um titulo tql")
+                        .descricao("descricao massa")
+                        .dataPublicacao(LocalDate.of(2024, 12, 10))
+                        .dataExtracao(LocalDate.of(2024, 12, 10))
+                        .linkNoticia("link da noticia")
+                        .imagemCapa("url imagem capa")
+                        .status(Status.PENDENTE)
+                        .build();
 
         // ação
         Noticia noticiaSalva = noticiaService.salvarNoticia(noticia);
@@ -89,7 +90,7 @@ public class NoticiaServiceTest {
                 .dataPublicacao(LocalDate.of(2024, 12, 10))
                 .dataExtracao(LocalDate.of(2024, 12, 10))
                 .linkNoticia("http://link.com")
-                .status(Status.NOT_APPROVED)
+                .status(Status.PENDENTE)
                 .build();
 
         Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
@@ -104,7 +105,7 @@ public class NoticiaServiceTest {
                 .dataPublicacao(LocalDate.of(2024, 12, 10))
                 .dataExtracao(LocalDate.of(2024, 12, 10))
                 .linkNoticia("http://link.com")
-                .status(Status.NOT_APPROVED)
+                .status(Status.PENDENTE)
                 .build();
 
         Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
@@ -119,7 +120,7 @@ public class NoticiaServiceTest {
                 .descricao("Descricao da noticia")
                 .dataExtracao(LocalDate.of(2024, 12, 10))
                 .linkNoticia("http://link.com")
-                .status(Status.NOT_APPROVED)
+                .status(Status.PENDENTE)
                 .build();
 
         Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
@@ -134,7 +135,7 @@ public class NoticiaServiceTest {
                 .descricao("Descricao da noticia")
                 .dataPublicacao(LocalDate.of(2024, 12, 10))
                 .linkNoticia("http://link.com")
-                .status(Status.NOT_APPROVED)
+                .status(Status.PENDENTE)
                 .build();
 
         Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
@@ -149,7 +150,7 @@ public class NoticiaServiceTest {
                 .descricao("Descricao da noticia")
                 .dataPublicacao(LocalDate.of(2024, 12, 10))
                 .dataExtracao(LocalDate.of(2024, 12, 10))
-                .status(Status.NOT_APPROVED)
+                .status(Status.PENDENTE)
                 .build();
 
         Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.salvarNoticia(noticia),
@@ -187,20 +188,21 @@ public class NoticiaServiceTest {
         Assertions.assertTrue(noticias.isEmpty());
     }
 
+
     @Test
-    @Transactional
-    public void deveObterListaNoticiasAprovadas() {
+    public void deveObterListaNoticiasPendentes() {
         Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("123456")
-                .role(UserRole.EGRESSO)
-                .build();
+                                .email("teste@teste.com")
+                                .senha("123456")
+                                .role(UserRole.EGRESSO)
+                                .build();
 
         Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
+                        .nome("Gabriel Bastos")
+                        .descricao("estudante de ciencia da computacao")
+                        .usuario(usuario)
+                                .status(Status.PENDENTE)
+                        .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
@@ -211,13 +213,51 @@ public class NoticiaServiceTest {
                 .dataPublicacao(LocalDate.of(2024, 12, 10))
                 .dataExtracao(LocalDate.of(2024, 12, 10))
                 .linkNoticia("http://link.com")
-                .status(Status.APPROVED)
+                .status(Status.PENDENTE)
+                .build();
+        Noticia noticiaSalva = noticiaRepositorio.save(noticia);
+
+        List<Noticia> noticias = noticiaService.listarNoticiasPendentes();
+        Assertions.assertFalse(noticias.isEmpty());
+        noticias.forEach(n -> Assertions.assertEquals(Status.PENDENTE, n.getStatus()));
+
+        //rollback
+        noticiaRepositorio.delete(noticiaSalva);
+        egressoRepositorio.delete(egressoSalvo);
+    }
+
+    @Test
+    @Transactional
+    public void deveObterListaNoticiasAprovadas() {
+        Usuario usuario = Usuario.builder()
+                .email("teste@teste.com")
+                .senha("123456")
+                .role(UserRole.EGRESSO)
+                .build();
+
+        Egresso egresso = Egresso.builder()
+                        .nome("Gabriel Bastos")
+                        .descricao("estudante de ciencia da computacao")
+                        .usuario(usuario)
+                                .status(Status.PENDENTE)
+                        .build();
+
+        Egresso egressoSalvo = egressoRepositorio.save(egresso);
+
+        Noticia noticia = Noticia.builder()
+                .egresso(egressoSalvo)
+                .titulo("Noticia Aprovada")
+                .descricao("Descricao da noticia")
+                .dataPublicacao(LocalDate.of(2024, 12, 10))
+                .dataExtracao(LocalDate.of(2024, 12, 10))
+                .linkNoticia("http://link.com")
+                .status(Status.APROVADO)
                 .build();
         Noticia noticiaSalva = noticiaRepositorio.save(noticia);
 
         List<Noticia> noticias = noticiaService.listarNoticiasAprovadas();
         Assertions.assertFalse(noticias.isEmpty());
-        noticias.forEach(n -> Assertions.assertEquals(Status.APPROVED, n.getStatus()));
+        noticias.forEach(n -> Assertions.assertEquals(Status.APROVADO, n.getStatus()));
 
         // rollback
         noticiaRepositorio.delete(noticiaSalva);
@@ -234,10 +274,11 @@ public class NoticiaServiceTest {
                 .build();
 
         Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
+                        .nome("Gabriel Bastos")
+                        .descricao("estudante de ciencia da computacao")
+                        .usuario(usuario)
+                                .status(Status.PENDENTE)
+                        .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
@@ -248,7 +289,7 @@ public class NoticiaServiceTest {
                 .dataPublicacao(LocalDate.of(2024, 12, 10))
                 .dataExtracao(LocalDate.of(2024, 12, 10))
                 .linkNoticia("http://link.com")
-                .status(Status.NOT_APPROVED)
+                .status(Status.PENDENTE)
                 .build();
         Noticia noticiaSalva = noticiaRepositorio.save(noticia);
         List<Noticia> noticias = noticiaService.listarNoticiasAprovadas();
@@ -268,10 +309,11 @@ public class NoticiaServiceTest {
                 .build();
 
         Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
+                        .nome("Gabriel Bastos")
+                        .descricao("estudante de ciencia da computacao")
+                        .usuario(usuario)
+                                .status(Status.PENDENTE)
+                        .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
         Noticia noticia = Noticia.builder()
@@ -281,16 +323,16 @@ public class NoticiaServiceTest {
                 .dataPublicacao(LocalDate.now())
                 .dataExtracao(LocalDate.now())
                 .linkNoticia("http://link.com")
-                .status(Status.NOT_APPROVED)
+                .status(Status.PENDENTE)
                 .build();
 
         Noticia noticiaSalva = noticiaRepositorio.save(noticia);
 
-        noticiaSalva.setStatus(Status.APPROVED);
+        noticiaSalva.setStatus(Status.APROVADO);
         Noticia noticiaAtualizada = noticiaService.atualizarStatusAprovada(noticiaSalva);
 
         Assertions.assertNotNull(noticiaAtualizada);
-        Assertions.assertEquals(Status.APPROVED, noticiaAtualizada.getStatus());
+        Assertions.assertEquals(Status.APROVADO, noticiaAtualizada.getStatus());
 
         // rollback
         noticiaRepositorio.delete(noticiaSalva);
@@ -304,7 +346,7 @@ public class NoticiaServiceTest {
 
     @Test
     @Transactional
-    public void deveObterListaNoticiasUltimos30dias() {
+    public void deveObterListaNoticiasAprovadasUltimos30dias() {
         Usuario usuario = Usuario.builder()
                 .email("teste@teste.com")
                 .senha("123456")
@@ -312,10 +354,11 @@ public class NoticiaServiceTest {
                 .build();
 
         Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
+        .nome("Gabriel Bastos")
+        .descricao("estudante de ciencia da computacao")
+        .usuario(usuario)
+                                .status(Status.PENDENTE)
+        .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
 
@@ -326,7 +369,7 @@ public class NoticiaServiceTest {
                 .dataPublicacao(LocalDate.now().minusDays(31))
                 .dataExtracao(LocalDate.now().minusDays(31))
                 .linkNoticia("http://linkantigo.com")
-                .status(Status.APPROVED)
+                .status(Status.APROVADO)
                 .build();
         Noticia noticiaRecente = Noticia.builder()
                 .egresso(egressoSalvo)
@@ -335,13 +378,13 @@ public class NoticiaServiceTest {
                 .dataPublicacao(LocalDate.now().minusDays(5))
                 .dataExtracao(LocalDate.now().minusDays(5))
                 .linkNoticia("http://linkrecente.com")
-                .status(Status.APPROVED)
+                .status(Status.APROVADO)
                 .build();
 
         noticiaRepositorio.save(noticiaAntiga);
         noticiaRepositorio.save(noticiaRecente);
 
-        List<Noticia> noticias = noticiaService.listarNoticiasUltimos30Dias();
+        List<Noticia> noticias = noticiaService.listarNoticiasAprovadasUltimos30Dias();
         Assertions.assertFalse(noticias.isEmpty());
         Assertions.assertEquals(1, noticias.size());
         Assertions.assertEquals("Noticia Recente", noticias.get(0).getTitulo());
@@ -363,10 +406,11 @@ public class NoticiaServiceTest {
                 .build();
 
         Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
+        .nome("Gabriel Bastos")
+        .descricao("estudante de ciencia da computacao")
+        .usuario(usuario)
+                                .status(Status.PENDENTE)
+        .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
         Noticia noticiaAntiga = Noticia.builder()
@@ -376,12 +420,12 @@ public class NoticiaServiceTest {
                 .dataPublicacao(LocalDate.now().minusDays(31))
                 .dataExtracao(LocalDate.now().minusDays(31))
                 .linkNoticia("http://linkantigo.com")
-                .status(Status.APPROVED)
+                .status(Status.APROVADO)
                 .build();
 
         noticiaRepositorio.save(noticiaAntiga);
 
-        List<Noticia> noticias = noticiaService.listarNoticiasUltimos30Dias();
+        List<Noticia> noticias = noticiaService.listarNoticiasAprovadasUltimos30Dias();
         Assertions.assertTrue(noticias.isEmpty());
 
         // rollback
@@ -400,10 +444,11 @@ public class NoticiaServiceTest {
                 .build();
 
         Egresso egresso = Egresso.builder()
-                .nome("Gabriel Bastos")
-                .descricao("estudante de ciencia da computacao")
-                .usuario(usuario)
-                .build();
+        .nome("Gabriel Bastos")
+        .descricao("estudante de ciencia da computacao")
+        .usuario(usuario)
+                                .status(Status.PENDENTE)
+        .build();
 
         Egresso egressoSalvo = egressoRepositorio.save(egresso);
         Noticia noticia = Noticia.builder()
@@ -413,7 +458,7 @@ public class NoticiaServiceTest {
                 .dataPublicacao(LocalDate.now())
                 .dataExtracao(LocalDate.now())
                 .linkNoticia("http://link.com")
-                .status(Status.APPROVED)
+                .status(Status.APROVADO)
                 .build();
 
         Noticia noticiaSalva = noticiaRepositorio.save(noticia);

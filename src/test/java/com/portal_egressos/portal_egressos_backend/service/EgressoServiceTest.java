@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
@@ -44,6 +45,7 @@ public class EgressoServiceTest {
                                 .instagram("https://www.instagram.com/andderson.ls")
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
                 // acao
                 Egresso egressoSalvo = egressoService.salvarEgresso(egresso);
@@ -72,6 +74,7 @@ public class EgressoServiceTest {
                                 .instagram("https://www.instagram.com/andderson.ls")
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Assertions.assertThrows(RegraNegocioRunTime.class, () -> egressoService.salvarEgresso(egresso),
@@ -93,6 +96,7 @@ public class EgressoServiceTest {
                                 .instagram("https://www.instagram.com/andderson.ls")
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Assertions.assertThrows(RegraNegocioRunTime.class, () -> egressoService.salvarEgresso(egresso),
@@ -114,6 +118,7 @@ public class EgressoServiceTest {
                                 .instagram("https://www.instagram.com/andderson.ls")
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Assertions.assertThrows(RegraNegocioRunTime.class, () -> egressoService.salvarEgresso(egresso),
@@ -143,6 +148,7 @@ public class EgressoServiceTest {
                                 .instagram("https://www.instagram.com/andderson.ls")
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuario1)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egresso2 = Egresso.builder().nome("Anderson Silva")
@@ -152,6 +158,7 @@ public class EgressoServiceTest {
                                 .instagram("https://www.instagram.com/andderson.ls")
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuario2)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso filtro = Egresso.builder().nome("Anderson")
@@ -195,6 +202,7 @@ public class EgressoServiceTest {
                                 .instagram("https://www.instagram.com/andderson.ls")
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 // ação
@@ -241,6 +249,7 @@ public class EgressoServiceTest {
                                 .instagram("https://www.instagram.com/andderson.ls")
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 // ação
@@ -279,6 +288,7 @@ public class EgressoServiceTest {
                                 .instagram("https://www.instagram.com/andderson.ls")
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuario1)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egresso2 = Egresso.builder().nome("Anderson Silva")
@@ -288,6 +298,7 @@ public class EgressoServiceTest {
                                 .instagram("https://www.instagram.com/andderson.ls")
                                 .curriculo("lorem ipsum lore")
                                 .usuario(usuario2)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 // acao
@@ -303,5 +314,105 @@ public class EgressoServiceTest {
                 Assertions.assertEquals(2, resultado.size());
                 Assertions.assertTrue(resultado.stream().anyMatch(e -> e.getNome().equals("Anderson Lopes")));
                 Assertions.assertTrue(resultado.stream().anyMatch(e -> e.getNome().equals("Anderson Silva")));
+        }
+
+        @Test
+        public void deveListarEgressosAprovados() {
+                // cenário
+                Usuario usuario1 = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("12345678")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Usuario usuario2 = Usuario.builder()
+                                .email("teste2@teste2.com")
+                                .senha("12345678")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Egresso egresso1 = Egresso.builder().nome("Anderson Lopes")
+                                .descricao("lorem ipsum lore")
+                                .foto("urlteste")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes-silva-891774237")
+                                .instagram("https://www.instagram.com/andderson.ls")
+                                .curriculo("lorem ipsum lore")
+                                .usuario(usuario1)
+                                .status(Status.APROVADO)
+                                .build();
+
+                Egresso egresso2 = Egresso.builder().nome("Anderson Silva")
+                                .descricao("lorem ipsum lore")
+                                .foto("urlteste")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes-silva-891774237")
+                                .instagram("https://www.instagram.com/andderson.ls")
+                                .curriculo("lorem ipsum lore")
+                                .usuario(usuario2)
+                                .status(Status.APROVADO)
+                                .build();
+
+                // acao
+                Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1);
+                Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2);
+                List<Egresso> resultado = egressoService.listarEgressos();
+
+                // rollback
+                egressoRepositorio.delete(egressoSalvo1);
+                egressoRepositorio.delete(egressoSalvo2);
+
+                // verificações
+                Assertions.assertEquals(2, resultado.size());
+                resultado.forEach(n -> Assertions.assertEquals(Status.APROVADO, n.getStatus()));
+
+        }
+
+        @Test
+        public void deveListarEgressosPendentes() {
+                // cenário
+                Usuario usuario1 = Usuario.builder()
+                                .email("teste@teste.com")
+                                .senha("12345678")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Usuario usuario2 = Usuario.builder()
+                                .email("teste2@teste2.com")
+                                .senha("12345678")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Egresso egresso1 = Egresso.builder().nome("Anderson Lopes")
+                                .descricao("lorem ipsum lore")
+                                .foto("urlteste")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes-silva-891774237")
+                                .instagram("https://www.instagram.com/andderson.ls")
+                                .curriculo("lorem ipsum lore")
+                                .usuario(usuario1)
+                                .status(Status.PENDENTE)
+                                .build();
+
+                Egresso egresso2 = Egresso.builder().nome("Anderson Silva")
+                                .descricao("lorem ipsum lore")
+                                .foto("urlteste")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes-silva-891774237")
+                                .instagram("https://www.instagram.com/andderson.ls")
+                                .curriculo("lorem ipsum lore")
+                                .usuario(usuario2)
+                                .status(Status.PENDENTE)
+                                .build();
+
+                // acao
+                Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1);
+                Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2);
+                List<Egresso> resultado = egressoService.listarEgressos();
+
+                // rollback
+                egressoRepositorio.delete(egressoSalvo1);
+                egressoRepositorio.delete(egressoSalvo2);
+
+                // verificações
+                Assertions.assertEquals(2, resultado.size());
+                resultado.forEach(n -> Assertions.assertEquals(Status.PENDENTE, n.getStatus()));
+
         }
 }

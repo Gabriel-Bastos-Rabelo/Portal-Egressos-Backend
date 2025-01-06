@@ -7,6 +7,8 @@ import lombok.*;
 
 import java.time.LocalDate;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
+
 @Entity
 @Data
 @Builder
@@ -48,6 +50,7 @@ public class Oportunidade {
     @Column(name = "link")
     private String link;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private String status;
+    private Status status;
 }

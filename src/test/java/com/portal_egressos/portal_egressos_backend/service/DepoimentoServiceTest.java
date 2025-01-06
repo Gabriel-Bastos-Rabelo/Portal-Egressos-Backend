@@ -20,6 +20,7 @@ import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.DepoimentoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.services.DepoimentoService;
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 
 import jakarta.transaction.Transactional;
 
@@ -50,6 +51,7 @@ public class DepoimentoServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -58,6 +60,7 @@ public class DepoimentoServiceTest {
                                 .egresso(egressoSalvo)
                                 .texto("Depoimento Teste.")
                                 .data(LocalDate.now())
+.status(Status.PENDENTE)
                                 .build();
 
                 // Ação
@@ -86,6 +89,7 @@ public class DepoimentoServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -93,6 +97,7 @@ public class DepoimentoServiceTest {
                 Depoimento depoimento = Depoimento.builder()
                                 .egresso(egressoSalvo)
                                 .data(LocalDate.now())
+.status(Status.PENDENTE)
                                 .build();
 
                 Assertions.assertThrows(RegraNegocioRunTime.class, () -> depoimentoService.salvarDepoimento(depoimento),
@@ -113,6 +118,7 @@ public class DepoimentoServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -120,6 +126,7 @@ public class DepoimentoServiceTest {
                 Depoimento depoimento = Depoimento.builder()
                                 .texto("Depoimento Teste.")
                                 .data(LocalDate.now())
+.status(Status.PENDENTE)
                                 .egresso(egressoSalvo)
                                 .build();
 
@@ -152,6 +159,7 @@ public class DepoimentoServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -159,6 +167,7 @@ public class DepoimentoServiceTest {
                 Depoimento depoimento = Depoimento.builder()
                                 .texto("Depoimento Teste.")
                                 .data(LocalDate.now())
+.status(Status.PENDENTE)
                                 .egresso(egressoSalvo)
                                 .build();
 
@@ -193,12 +202,14 @@ public class DepoimentoServiceTest {
                                         .nome("Egresso")
                                         .descricao("estudante de ciencia da computacao")
                                         .usuario(usuario)
+                                        .status(Status.PENDENTE)
                                         .build();
                         egressos.add(egressoRepositorio.save(egresso));
 
                         Depoimento depoimento = Depoimento.builder()
                                         .texto("Depoimento do Egresso " + i + ".")
                                         .data(LocalDate.now())
+                                        .status(Status.PENDENTE)
                                         .egresso(egressos.get(i - 1))
                                         .build();
 
@@ -219,6 +230,96 @@ public class DepoimentoServiceTest {
 
         @Test
         @Transactional
+        public void deveListarDepoimentosAprovados() {
+                // Cenário
+                List<Egresso> egressos = new ArrayList<>();
+                List<Depoimento> depoimentosSalvos = new ArrayList<>();
+
+                for (int i = 1; i <= 3; i++) {
+                        Usuario usuario = Usuario.builder()
+                                        .email("teste@teste.com")
+                                        .senha("12345")
+                                        .role(UserRole.EGRESSO)
+                                        .build();
+
+                        Egresso egresso = Egresso.builder()
+                                        .nome("Egresso")
+                                        .descricao("estudante de ciencia da computacao")
+                                        .usuario(usuario)
+                                        .status(Status.APROVADO)
+                                        .build();
+                        egressos.add(egressoRepositorio.save(egresso));
+
+                        Depoimento depoimento = Depoimento.builder()
+                                        .texto("Depoimento do Egresso " + i + ".")
+                                        .data(LocalDate.now())
+                                        .status(Status.APROVADO)
+                                        .egresso(egressos.get(i - 1))
+                                        .build();
+
+                        depoimentosSalvos.add(depoimentoRepositorio.save(depoimento));
+                }
+
+                // Ação
+                List<Depoimento> depoimentos = depoimentoService.listarDepoimentosAprovados();
+
+                // Rollback
+                depoimentosSalvos.forEach(depoimentoRepositorio::delete);
+                egressos.forEach(egressoRepositorio::delete);
+
+                // Verificação
+                Assertions.assertNotNull(depoimentos);
+                Assertions.assertEquals(3, depoimentos.size());
+                depoimentos.forEach(n -> Assertions.assertEquals(Status.APROVADO, n.getStatus()));
+        }
+
+        @Test
+        @Transactional
+        public void deveListarDepoimentosPendentes() {
+                // Cenário
+                List<Egresso> egressos = new ArrayList<>();
+                List<Depoimento> depoimentosSalvos = new ArrayList<>();
+
+                for (int i = 1; i <= 3; i++) {
+                        Usuario usuario = Usuario.builder()
+                                        .email("teste@teste.com")
+                                        .senha("12345")
+                                        .role(UserRole.EGRESSO)
+                                        .build();
+
+                        Egresso egresso = Egresso.builder()
+                                        .nome("Egresso")
+                                        .descricao("estudante de ciencia da computacao")
+                                        .usuario(usuario)
+                                        .status(Status.APROVADO)
+                                        .build();
+                        egressos.add(egressoRepositorio.save(egresso));
+
+                        Depoimento depoimento = Depoimento.builder()
+                                        .texto("Depoimento do Egresso " + i + ".")
+                                        .data(LocalDate.now())
+                                        .status(Status.PENDENTE)
+                                        .egresso(egressos.get(i - 1))
+                                        .build();
+
+                        depoimentosSalvos.add(depoimentoRepositorio.save(depoimento));
+                }
+
+                // Ação
+                List<Depoimento> depoimentos = depoimentoService.listarDepoimentosPendentes();
+
+                // Rollback
+                depoimentosSalvos.forEach(depoimentoRepositorio::delete);
+                egressos.forEach(egressoRepositorio::delete);
+
+                // Verificação
+                Assertions.assertNotNull(depoimentos);
+                Assertions.assertEquals(3, depoimentos.size());
+                depoimentos.forEach(n -> Assertions.assertEquals(Status.PENDENTE, n.getStatus()));
+        }
+
+        @Test
+        @Transactional
         public void deveGerarErroAoSalvarSegundoDepoimentoParaMesmoEgresso() {
                 // Cenário
                 Usuario usuario = Usuario.builder()
@@ -231,6 +332,7 @@ public class DepoimentoServiceTest {
                                 .nome("Egresso")
                                 .descricao("estudante de ciencia da computacao")
                                 .usuario(usuario)
+                                .status(Status.PENDENTE)
                                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);
@@ -238,12 +340,14 @@ public class DepoimentoServiceTest {
                 Depoimento primeiroDepoimento = Depoimento.builder()
                                 .texto("Primeiro depoimento.")
                                 .data(LocalDate.now())
+                                .status(Status.PENDENTE)
                                 .egresso(egressoSalvo)
                                 .build();
 
                 Depoimento segundoDepoimento = Depoimento.builder()
                                 .texto("Segundo depoimento.")
                                 .data(LocalDate.now())
+                                .status(Status.PENDENTE)
                                 .egresso(egressoSalvo)
                                 .build();
 
