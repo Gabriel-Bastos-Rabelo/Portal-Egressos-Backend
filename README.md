@@ -4,7 +4,7 @@
 
 ## Rodando a aplicação localmente
 
-#Criar um .env com : JWT_SECRET="segredodinastia2024tql"
+Criar um .env com : JWT_SECRET="segredodinastia2024tql"
 
 Existem várias maneiras de executar uma aplicação Spring Boot na sua máquina local. Uma opção é executar o método main da classe PortalEgressosBackendApplication a partir da sua IDE.
 
