@@ -4,6 +4,8 @@
 
 ## Rodando a aplicação localmente
 
+#Criar um .env com : JWT_SECRET="segredodinastia2024tql"
+
 Existem várias maneiras de executar uma aplicação Spring Boot na sua máquina local. Uma opção é executar o método main da classe PortalEgressosBackendApplication a partir da sua IDE.
 
 Alternativamente você pode usar [Spring Boot Maven plugin](https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html) como:
@@ -11,4 +13,5 @@ Alternativamente você pode usar [Spring Boot Maven plugin](https://docs.spring.
 ```shell
 mvn spring-boot:run
 ```
+
 
