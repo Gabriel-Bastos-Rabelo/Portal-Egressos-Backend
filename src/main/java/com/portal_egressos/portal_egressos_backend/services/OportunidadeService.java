@@ -70,13 +70,23 @@ public class OportunidadeService {
         oportunidadeRepositorio.delete(oportunidade);
     }
 
-    // Verificar Oportunidade por ID
-    public void verificarOportunidadeId(Oportunidade oportunidade) {
+
+    public Oportunidade verificarOportunidadeId(Oportunidade oportunidade) {
         if ((oportunidade == null) || (oportunidade.getId() == null)
                 || !(oportunidadeRepositorio.existsById(oportunidade.getId()))) {
             throw new RegraNegocioRunTime("ID de oportunidade é inválido.");
         }
+        return oportunidadeRepositorio.findById(oportunidade.getId()).get();
     }
+
+    public Oportunidade buscarOportunidadePorId(Long id) {
+        if (id == null) {
+            throw new RegraNegocioRunTime("O ID da oportunidade deve ser informado.");
+        }
+        return oportunidadeRepositorio.findById(id)
+                .orElseThrow(() -> new RegraNegocioRunTime("Oportunidade com ID " + id + " não encontrada."));
+    }
+    
 
     // Verificar Oportunidade por título
     public List<Oportunidade> buscarPorTitulo(String titulo) {
