@@ -32,6 +32,4 @@ jobs:
       env:
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
-    - name: Update dependency graph
-      uses: advanced-security/maven-dependency-submission-action@v2
 
