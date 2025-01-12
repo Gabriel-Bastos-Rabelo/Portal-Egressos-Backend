@@ -17,19 +17,32 @@ jobs:
       SPRING_PROFILES_ACTIVE: test  
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
-        cache: maven
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
 
-    - name: Run Maven Tests
-      run: mvn test
-      env:
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      - name: Set up .env file
+        run: |
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
 
+      - name: Verify JWT_SECRET is Set
+        run: |
+          if [ -z "$JWT_SECRET" ]; then
+            echo "JWT_SECRET is not set"
+            exit 1
+          else
+            echo "JWT_SECRET is set"
+          fi
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
+      - name: Run Maven Tests
+        run: mvn test
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
