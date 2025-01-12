@@ -1,4 +1,4 @@
-name: Java CI - Run Tests
+name: Java CI with Maven
 
 on:
   push:
@@ -9,18 +9,29 @@ on:
       - '*'
 
 jobs:
-  test:
+  build:
 
     runs-on: ubuntu-latest
 
+    env:
+      SPRING_PROFILES_ACTIVE: test  
+
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Repository
+      uses: actions/checkout@v4
 
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         java-version: '17'
         distribution: 'temurin'
+        cache: maven
 
     - name: Run Maven Tests
       run: mvn test
+      env:
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+    - name: Update dependency graph
+      uses: advanced-security/maven-dependency-submission-action@v2
+
