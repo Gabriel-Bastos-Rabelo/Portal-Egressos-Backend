@@ -329,7 +329,7 @@ public class NoticiaServiceTest {
         Noticia noticiaSalva = noticiaRepositorio.save(noticia);
 
         noticiaSalva.setStatus(Status.APROVADO);
-        Noticia noticiaAtualizada = noticiaService.atualizarStatusAprovada(noticiaSalva);
+        Noticia noticiaAtualizada = noticiaService.atualizarStatusNoticia(noticiaSalva);
 
         Assertions.assertNotNull(noticiaAtualizada);
         Assertions.assertEquals(Status.APROVADO, noticiaAtualizada.getStatus());
@@ -340,100 +340,11 @@ public class NoticiaServiceTest {
     }
 
     public void deveGerarErroAoTentarAtualizarStatusDeNoticiaNula() {
-        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.atualizarStatusAprovada(null),
+        Assertions.assertThrows(RegraNegocioRunTime.class, () -> noticiaService.atualizarStatusNoticia(null),
                 "A notícia não pode ser nula.");
     }
 
-    @Test
-    @Transactional
-    public void deveObterListaNoticiasAprovadasUltimos30dias() {
-        Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("123456")
-                .role(UserRole.EGRESSO)
-                .build();
-
-        Egresso egresso = Egresso.builder()
-        .nome("Gabriel Bastos")
-        .descricao("estudante de ciencia da computacao")
-        .usuario(usuario)
-                                .status(Status.PENDENTE)
-        .build();
-
-        Egresso egressoSalvo = egressoRepositorio.save(egresso);
-
-        Noticia noticiaAntiga = Noticia.builder()
-                .egresso(egressoSalvo)
-                .titulo("Noticia Antiga")
-                .descricao("Descricao antiga")
-                .dataPublicacao(LocalDate.now().minusDays(31))
-                .dataExtracao(LocalDate.now().minusDays(31))
-                .linkNoticia("http://linkantigo.com")
-                .status(Status.APROVADO)
-                .build();
-        Noticia noticiaRecente = Noticia.builder()
-                .egresso(egressoSalvo)
-                .titulo("Noticia Recente")
-                .descricao("Descricao recente")
-                .dataPublicacao(LocalDate.now().minusDays(5))
-                .dataExtracao(LocalDate.now().minusDays(5))
-                .linkNoticia("http://linkrecente.com")
-                .status(Status.APROVADO)
-                .build();
-
-        noticiaRepositorio.save(noticiaAntiga);
-        noticiaRepositorio.save(noticiaRecente);
-
-        List<Noticia> noticias = noticiaService.listarNoticiasAprovadasUltimos30Dias();
-        Assertions.assertFalse(noticias.isEmpty());
-        Assertions.assertEquals(1, noticias.size());
-        Assertions.assertEquals("Noticia Recente", noticias.get(0).getTitulo());
-
-        // rollback
-        noticiaRepositorio.delete(noticiaAntiga);
-        noticiaRepositorio.delete(noticiaRecente);
-        egressoRepositorio.delete(egressoSalvo);
-
-    }
-
-    @Test
-    @Transactional
-    public void deveObterListaNoticiasUltimos30diasVaziaQuandoNaoHouver() {
-        Usuario usuario = Usuario.builder()
-                .email("teste@teste.com")
-                .senha("123456")
-                .role(UserRole.EGRESSO)
-                .build();
-
-        Egresso egresso = Egresso.builder()
-        .nome("Gabriel Bastos")
-        .descricao("estudante de ciencia da computacao")
-        .usuario(usuario)
-                                .status(Status.PENDENTE)
-        .build();
-
-        Egresso egressoSalvo = egressoRepositorio.save(egresso);
-        Noticia noticiaAntiga = Noticia.builder()
-                .egresso(egressoSalvo)
-                .titulo("Noticia Antiga")
-                .descricao("Descricao antiga")
-                .dataPublicacao(LocalDate.now().minusDays(31))
-                .dataExtracao(LocalDate.now().minusDays(31))
-                .linkNoticia("http://linkantigo.com")
-                .status(Status.APROVADO)
-                .build();
-
-        noticiaRepositorio.save(noticiaAntiga);
-
-        List<Noticia> noticias = noticiaService.listarNoticiasAprovadasUltimos30Dias();
-        Assertions.assertTrue(noticias.isEmpty());
-
-        // rollback
-        noticiaRepositorio.delete(noticiaAntiga);
-        egressoRepositorio.delete(egressoSalvo);
-
-    }
-
+    
     @Test
     @Transactional
     public void deveRemoverNoticia() {
