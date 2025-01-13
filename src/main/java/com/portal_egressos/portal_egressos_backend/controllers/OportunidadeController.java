@@ -69,21 +69,6 @@ public class OportunidadeController {
         }
     }
 
-
-    // // Atualizar uma oportunidade (incluindo status)
-    // @PutMapping("/{id}")
-    // public ResponseEntity<?> atualizarOportunidade(@PathVariable Long id, @RequestBody OportunidadeDTO oportunidadeDTO) {
-    //     try {
-    //         Oportunidade oportunidade = converterParaModelo(oportunidadeDTO);
-    //         oportunidade.setId(id);
-
-    //         Oportunidade oportunidadeAtualizada = oportunidadeService.atualizarOportunidade(oportunidade);
-    //         return ResponseEntity.ok(converterParaDTO(oportunidadeAtualizada));
-    //     } catch (Exception e) {
-    //         return ResponseEntity.badRequest().body(e.getMessage());
-    //     }
-    // }
-
      @PutMapping("/{id}/status")
      public ResponseEntity<?> atualizarStatusOportunidade(@PathVariable("id") Long id, @RequestParam Status status) {
          try {

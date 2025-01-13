@@ -35,7 +35,6 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.DELETE, "/api/oportunidade/**").hasRole("COORDENADOR") // Deletar
             .anyRequest().authenticated()
         )
-
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }
