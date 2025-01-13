@@ -6,12 +6,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Coordenador;
+import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.repositories.CoordenadorRepository;
 
 @Service
@@ -112,6 +116,14 @@ public class CoordenadorService {
 
     public List<Coordenador> listarCoordenadores() {
         return coordenadorRepositorio.findAll();
+    }
+
+    public List<Coordenador> buscarCoordenadorPorNome(Coordenador coodenador) {
+        Example<Coordenador> example = Example.of(coodenador, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(StringMatcher.CONTAINING));
+
+        return coordenadorRepositorio.findAll(example);
     }
 
 }
