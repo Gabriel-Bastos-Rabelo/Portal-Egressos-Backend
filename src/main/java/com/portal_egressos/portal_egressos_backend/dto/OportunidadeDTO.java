@@ -1,45 +1,31 @@
 package com.portal_egressos.portal_egressos_backend.dto;
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 
-import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
-import com.portal_egressos.portal_egressos_backend.models.Egresso;
-
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@Getter 
+@Setter
+@Builder
 public class OportunidadeDTO {
-   
+    private Long id;
     private String titulo;
-    
     private String descricao;
-
     private String local;
-
     private String tipo;
-
     private LocalDate dataPublicacao;
-
     private LocalDate dataExpiracao;
-
     private BigDecimal salario;
-
     private String link;
-
+    private Status status;
     private Long idEgresso;
+    private String nomeEgresso;
 
-    public Oportunidade toEntity() {
-        return Oportunidade.builder()
-                .titulo(this.titulo)
-                .descricao(this.descricao)
-                .local(this.local)
-                .tipo(this.tipo)
-                .dataPublicacao(this.dataPublicacao)
-                .dataExpiracao(this.dataExpiracao)
-                .salario(this.salario)
-                .link(this.link)
-                .build();
-    }
 }
 
