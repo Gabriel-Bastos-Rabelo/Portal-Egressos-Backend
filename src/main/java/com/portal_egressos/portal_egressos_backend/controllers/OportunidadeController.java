@@ -2,7 +2,10 @@ package com.portal_egressos.portal_egressos_backend.controllers;
 
 import com.portal_egressos.portal_egressos_backend.dto.OportunidadeDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
+import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
+import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
+import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 import com.portal_egressos.portal_egressos_backend.services.OportunidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,23 +21,34 @@ public class OportunidadeController {
     @Autowired
     private OportunidadeService oportunidadeService;
 
-    // Criar nova oportunidade
-    @PostMapping
+    @Autowired
+    private EgressoService egressoService;
+
+    // salvar nova oportunidade
+    @PostMapping("/salvar")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Oportunidade> criarOportunidade(@RequestBody OportunidadeDTO oportunidadeDTO) {
         try {
-            // Converter DTO para entidade
+            Egresso egresso = egressoService.buscarPorId(oportunidadeDTO.getIdEgresso());
+            if (egresso == null) {
+                throw new RegraNegocioRunTime("O egresso deve ser informado.");
+            }
+
             Oportunidade oportunidade = oportunidadeDTO.toEntity();
-            oportunidade.setStatus(Status.PENDENTE); 
+            oportunidade.setEgresso(egresso); 
+            oportunidade.setStatus(Status.PENDENTE);
+
             Oportunidade oportunidadeCriada = oportunidadeService.salvarOportunidade(oportunidade);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(oportunidadeCriada);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
 
+
     // Atualizar uma oportunidade existente
-    @PutMapping("/{id}")
+    @PutMapping("atualizar/{id}")
     public ResponseEntity<Oportunidade> atualizarOportunidade(
             @PathVariable Long id, @RequestBody OportunidadeDTO oportunidadeDTO) {
         try {
@@ -48,8 +62,8 @@ public class OportunidadeController {
         }
     }
 
-    // Alterar o status de uma oportunidade
-    @PatchMapping("/{id}/status")
+    // Alterar o status de uma oportunidade ( status/id?novoStatus=PAPAPAA)
+    @PatchMapping("status/{id}")
     public ResponseEntity<Oportunidade> alterarStatusOportunidade(
             @PathVariable Long id, @RequestParam Status novoStatus) {
         try {
@@ -63,7 +77,7 @@ public class OportunidadeController {
     }
 
     // Remover uma oportunidade
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/remover/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removerOportunidade(@PathVariable Long id) {
         Oportunidade oportunidade = new Oportunidade();
@@ -72,7 +86,7 @@ public class OportunidadeController {
     }
 
     // Listar todas as oportunidades públicas (status APROVADO)
-    @GetMapping
+    @GetMapping("/aprovadas")
     public ResponseEntity<List<Oportunidade>> listarOportunidadesPublicas() {
         try {
             List<Oportunidade> oportunidades = oportunidadeService.listarOportunidadesAprovadasOrdenadasPorData();

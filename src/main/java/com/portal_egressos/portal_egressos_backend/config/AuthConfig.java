@@ -27,7 +27,17 @@ public class AuthConfig {
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorize -> authorize
-            .requestMatchers("/api/auth/signin").permitAll())
+            .requestMatchers("/api/auth/signin").permitAll()
+            .requestMatchers("/api/oportunidades/salvar").permitAll()
+            .requestMatchers("/api/oportunidades/atualizar/{id}").permitAll()
+            .requestMatchers("/api/oportunidades/status/{id}").hasRole("COORDENADOR")
+            .requestMatchers("/api/oportunidades/aprovadas").permitAll()
+            .requestMatchers("/api/oportunidades/pendentes").hasRole("COORDENADOR")
+            .requestMatchers("/api/oportunidades/remover/{id}").hasRole("COORDENADOR")
+            .requestMatchers("/api/oportunidades/titulo/{titulo}").permitAll()
+            .requestMatchers("/api/oportunidades/egresso/{nome}").permitAll()
+
+            )
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }
