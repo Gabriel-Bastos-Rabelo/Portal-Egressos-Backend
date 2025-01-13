@@ -132,8 +132,6 @@ public class OportunidadeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
-   
     private Oportunidade converterParaModelo(OportunidadeDTO dto) {
         return Oportunidade.builder()
                 .id(dto.getId())
@@ -148,7 +146,6 @@ public class OportunidadeController {
                 .status(Status.PENDENTE) 
                 .build();
     }
-
     private OportunidadeDTO converterParaDTO(Oportunidade oportunidade) {
         return OportunidadeDTO.builder()
                 .id(oportunidade.getId())
