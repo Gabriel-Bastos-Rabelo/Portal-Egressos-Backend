@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
+import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
 
 @Service
@@ -26,5 +27,9 @@ public class UsuarioService implements UserDetailsService{
 
     }
 
-
+    public Usuario buscarPorId(Long id){
+        Usuario usuario = usuarioRepositorio.findById(id)
+                            .orElseThrow(() -> new RuntimeException("Usuario não encontrado com id: " + id));
+        return usuario;
+    }
 }

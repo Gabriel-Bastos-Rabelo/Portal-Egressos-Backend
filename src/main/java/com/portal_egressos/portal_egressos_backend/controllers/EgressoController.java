@@ -1,8 +1,12 @@
 package com.portal_egressos.portal_egressos_backend.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +21,12 @@ import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepositor
 import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
+import com.portal_egressos.portal_egressos_backend.services.UsuarioService;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 @RestController
 @RequestMapping("/api/egresso")
@@ -31,29 +41,95 @@ public class EgressoController {
     @Autowired
     private CursoEgressoService cursoEgressoService;
 
+    @Autowired
+    private UsuarioService usuarioService;
 
     // Usuario service
     @Autowired
     private UsuarioRepository usuarioRepositorio;
 
-    @PostMapping
-    public ResponseEntity salvarEgresso(@RequestBody EgressoDTO egressoDTO) {
+    @PostMapping("/salvar")
+    public ResponseEntity salvarEgresso(@RequestBody EgressoDTO dto) {
         try {
             Usuario usuario = Usuario.builder()
-                    .email(egressoDTO.getEmailUsuario())
-                    .senha(egressoDTO.getSenhaUsuario())
+                    .email(dto.getEmailUsuario())
+                    .senha(dto.getSenhaUsuario())
                     .role(UserRole.EGRESSO)
                     .build();
 
             usuarioRepositorio.save(usuario);
             
-            Egresso egresso = converterParaModelo(egressoDTO, usuario);
+            Egresso egresso = converterParaModelo(dto, usuario);
             Egresso egressoRetornado = egressoService.salvarEgresso(egresso);
-            Curso curso = cursoService.buscarPorId(egressoDTO.getIdCurso());
-            CursoEgresso cursoEgresso = salvarCursoEgresso(egressoDTO, egresso, curso);
+            Curso curso = cursoService.buscarPorId(dto.getIdCurso());
+            CursoEgresso cursoEgresso = salvarCursoEgresso(dto, egresso, curso);
             cursoEgressoService.salvar(cursoEgresso);
 
             return ResponseEntity.ok(converterParaDTO(egressoRetornado));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/atualizar/{id}")
+    public ResponseEntity atualizar(@RequestBody EgressoDTO dto, @PathVariable Long id) {
+        try {
+            Usuario usuario = usuarioService.buscarPorId(dto.getIdUsuario());
+            Egresso egresso = converterParaModelo(dto, usuario);
+            Egresso egressoAtualizado = egressoService.atualizarEgresso(egresso);
+            return ResponseEntity.ok(egressoAtualizado);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/deletar/{id}")
+    public ResponseEntity deletarNoticia(@PathVariable Long id) {
+        try{
+            Egresso egresso = egressoService.buscarPorId(id);
+            egressoService.removerEgresso(egresso);
+            return ResponseEntity.noContent().build();
+        }
+        catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        
+    }
+
+    @GetMapping("/buscarPorNome")
+    public ResponseEntity buscarEgressoPorNome(@RequestBody EgressoDTO dto) {
+        try {
+            Usuario usuario = usuarioService.buscarPorId(dto.getIdUsuario());
+            Egresso egresso = converterParaModelo(dto, usuario);
+
+            List<Egresso> egressosRetornado = egressoService.buscarEgresso(egresso);
+            List<EgressoDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(egressosDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/buscarAprovados")
+    public ResponseEntity buscarEgressoAprovados() {
+        try {
+            List<Egresso> egressosRetornado = egressoService.listarEgressosAprovados();
+            List<EgressoDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(egressosDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/listar")
+    public ResponseEntity listarEgressos() {
+        try {
+            List<Egresso> egressosRetornado = egressoService.listarEgressos();
+            List<EgressoDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(egressosDTO);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
