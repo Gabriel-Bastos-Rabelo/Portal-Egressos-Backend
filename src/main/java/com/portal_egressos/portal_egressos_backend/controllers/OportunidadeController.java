@@ -25,7 +25,7 @@ public class OportunidadeController {
     private EgressoService egressoService;
 
     // Criar uma nova oportunidade (status PENDENTE)
-    @PostMapping
+    @PostMapping("/salvar")
     public ResponseEntity<?> salvarOportunidade(@RequestBody OportunidadeDTO oportunidadeDTO) {
         try {
             Egresso filtro = Egresso.builder().id(oportunidadeDTO.getIdEgresso()).build();
@@ -42,11 +42,12 @@ public class OportunidadeController {
             Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
             return ResponseEntity.ok(converterParaDTO(oportunidadeSalva));
         } catch (Exception e) {
+            System.err.println(e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("atualizar/{id}")
     public ResponseEntity<?> atualizarOportunidade(@PathVariable Long id, @RequestBody OportunidadeDTO oportunidadeDTO) {
         try {
             Oportunidade oportunidade = converterParaModelo(oportunidadeDTO);
@@ -68,20 +69,27 @@ public class OportunidadeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+     
 
-     @PutMapping("/{id}/status")
-     public ResponseEntity<?> atualizarStatusOportunidade(@PathVariable("id") Long id, @RequestParam Status status) {
-         try {
-             Oportunidade oportunidade = Oportunidade.builder().id(id).status(status).build();
-             Oportunidade oportunidadeAtualizada = oportunidadeService.atualizarStatusOportunidade(oportunidade);
-             return ResponseEntity.ok(converterParaDTO(oportunidadeAtualizada));
-         } catch (Exception e) {
-             return ResponseEntity.badRequest().body(e.getMessage());
+    @PutMapping("status/{id}")
+    public ResponseEntity<?> atualizarStatusOportunidade(@PathVariable("id") Long id) {
+        try {
+            // Definindo o status como "APROVADO" diretamente
+            Status status = Status.APROVADO;  // Defina o valor do Status conforme o seu Enum
+            
+            Oportunidade oportunidade = Oportunidade.builder()
+                                                    .id(id)
+                                                    .status(status)  // Status é setado automaticamente
+                                                    .build();
+            Oportunidade oportunidadeAtualizada = oportunidadeService.atualizarStatusOportunidade(oportunidade);
+            return ResponseEntity.ok(converterParaDTO(oportunidadeAtualizada));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-     }
-
+    }
     
-    @GetMapping
+    
+    @GetMapping("/listar")
     public ResponseEntity<?> listarOportunidades() {
         try {
             List<Oportunidade> oportunidades = oportunidadeService.listarTodasOportunidadesOrdenadasPorData();
@@ -107,8 +115,8 @@ public class OportunidadeController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletarOportunidade(@PathVariable Long id) {
+    @DeleteMapping("remover/{id}")
+    public ResponseEntity<?> removerOportunidade(@PathVariable Long id) {
         try {
             Oportunidade oportunidade = oportunidadeService.buscarOportunidadePorId(id);
             oportunidadeService.removerOportunidade(oportunidade);
@@ -117,6 +125,7 @@ public class OportunidadeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+    
     private Oportunidade converterParaModelo(OportunidadeDTO dto) {
         return Oportunidade.builder()
                 .id(dto.getId())

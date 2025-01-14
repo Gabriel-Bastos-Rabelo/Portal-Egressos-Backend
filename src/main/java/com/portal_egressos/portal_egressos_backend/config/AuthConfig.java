@@ -30,8 +30,10 @@ public class AuthConfig {
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/api/auth/signin").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/oportunidade/aprovadas").permitAll() // Público
-            .requestMatchers(HttpMethod.POST, "/api/oportunidade").hasAnyRole("COORDENADOR", "EGRESSO") // Criar
-            .requestMatchers(HttpMethod.PUT, "/api/oportunidade/**").hasRole("COORDENADOR") // Atualizar
+            .requestMatchers(HttpMethod.GET, "/api/oportunidade/listar").hasRole("COORDENADOR") //listar
+            .requestMatchers(HttpMethod.POST, "/api/oportunidade/salvar").hasAnyRole("COORDENADOR", "EGRESSO") // Criar
+            .requestMatchers(HttpMethod.PUT, "/api/oportunidade/atualizar/{id}").hasRole("COORDENADOR") // Atualizar
+            .requestMatchers(HttpMethod.PUT, "/api/oportunidade/status/{id}").hasRole("COORDENADOR") // Atualizar status
             .requestMatchers(HttpMethod.DELETE, "/api/oportunidade/**").hasRole("COORDENADOR") // Deletar
             .anyRequest().authenticated()
         )
