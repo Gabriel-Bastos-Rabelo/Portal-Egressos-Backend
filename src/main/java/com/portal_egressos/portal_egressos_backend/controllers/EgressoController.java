@@ -1,26 +1,20 @@
 package com.portal_egressos.portal_egressos_backend.controllers;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.portal_egressos.portal_egressos_backend.dto.CoordenadorDTO;
 import com.portal_egressos.portal_egressos_backend.dto.EgressoDTO;
-import com.portal_egressos.portal_egressos_backend.dto.NoticiaDTO;
-import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
-import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
-import com.portal_egressos.portal_egressos_backend.models.Coordenador;
+import com.portal_egressos.portal_egressos_backend.models.Curso;
+import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
-import com.portal_egressos.portal_egressos_backend.models.Noticia;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
+import com.portal_egressos.portal_egressos_backend.services.CursoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 
 @RestController
@@ -29,6 +23,8 @@ public class EgressoController {
 
     @Autowired
     private EgressoService egressoService;
+
+    private CursoService cursoService;
 
     // Usuario service
     @Autowired
@@ -43,8 +39,13 @@ public class EgressoController {
                     .role(UserRole.EGRESSO)
                     .build();
 
+            usuarioRepositorio.save(usuario);
+            
             Egresso egresso = converterParaModelo(egressoDTO, usuario);
             Egresso egressoRetornado = egressoService.salvarEgresso(egresso);
+            Curso curso = cursoService.buscarPorId(egressoDTO.getIdCurso());
+            salvarCursoEgresso(egressoDTO, egresso, curso);
+
             return ResponseEntity.ok(converterParaDTO(egressoRetornado));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -63,6 +64,15 @@ public class EgressoController {
                 .status(dto.getStatus())
                 .usuario(usuario)
                 .build();
+    }
+
+    private void salvarCursoEgresso(EgressoDTO dto, Egresso egressoSalvo, Curso cursoSalvo){
+            CursoEgresso.builder()
+            .egresso(egressoSalvo)
+            .curso(cursoSalvo)
+            .anoInicio(dto.getAnoInicio())
+            .anoFim(dto.getAnoFim())
+            .build();
     }
 
     private EgressoDTO converterParaDTO(Egresso egresso) {

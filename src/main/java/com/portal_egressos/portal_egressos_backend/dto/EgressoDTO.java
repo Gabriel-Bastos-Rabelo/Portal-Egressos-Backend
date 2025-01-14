@@ -21,4 +21,8 @@ public class EgressoDTO {
     private Long idUsuario;
     private String emailUsuario;
     private String senhaUsuario;
+    private Long idCurso;
+    private Integer anoInicio;
+    private Integer anoFim;
+
 }

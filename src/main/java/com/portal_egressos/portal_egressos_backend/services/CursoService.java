@@ -49,8 +49,10 @@ public class CursoService {
         return cursoRepositorio.findAll();
     }
 
-    public Optional<Curso> buscarPorId(Long id){
-        return cursoRepositorio.findById(id);
+    public Curso buscarPorId(Long id){
+        Curso curso = cursoRepositorio.findById(id)
+                            .orElseThrow(() -> new RuntimeException("Curso não encontrado com id: " + id));
+        return curso;
     }
 
     public List<Egresso> listarEgressosPorCurso(Curso curso){
