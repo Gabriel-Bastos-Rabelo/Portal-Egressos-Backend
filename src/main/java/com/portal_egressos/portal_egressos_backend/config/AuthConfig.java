@@ -35,6 +35,14 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.PUT, "/api/oportunidade/atualizar/{id}").hasRole("COORDENADOR") // Atualizar
             .requestMatchers(HttpMethod.PUT, "/api/oportunidade/status/{id}").hasRole("COORDENADOR") // Atualizar status
             .requestMatchers(HttpMethod.DELETE, "/api/oportunidade/**").hasRole("COORDENADOR") // Deletar
+
+            .requestMatchers(HttpMethod.POST, "/api/depoimento/salvar").hasAnyRole("COORDENADOR", "EGRESSO") // Criar
+            .requestMatchers(HttpMethod.PUT, "/api/depoimento/atualizar/{id}").hasAnyRole("COORDENADOR", "EGRESSO") // Atualizar
+            .requestMatchers(HttpMethod.PUT, "/api/depoimento/status/{id}").hasAnyRole("COORDENADOR") // Atualizar status
+            .requestMatchers(HttpMethod.GET, "/api/depoimento/listar").hasAnyRole("COORDENADOR") // listar
+            .requestMatchers(HttpMethod.GET, "/api/depoimento/aprovados").permitAll()
+            .requestMatchers(HttpMethod.DELETE, "/api/depoimento/remover/{id}").hasAnyRole("COORDENADOR", "EGRESSO") // remover
+
             .anyRequest().authenticated()
         )
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
