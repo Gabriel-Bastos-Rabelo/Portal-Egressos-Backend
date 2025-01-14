@@ -24,5 +24,4 @@ public class EgressoDTO {
     private Long idCurso;
     private Integer anoInicio;
     private Integer anoFim;
-
 }

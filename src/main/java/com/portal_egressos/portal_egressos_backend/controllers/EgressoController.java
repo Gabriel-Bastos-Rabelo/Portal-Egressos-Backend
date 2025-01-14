@@ -14,6 +14,7 @@ import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
+import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 
@@ -24,7 +25,12 @@ public class EgressoController {
     @Autowired
     private EgressoService egressoService;
 
+    @Autowired
     private CursoService cursoService;
+
+    @Autowired
+    private CursoEgressoService cursoEgressoService;
+
 
     // Usuario service
     @Autowired
@@ -44,7 +50,8 @@ public class EgressoController {
             Egresso egresso = converterParaModelo(egressoDTO, usuario);
             Egresso egressoRetornado = egressoService.salvarEgresso(egresso);
             Curso curso = cursoService.buscarPorId(egressoDTO.getIdCurso());
-            salvarCursoEgresso(egressoDTO, egresso, curso);
+            CursoEgresso cursoEgresso = salvarCursoEgresso(egressoDTO, egresso, curso);
+            cursoEgressoService.salvar(cursoEgresso);
 
             return ResponseEntity.ok(converterParaDTO(egressoRetornado));
         } catch (Exception e) {
@@ -66,13 +73,13 @@ public class EgressoController {
                 .build();
     }
 
-    private void salvarCursoEgresso(EgressoDTO dto, Egresso egressoSalvo, Curso cursoSalvo){
-            CursoEgresso.builder()
-            .egresso(egressoSalvo)
-            .curso(cursoSalvo)
-            .anoInicio(dto.getAnoInicio())
-            .anoFim(dto.getAnoFim())
-            .build();
+    private CursoEgresso salvarCursoEgresso(EgressoDTO dto, Egresso egressoSalvo, Curso cursoSalvo){
+        return CursoEgresso.builder()
+                .egresso(egressoSalvo)
+                .curso(cursoSalvo)
+                .anoInicio(dto.getAnoInicio())
+                .anoFim(dto.getAnoFim())
+                .build();
     }
 
     private EgressoDTO converterParaDTO(Egresso egresso) {
