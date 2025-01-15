@@ -55,6 +55,10 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.GET, "/api/cursos/listar").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/cursos/listar_egressos_por_curso/{id}").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/coordenador/listar_quantidade_egressos_por_curso/{id}").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/cargo").hasRole("EGRESSO")
+            .requestMatchers(HttpMethod.GET, "/api/cargo/egresso/{egressoId}").permitAll()
+            .requestMatchers(HttpMethod.PUT, "/api/cargo/{id}").hasRole("EGRESSO")
+            .requestMatchers(HttpMethod.DELETE, "/api/cargo/{id}").hasAnyRole("COORDENADOR", "EGRESSO")
 
             .anyRequest().authenticated())
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

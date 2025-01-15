@@ -31,6 +31,12 @@ public class CargoService {
         }
     }
 
+    public Cargo verificarCargoPorEgresso(Long cargoId, Long egressoId) {
+        return cargoRepositorio.findById(cargoId)
+                .filter(cargo -> cargo.getEgresso().getId().equals(egressoId))
+                .orElseThrow(() -> new RegraNegocioRunTime("Cargo não encontrado ou não pertence ao egresso."));
+    }
+
     @Transactional
     public Cargo salvarCargo(Cargo cargo){
         verificarCargo(cargo);
