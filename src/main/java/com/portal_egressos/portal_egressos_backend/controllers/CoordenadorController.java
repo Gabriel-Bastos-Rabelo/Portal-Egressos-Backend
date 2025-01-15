@@ -24,18 +24,21 @@ public class CoordenadorController {
     private CoordenadorService coordenadorService;
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity atualizarDadosCoordenador(@RequestBody CoordenadorDTO dto, @PathVariable Long id) {
+    public ResponseEntity<?> atualizarCoordenador(@RequestBody CoordenadorDTO dto, @PathVariable Long id) {
         try {
+            Coordenador coordenadorRetornado = coordenadorService.buscarPorId(id);
             Coordenador coordenador = converterParaModelo(dto);
+            coordenador.setId(coordenadorRetornado.getId());
+            coordenador.setUsuario(coordenadorRetornado.getUsuario());
             Coordenador coordenadorAtualizado = coordenadorService.atualizarCoordenador(coordenador);
-            return ResponseEntity.ok(coordenadorAtualizado);
+            return ResponseEntity.ok(converterParaDTO(coordenadorAtualizado));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
-    @GetMapping("/listarCoordenadores")
-    public ResponseEntity listarCoordenadores() {
+    @GetMapping("/listar")
+    public ResponseEntity<?> listarCoordenadores() {
         try {
             List<Coordenador> coordenadores = coordenadorService.listarCoordenadores();
             List<CoordenadorDTO> coordenadoresDTO = coordenadores.stream().map(this::converterParaDTO)
@@ -47,7 +50,7 @@ public class CoordenadorController {
     }
 
     @GetMapping("/buscar")
-    public ResponseEntity buscarCoordenadorPorNome(@RequestBody CoordenadorDTO dto) {
+    public ResponseEntity<?> buscarCoordenadorPorNome(@RequestBody CoordenadorDTO dto) {
         try {
             Coordenador coordenador = converterParaModelo(dto);
             List<Coordenador> coordenadorRetornado = coordenadorService.buscarCoordenadorPorNome(coordenador);

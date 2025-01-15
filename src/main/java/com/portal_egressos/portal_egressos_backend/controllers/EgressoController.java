@@ -18,7 +18,6 @@ import com.portal_egressos.portal_egressos_backend.models.Curso;
 import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
-import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
 import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
@@ -69,7 +68,7 @@ public class EgressoController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity<?> atualizar(@RequestBody EgressoDTO dto, @PathVariable Long id) {
+    public ResponseEntity<?> atualizarEgresso(@RequestBody EgressoDTO dto, @PathVariable Long id) {
         try {
             Egresso egressoRetornado = egressoService.buscarPorId(id);
             Egresso egresso = converterParaModelo(dto);
@@ -84,7 +83,7 @@ public class EgressoController {
     }
 
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<?> deletarNoticia(@PathVariable Long id) {
+    public ResponseEntity<?> deletarEgresso(@PathVariable Long id) {
         try {
             Egresso egresso = egressoService.buscarPorId(id);
             egressoService.removerEgresso(egresso);
@@ -96,7 +95,7 @@ public class EgressoController {
     }
 
     @GetMapping("/buscarPorNome")
-    public ResponseEntity<?> buscarEgressoPorNome(@RequestBody EgressoDTO dto) {
+    public ResponseEntity<?> buscarPorNome(@RequestBody EgressoDTO dto) {
         try {
             Egresso egresso = converterParaModelo(dto);
 
