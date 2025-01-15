@@ -100,6 +100,15 @@ public class EgressoService {
         egressoRepositorio.delete(egresso);
     }
 
+   
+      public Egresso buscarPorId(Long id) {
+        Optional<Egresso> egresso = egressoRepositorio.findById(id);
+        if (egresso.isEmpty()) {
+            throw new RegraNegocioRunTime("Egresso não encontrado.");
+        }
+        return egresso.get();
+    }
+
     public void verificarEgresso(Egresso egresso) {
         if (egresso == null) {
             throw new RegraNegocioRunTime("Egresso inválido.");
