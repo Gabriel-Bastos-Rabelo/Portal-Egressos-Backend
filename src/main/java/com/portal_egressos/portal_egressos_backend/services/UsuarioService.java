@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
-import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
 
@@ -50,5 +49,10 @@ public class UsuarioService implements UserDetailsService {
 
         usuario.setSenha(senhaEncriptada);
         return usuarioRepositorio.save(usuario);
+    }
+
+    public Usuario buscarUsuarioPorEmail(String email) {
+        return usuarioRepositorio.findUsuarioByEmail(email)
+                .orElseThrow(() -> new RegraNegocioRunTime("Usuário não encontrado com o e-mail: " + email));
     }
 }
