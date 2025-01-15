@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.repositories.DepoimentoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
@@ -50,6 +51,26 @@ public class DepoimentoService {
         return depoimentoRepositorio.save(depoimentoExistente);
     }
 
+    @Transactional
+    public Depoimento atualizarStatusDepoimento(Depoimento depoimentoAtualizado) {
+        if (depoimentoAtualizado.getId() == null) {
+            throw new RegraNegocioRunTime("O id do depoimento é obrigatório.");
+        }
+
+        if (depoimentoAtualizado.getStatus() == null) {
+            throw new RegraNegocioRunTime("O status do depoimento é obrigatório.");
+        }
+
+        Depoimento depoimento = depoimentoRepositorio.findById(depoimentoAtualizado.getId())
+                                                    .orElseThrow(() -> new RegraNegocioRunTime("Depoimento não encontrado para o ID: " + depoimentoAtualizado.getId()));
+
+        depoimento.setStatus(depoimentoAtualizado.getStatus());
+
+        return depoimentoRepositorio.save(depoimento);
+    }
+
+
+
     public void verificarDepoimentoId(Depoimento depoimento) {
         if ((depoimento == null) || (depoimento.getId() == null)
                 || !(depoimentoRepositorio.existsById(depoimento.getId()))) {
@@ -58,10 +79,11 @@ public class DepoimentoService {
     }
 
     @Transactional
-    public void removerDepoimento(Depoimento depoimento){
-        verificarDepoimentoId(depoimento);
-        depoimentoRepositorio.delete(depoimento);
-    }
+    public void removerDepoimento(Long id) {
+    Depoimento depoimento = depoimentoRepositorio.findById(id)
+            .orElseThrow(() -> new RegraNegocioRunTime("Depoimento não encontrado para o ID: " + id));
+    depoimentoRepositorio.delete(depoimento);
+}
 
     public List<Depoimento> listarDepoimentos(){
         return depoimentoRepositorio.findAll();

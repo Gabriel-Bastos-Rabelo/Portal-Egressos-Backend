@@ -54,7 +54,7 @@ public class CursoEgressoRepositoryTest {
                 .instagram("teste_instagram")
                 .curriculo("lorem ipsum lore")
                 .usuario(usuario)
-                                .status(Status.PENDENTE)
+                .status(Status.PENDENTE)
                 .build();
 
                 Egresso egressoSalvo = egressoRepositorio.save(egresso);

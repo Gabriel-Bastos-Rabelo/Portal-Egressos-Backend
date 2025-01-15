@@ -144,16 +144,15 @@ public class CursoServiceTest <cursoEgressoService> {
         Curso cursoSalvo = cursoService.salvarCurso(curso); 
 
         //ação
-        Optional<Curso> cursoBuscado = cursoService.buscarPorId(cursoSalvo.getId());
+        Curso cursoBuscado = cursoService.buscarPorId(cursoSalvo.getId());
 
         // rollback
         cursoService.removerCurso(cursoSalvo);
 
         //verificação
-        Assertions.assertThat(cursoBuscado).isPresent();
-        Assertions.assertThat(cursoBuscado.get().getId()).isEqualTo(cursoSalvo.getId());
-        Assertions.assertThat(cursoBuscado.get().getNome()).isEqualTo("Curso Teste");
-        Assertions.assertThat(cursoBuscado.get().getNivel()).isEqualTo("Nível Teste");
+        Assertions.assertThat(cursoBuscado.getId()).isEqualTo(cursoSalvo.getId());
+        Assertions.assertThat(cursoBuscado.getNome()).isEqualTo("Curso Teste");
+        Assertions.assertThat(cursoBuscado.getNivel()).isEqualTo("Nível Teste");
     
     
     }

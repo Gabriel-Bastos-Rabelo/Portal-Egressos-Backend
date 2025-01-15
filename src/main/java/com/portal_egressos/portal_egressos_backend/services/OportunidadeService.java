@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
+import com.portal_egressos.portal_egressos_backend.models.Noticia;
 import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.repositories.OportunidadeRepository;
 
@@ -26,6 +27,20 @@ public class OportunidadeService {
         validarCamposObrigatorios(oportunidade);
         return oportunidadeRepositorio.save(oportunidade);
     }
+
+     @Transactional
+    public Oportunidade atualizarStatusOportunidade(Oportunidade oportunidadeAtualizada) {
+        if(oportunidadeAtualizada.getId() == null){
+            throw new RegraNegocioRunTime("O id da oportunidade é obrigatório.");
+        }
+        if(oportunidadeAtualizada.getStatus() == null){
+            throw new RegraNegocioRunTime("O status da oportunidade é obrigatório.");
+        }
+        Oportunidade oportunidade = buscarOportunidadePorId(oportunidadeAtualizada.getId());
+        oportunidade.setStatus(oportunidadeAtualizada.getStatus());     
+        return oportunidadeRepositorio.save(oportunidade);  
+    }
+
 
     @Transactional
     public Oportunidade atualizarOportunidade(Oportunidade oportunidadeAtualizada) {
@@ -70,13 +85,23 @@ public class OportunidadeService {
         oportunidadeRepositorio.delete(oportunidade);
     }
 
-    // Verificar Oportunidade por ID
-    public void verificarOportunidadeId(Oportunidade oportunidade) {
+
+    public Oportunidade verificarOportunidadeId(Oportunidade oportunidade) {
         if ((oportunidade == null) || (oportunidade.getId() == null)
                 || !(oportunidadeRepositorio.existsById(oportunidade.getId()))) {
             throw new RegraNegocioRunTime("ID de oportunidade é inválido.");
         }
+        return oportunidadeRepositorio.findById(oportunidade.getId()).get();
     }
+
+    public Oportunidade buscarOportunidadePorId(Long id) {
+        if (id == null) {
+            throw new RegraNegocioRunTime("O ID da oportunidade deve ser informado.");
+        }
+        return oportunidadeRepositorio.findById(id)
+                .orElseThrow(() -> new RegraNegocioRunTime("Oportunidade com ID " + id + " não encontrada."));
+    }
+    
 
     // Verificar Oportunidade por título
     public List<Oportunidade> buscarPorTitulo(String titulo) {
