@@ -40,6 +40,10 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.PUT, "/api/coordenador/atualizar/{id}").hasRole("COORDENADOR")
             .requestMatchers(HttpMethod.GET, "/api/coordenador/listar").hasRole("COORDENADOR")
             .requestMatchers(HttpMethod.GET, "/api/coordenador/buscar").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/cursos/listar").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/cursos/listar_egressos_por_curso/{id}").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/coordenador/listar_quantidade_egressos_por_curso/{id}").permitAll()
+
             .anyRequest().authenticated())
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
