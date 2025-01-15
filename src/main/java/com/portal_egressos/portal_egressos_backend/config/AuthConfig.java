@@ -57,7 +57,6 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.GET, "/api/coordenador/listar_quantidade_egressos_por_curso/{id}").permitAll()
 
             .anyRequest().authenticated())
-          feature/controller_egresso_coordenador
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }
