@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.portal_egressos.portal_egressos_backend.dto.EgressoDTO;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
 import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
@@ -26,7 +27,6 @@ import com.portal_egressos.portal_egressos_backend.services.UsuarioService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
 
 @RestController
 @RequestMapping("/api/egresso")
@@ -44,12 +44,8 @@ public class EgressoController {
     @Autowired
     private UsuarioService usuarioService;
 
-    // Usuario service
-    @Autowired
-    private UsuarioRepository usuarioRepositorio;
-
     @PostMapping("/salvar")
-    public ResponseEntity salvarEgresso(@RequestBody EgressoDTO dto) {
+    public ResponseEntity<?> salvarEgresso(@RequestBody EgressoDTO dto) {
         try {
             Usuario usuario = Usuario.builder()
                     .email(dto.getEmailUsuario())
@@ -57,9 +53,10 @@ public class EgressoController {
                     .role(UserRole.EGRESSO)
                     .build();
 
-            usuarioRepositorio.save(usuario);
-            
-            Egresso egresso = converterParaModelo(dto, usuario);
+            usuario = usuarioService.salvarUsuario(usuario);
+
+            Egresso egresso = converterParaModelo(dto);
+            egresso.setUsuario(usuario);
             Egresso egressoRetornado = egressoService.salvarEgresso(egresso);
             Curso curso = cursoService.buscarPorId(dto.getIdCurso());
             CursoEgresso cursoEgresso = salvarCursoEgresso(dto, egresso, curso);
@@ -72,35 +69,36 @@ public class EgressoController {
     }
 
     @PutMapping("/atualizar/{id}")
-    public ResponseEntity atualizar(@RequestBody EgressoDTO dto, @PathVariable Long id) {
+    public ResponseEntity<?> atualizar(@RequestBody EgressoDTO dto, @PathVariable Long id) {
         try {
-            Usuario usuario = usuarioService.buscarPorId(dto.getIdUsuario());
-            Egresso egresso = converterParaModelo(dto, usuario);
+            Egresso egressoRetornado = egressoService.buscarPorId(id);
+            Egresso egresso = converterParaModelo(dto);
+            egresso.setId(id);
+            egresso.setUsuario(egressoRetornado.getUsuario());
             Egresso egressoAtualizado = egressoService.atualizarEgresso(egresso);
-            return ResponseEntity.ok(egressoAtualizado);
+            return ResponseEntity.ok(converterParaDTO(egressoAtualizado));
         } catch (Exception e) {
+            System.out.println(e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity deletarNoticia(@PathVariable Long id) {
-        try{
+    public ResponseEntity<?> deletarNoticia(@PathVariable Long id) {
+        try {
             Egresso egresso = egressoService.buscarPorId(id);
             egressoService.removerEgresso(egresso);
             return ResponseEntity.noContent().build();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        
+
     }
 
     @GetMapping("/buscarPorNome")
-    public ResponseEntity buscarEgressoPorNome(@RequestBody EgressoDTO dto) {
+    public ResponseEntity<?> buscarEgressoPorNome(@RequestBody EgressoDTO dto) {
         try {
-            Usuario usuario = usuarioService.buscarPorId(dto.getIdUsuario());
-            Egresso egresso = converterParaModelo(dto, usuario);
+            Egresso egresso = converterParaModelo(dto);
 
             List<Egresso> egressosRetornado = egressoService.buscarEgresso(egresso);
             List<EgressoDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
@@ -112,7 +110,7 @@ public class EgressoController {
     }
 
     @GetMapping("/buscarAprovados")
-    public ResponseEntity buscarEgressoAprovados() {
+    public ResponseEntity<?> buscarEgressoAprovados() {
         try {
             List<Egresso> egressosRetornado = egressoService.listarEgressosAprovados();
             List<EgressoDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
@@ -124,7 +122,7 @@ public class EgressoController {
     }
 
     @GetMapping("/listar")
-    public ResponseEntity listarEgressos() {
+    public ResponseEntity<?> listarEgressos() {
         try {
             List<Egresso> egressosRetornado = egressoService.listarEgressos();
             List<EgressoDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
@@ -135,7 +133,7 @@ public class EgressoController {
         }
     }
 
-    private Egresso converterParaModelo(EgressoDTO dto, Usuario usuario) {
+    private Egresso converterParaModelo(EgressoDTO dto) {
         return Egresso.builder()
                 .id(dto.getId())
                 .nome(dto.getNome())
@@ -144,12 +142,11 @@ public class EgressoController {
                 .linkedin(dto.getLinkedin())
                 .instagram(dto.getInstagram())
                 .curriculo(dto.getCurriculo())
-                .status(dto.getStatus())
-                .usuario(usuario)
+                .status(Status.PENDENTE)
                 .build();
     }
 
-    private CursoEgresso salvarCursoEgresso(EgressoDTO dto, Egresso egressoSalvo, Curso cursoSalvo){
+    private CursoEgresso salvarCursoEgresso(EgressoDTO dto, Egresso egressoSalvo, Curso cursoSalvo) {
         return CursoEgresso.builder()
                 .egresso(egressoSalvo)
                 .curso(cursoSalvo)

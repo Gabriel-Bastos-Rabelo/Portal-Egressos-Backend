@@ -1,4 +1,7 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
+
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Repository;
@@ -9,5 +12,6 @@ import com.portal_egressos.portal_egressos_backend.models.Usuario;
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
     UserDetails findByEmail(String email);
-    
+
+    Optional<Usuario> findUsuarioByEmail(String email);
 }

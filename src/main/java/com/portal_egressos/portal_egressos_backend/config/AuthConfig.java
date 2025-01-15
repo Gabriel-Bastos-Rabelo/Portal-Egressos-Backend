@@ -28,11 +28,15 @@ public class AuthConfig {
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorize -> authorize
-          .requestMatchers("/api/auth/signin").permitAll()
-          .requestMatchers(HttpMethod.GET, "/api/noticia/aprovadas").permitAll()
-          .requestMatchers("/api/noticia/**").hasRole("COORDENADOR")
-        .anyRequest().authenticated()
-)
+            .requestMatchers("/api/auth/signin").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/noticia/aprovadas").permitAll()
+            .requestMatchers("/api/noticia/**").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.POST, "/api/egresso/salvar").permitAll()
+            .requestMatchers(HttpMethod.PUT, "/api/egresso/atualizar/{id}").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/egresso/buscarPorNome").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/coordenador/listarCoordenadores").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.GET, "/api/coordenador/buscar").permitAll()
+            .anyRequest().authenticated())
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }

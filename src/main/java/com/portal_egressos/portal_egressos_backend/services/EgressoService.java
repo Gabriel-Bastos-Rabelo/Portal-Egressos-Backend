@@ -86,7 +86,7 @@ public class EgressoService {
         if (egresso.getCurriculo() != null && !egresso.getCurriculo().isEmpty()) {
             egressoExistente.setCurriculo(egresso.getCurriculo());
         }
-        if(egresso.getStatus() != null){
+        if (egresso.getStatus() != null) {
             egressoExistente.setStatus(egresso.getStatus());
         }
 
@@ -169,9 +169,9 @@ public class EgressoService {
         return egressosPendentes;
     }
 
-    public Egresso buscarPorId(Long id){
+    public Egresso buscarPorId(Long id) {
         Egresso egresso = egressoRepositorio.findById(id)
-                            .orElseThrow(() -> new RuntimeException("Egresso não encontrado com id: " + id));
+                .orElseThrow(() -> new RuntimeException("Egresso não encontrado com id: " + id));
         return egresso;
     }
 }
