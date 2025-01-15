@@ -34,17 +34,30 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.POST, "/api/oportunidade/salvar").hasAnyRole("COORDENADOR", "EGRESSO") // Criar
             .requestMatchers(HttpMethod.PUT, "/api/oportunidade/atualizar/{id}").hasRole("COORDENADOR") // Atualizar
             .requestMatchers(HttpMethod.PUT, "/api/oportunidade/status/{id}").hasRole("COORDENADOR") // Atualizar status
-            .requestMatchers(HttpMethod.DELETE, "/api/oportunidade/**").hasRole("COORDENADOR") // Deletar
-
+            .requestMatchers(HttpMethod.DELETE, "/api/oportunidade/remover/{id}").hasRole("COORDENADOR") // Deletar
             .requestMatchers(HttpMethod.POST, "/api/depoimento/salvar").hasAnyRole("COORDENADOR", "EGRESSO") // Criar
             .requestMatchers(HttpMethod.PUT, "/api/depoimento/atualizar/{id}").hasAnyRole("COORDENADOR", "EGRESSO") // Atualizar
             .requestMatchers(HttpMethod.PUT, "/api/depoimento/status/{id}").hasAnyRole("COORDENADOR") // Atualizar status
             .requestMatchers(HttpMethod.GET, "/api/depoimento/listar").hasAnyRole("COORDENADOR") // listar
             .requestMatchers(HttpMethod.GET, "/api/depoimento/aprovados").permitAll()
             .requestMatchers(HttpMethod.DELETE, "/api/depoimento/remover/{id}").hasAnyRole("COORDENADOR", "EGRESSO") // remover
+            .requestMatchers(HttpMethod.GET, "/api/noticia/aprovadas").permitAll()
+            .requestMatchers("/api/noticia/**").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.POST, "/api/egresso/salvar").permitAll()
+            .requestMatchers(HttpMethod.PUT, "/api/egresso/atualizar/{id}").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/egresso/deletar/{id}").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/egresso/buscarPorNome").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/egresso/listar").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.GET, "/api/egresso/buscarAprovados").permitAll()
+            .requestMatchers(HttpMethod.PUT, "/api/coordenador/atualizar/{id}").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.GET, "/api/coordenador/listar").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.GET, "/api/coordenador/buscar").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/cursos/listar").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/cursos/listar_egressos_por_curso/{id}").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/coordenador/listar_quantidade_egressos_por_curso/{id}").permitAll()
 
-            .anyRequest().authenticated()
-        )
+            .anyRequest().authenticated())
+          feature/controller_egresso_coordenador
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }

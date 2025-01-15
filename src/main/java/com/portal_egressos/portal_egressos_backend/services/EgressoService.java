@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
@@ -86,7 +87,7 @@ public class EgressoService {
         if (egresso.getCurriculo() != null && !egresso.getCurriculo().isEmpty()) {
             egressoExistente.setCurriculo(egresso.getCurriculo());
         }
-        if(egresso.getStatus() != null){
+        if (egresso.getStatus() != null) {
             egressoExistente.setStatus(egresso.getStatus());
         }
 
@@ -163,7 +164,7 @@ public class EgressoService {
     }
 
     public List<Egresso> listarEgressosAprovados() {
-        List<Egresso> egressosAprovados = egressoRepositorio.findAllByStatus("APROVADO");
+        List<Egresso> egressosAprovados = egressoRepositorio.findAllByStatus(Status.APROVADO);
         if (egressosAprovados.isEmpty()) {
             throw new RegraNegocioRunTime("Nenhum egresso encontrado com status APROVADO.");
         }
@@ -171,12 +172,16 @@ public class EgressoService {
     }
 
     public List<Egresso> listarEgressosPendentes() {
-        List<Egresso> egressosPendentes = egressoRepositorio.findAllByStatus("PENDENTE");
+        List<Egresso> egressosPendentes = egressoRepositorio.findAllByStatus(Status.PENDENTE);
         if (egressosPendentes.isEmpty()) {
             throw new RegraNegocioRunTime("Nenhum egresso encontrado com status PENDENTE.");
         }
         return egressosPendentes;
     }
 
-
+    public Egresso buscarPorId(Long id) {
+        Egresso egresso = egressoRepositorio.findById(id)
+                .orElseThrow(() -> new RuntimeException("Egresso não encontrado com id: " + id));
+        return egresso;
+    }
 }

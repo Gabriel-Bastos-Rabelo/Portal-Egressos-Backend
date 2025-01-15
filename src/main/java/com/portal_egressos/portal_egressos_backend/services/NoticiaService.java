@@ -1,6 +1,5 @@
 package com.portal_egressos.portal_egressos_backend.services;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,19 +59,17 @@ public class NoticiaService {
     public List<Noticia> listarNoticiasPendentes() {
         return noticiaRepositorio.findAllByStatusOrderByDataPublicacaoDesc(Status.PENDENTE);
     }
-
-    public List<Noticia> listarNoticiasAprovadasUltimos30Dias() {
-        LocalDate dataLimite = LocalDate.now().minusDays(30);
-        return noticiaRepositorio.findByStatusAndDataPublicacaoAfterOrderByDataPublicacaoDesc(Status.APROVADO, dataLimite);
-    }
-
     
-
     @Transactional
-    public Noticia atualizarStatusAprovada(Noticia noticiaAtualizada) {
-        verificarNoticia(noticiaAtualizada);
+    public Noticia atualizarStatusNoticia(Noticia noticiaAtualizada) {
+        if(noticiaAtualizada.getId() == null){
+            throw new RegraNegocioRunTime("O id da notícia é obrigatório.");
+        }
+        if(noticiaAtualizada.getStatus() == null){
+            throw new RegraNegocioRunTime("O status da notícia é obrigatório.");
+        }
         Noticia noticia = buscarPorNoticiaId(noticiaAtualizada.getId());
-        noticia.setStatus(Status.APROVADO);     
+        noticia.setStatus(noticiaAtualizada.getStatus());     
         return noticiaRepositorio.save(noticia);  
     }
 
