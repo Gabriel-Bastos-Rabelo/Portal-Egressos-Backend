@@ -24,7 +24,6 @@ public class OportunidadeController {
     @Autowired
     private EgressoService egressoService;
 
-    // Criar uma nova oportunidade (status PENDENTE)
     @PostMapping("/salvar")
     public ResponseEntity<?> salvarOportunidade(@RequestBody OportunidadeDTO oportunidadeDTO) {
         try {
@@ -53,7 +52,6 @@ public class OportunidadeController {
             Oportunidade oportunidade = converterParaModelo(oportunidadeDTO);
             oportunidade.setId(id);
 
-            // Verifica se o egresso foi enviado no DTO para atualizar também
             if (oportunidadeDTO.getIdEgresso() != null) {
                 Egresso filtro = Egresso.builder().id(oportunidadeDTO.getIdEgresso()).build();
                 List<Egresso> egressos = egressoService.buscarEgresso(filtro);
@@ -74,12 +72,11 @@ public class OportunidadeController {
     @PutMapping("status/{id}")
     public ResponseEntity<?> atualizarStatusOportunidade(@PathVariable("id") Long id) {
         try {
-            // Definindo o status como "APROVADO" diretamente
-            Status status = Status.APROVADO;  // Defina o valor do Status conforme o seu Enum
+            Status status = Status.APROVADO;  
             
             Oportunidade oportunidade = Oportunidade.builder()
                                                     .id(id)
-                                                    .status(status)  // Status é setado automaticamente
+                                                    .status(status) 
                                                     .build();
             Oportunidade oportunidadeAtualizada = oportunidadeService.atualizarStatusOportunidade(oportunidade);
             return ResponseEntity.ok(converterParaDTO(oportunidadeAtualizada));
