@@ -1,17 +1,13 @@
 
 package com.portal_egressos.portal_egressos_backend.dto;
 
-import java.time.LocalDate;
-
-import com.portal_egressos.portal_egressos_backend.enums.Status;
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 @Data
-@Getter 
+@Getter
 @Setter
 @Builder
 public class CursoDto {
@@ -21,5 +17,3 @@ public class CursoDto {
     private Long idEgresso;
     private String nomeEgresso;
 }
-
-    

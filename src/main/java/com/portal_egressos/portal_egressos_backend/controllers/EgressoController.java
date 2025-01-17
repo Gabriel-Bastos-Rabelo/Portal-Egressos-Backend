@@ -21,7 +21,6 @@ import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
-import com.portal_egressos.portal_egressos_backend.services.UsuarioService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,9 +39,6 @@ public class EgressoController {
     @Autowired
     private CursoEgressoService cursoEgressoService;
 
-    @Autowired
-    private UsuarioService usuarioService;
-
     @PostMapping("/salvar")
     public ResponseEntity<?> salvarEgresso(@RequestBody EgressoDTO dto) {
         try {
@@ -52,9 +48,8 @@ public class EgressoController {
                     .role(UserRole.EGRESSO)
                     .build();
 
-            usuario = usuarioService.salvarUsuario(usuario);
-
             Egresso egresso = converterParaModelo(dto);
+            egresso.setStatus(Status.PENDENTE);
             egresso.setUsuario(usuario);
             Egresso egressoRetornado = egressoService.salvarEgresso(egresso);
             Curso curso = cursoService.buscarPorId(dto.getIdCurso());
@@ -141,7 +136,6 @@ public class EgressoController {
                 .linkedin(dto.getLinkedin())
                 .instagram(dto.getInstagram())
                 .curriculo(dto.getCurriculo())
-                .status(Status.PENDENTE)
                 .build();
     }
 

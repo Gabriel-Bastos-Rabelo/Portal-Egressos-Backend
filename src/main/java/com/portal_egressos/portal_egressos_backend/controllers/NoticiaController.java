@@ -56,97 +56,91 @@ public class NoticiaController {
         }
     }
 
-
     @GetMapping
-    public ResponseEntity listarNoticias() {
-        try{
+    public ResponseEntity<?> listarNoticias() {
+        try {
             List<Noticia> noticias = noticiaService.listarNoticias();
             List<NoticiaDTO> noticiasDTO = noticias.stream().map(this::converterParaDTO).collect(Collectors.toList());
             return ResponseEntity.ok(noticiasDTO);
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        
+
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity atualizarStatusNoticia(@PathVariable("id") Long id, @RequestParam Status status) {
-        
-        try{
+    public ResponseEntity<?> atualizarStatusNoticia(@PathVariable("id") Long id, @RequestParam Status status) {
+
+        try {
             Noticia noticia = Noticia.builder().id(id).status(status).build();
             Noticia noticiaAtualizada = noticiaService.atualizarStatusNoticia(noticia);
             return ResponseEntity.ok(converterParaDTO(noticiaAtualizada));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());    
-        }
-        
+
     }
 
     @GetMapping("/aprovadas")
-    public ResponseEntity listarNoticiasAprovadas() {
-        try{
+    public ResponseEntity<?> listarNoticiasAprovadas() {
+        try {
             List<Noticia> noticias = noticiaService.listarNoticiasAprovadas();
             List<NoticiaDTO> noticiasDTO = noticias.stream().map(this::converterParaDTO).collect(Collectors.toList());
             return ResponseEntity.ok(noticiasDTO);
-        }
-        catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());    
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
     @GetMapping("/pendentes")
-    public ResponseEntity listarNoticiasPendentes() {
-        try{
+    public ResponseEntity<?> listarNoticiasPendentes() {
+        try {
             List<Noticia> noticias = noticiaService.listarNoticiasPendentes();
             List<NoticiaDTO> noticiasDTO = noticias.stream().map(this::converterParaDTO).collect(Collectors.toList());
             return ResponseEntity.ok(noticiasDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
-        catch(Exception e){
-            return ResponseEntity.badRequest().body(e.getMessage());   
-        }
-        
+
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deletarNoticia(@PathVariable Long id) {
-        try{
+    public ResponseEntity<?> deletarNoticia(@PathVariable Long id) {
+        try {
             Noticia noticia = noticiaService.buscarPorNoticiaId(id);
             noticiaService.removerNoticia(noticia);
             return ResponseEntity.noContent().build();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        
+
     }
 
     private Noticia converterParaModelo(NoticiaDTO dto) {
         return Noticia.builder()
-            .id(dto.getId())
-            .titulo(dto.getTitulo())
-            .descricao(dto.getDescricao())
-            .dataPublicacao(dto.getDataPublicacao())
-            .dataExtracao(dto.getDataExtracao())
-            .linkNoticia(dto.getLinkNoticia())
-            .status(Status.PENDENTE) 
-            .build();
+                .id(dto.getId())
+                .titulo(dto.getTitulo())
+                .descricao(dto.getDescricao())
+                .dataPublicacao(dto.getDataPublicacao())
+                .dataExtracao(dto.getDataExtracao())
+                .linkNoticia(dto.getLinkNoticia())
+                .status(Status.PENDENTE)
+                .build();
     }
-    
+
     private NoticiaDTO converterParaDTO(Noticia noticia) {
         return NoticiaDTO.builder()
-            .id(noticia.getId())
-            .titulo(noticia.getTitulo())
-            .descricao(noticia.getDescricao())
-            .dataPublicacao(noticia.getDataPublicacao())
-            .dataExtracao(noticia.getDataExtracao())
-            .linkNoticia(noticia.getLinkNoticia())
-            .status(noticia.getStatus())
-            .egressoId(noticia.getEgresso().getId())
-            .nomeEgresso(noticia.getEgresso().getNome())
-            .fotoEgresso(noticia.getEgresso().getFoto())
-            .build();
+                .id(noticia.getId())
+                .titulo(noticia.getTitulo())
+                .descricao(noticia.getDescricao())
+                .dataPublicacao(noticia.getDataPublicacao())
+                .dataExtracao(noticia.getDataExtracao())
+                .linkNoticia(noticia.getLinkNoticia())
+                .status(noticia.getStatus())
+                .egressoId(noticia.getEgresso().getId())
+                .nomeEgresso(noticia.getEgresso().getNome())
+                .fotoEgresso(noticia.getEgresso().getFoto())
+                .build();
     }
-    
+
 }

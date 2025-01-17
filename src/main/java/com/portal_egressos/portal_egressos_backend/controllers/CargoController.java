@@ -42,9 +42,9 @@ public class CargoController {
     @Autowired
     private TokenProvider tokenService;
 
-
     @PostMapping
-    public ResponseEntity<?> salvarCargo(@RequestBody CargoDTO cargoDTO, @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<?> salvarCargo(@RequestBody CargoDTO cargoDTO,
+            @RequestHeader("Authorization") String authorization) {
         try {
             Usuario usuario = obterUsuarioDoToken(authorization.substring(7));
             Egresso egresso = obterEgressoDoUsuario(usuario);
@@ -59,9 +59,8 @@ public class CargoController {
         }
     }
 
-
     @GetMapping("/egresso/{egressoId}")
-    public ResponseEntity listarCargosPorEgresso(@PathVariable Long egressoId) {
+    public ResponseEntity<?> listarCargosPorEgresso(@PathVariable Long egressoId) {
         try {
             List<Cargo> cargos = cargoService.listarCargoPorEgressoId(egressoId);
             List<CargoDTO> cargosDTO = cargos.stream()
@@ -74,11 +73,11 @@ public class CargoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity atualizarCargo(@PathVariable Long id, @RequestBody CargoDTO cargoDTO, @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<?> atualizarCargo(@PathVariable Long id, @RequestBody CargoDTO cargoDTO,
+            @RequestHeader("Authorization") String authorization) {
         try {
             Usuario usuario = obterUsuarioDoToken(authorization.substring(7));
             Egresso egresso = obterEgressoDoUsuario(usuario);
-
 
             Cargo cargoExistente = cargoService.verificarCargoPorEgresso(id, egresso.getId());
 
@@ -94,22 +93,21 @@ public class CargoController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deletarCargo(@PathVariable Long id, @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<?> deletarCargo(@PathVariable Long id, @RequestHeader("Authorization") String authorization) {
         try {
             Usuario usuario = obterUsuarioDoToken(authorization.substring(7));
 
-            if(usuario.getRole().equals(UserRole.COORDENADOR)){
+            if (usuario.getRole().equals(UserRole.COORDENADOR)) {
                 Cargo cargo = Cargo.builder().id(id).build();
                 cargoService.removerCargo(cargo);
-            }
-            else{
+            } else {
                 Egresso egresso = obterEgressoDoUsuario(usuario);
 
                 Cargo cargoExistente = cargoService.verificarCargoPorEgresso(id, egresso.getId());
 
                 cargoService.removerCargo(cargoExistente);
             }
-            
+
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -120,7 +118,7 @@ public class CargoController {
         String email = tokenService.extrairEmailDoToken(token);
         return usuarioService.buscarUsuarioPorEmail(email);
     }
-    
+
     private Egresso obterEgressoDoUsuario(Usuario usuario) {
         List<Egresso> egressos = egressoService.buscarEgresso(Egresso.builder().usuario(usuario).build());
         if (egressos.isEmpty()) {
@@ -128,8 +126,6 @@ public class CargoController {
         }
         return egressos.get(0);
     }
-    
-
 
     private Cargo converterParaModelo(CargoDTO dto) {
         return Cargo.builder()

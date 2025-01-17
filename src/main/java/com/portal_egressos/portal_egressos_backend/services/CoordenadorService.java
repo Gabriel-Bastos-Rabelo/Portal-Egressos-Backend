@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Coordenador;
-import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.repositories.CoordenadorRepository;
 
 @Service
