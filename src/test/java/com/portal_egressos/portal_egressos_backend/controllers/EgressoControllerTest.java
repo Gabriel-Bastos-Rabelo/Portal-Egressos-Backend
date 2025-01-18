@@ -17,7 +17,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,9 +26,7 @@ import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
 import com.portal_egressos.portal_egressos_backend.dto.EgressoDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
-import com.portal_egressos.portal_egressos_backend.models.Coordenador;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
-import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
@@ -272,6 +269,9 @@ public class EgressoControllerTest {
                                 .nome("Anderson Lopes")
                                 .descricao("Cientista da Computação.")
                                 .foto("https://example.com/foto2.jpg")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes")
+                                .instagram("https://www.instagram.com/anderson_silva")
+                                .curriculo("https://example.com/anderson.pdf")
                                 .status(Status.APROVADO)
                                 .usuario(usuario)
                                 .build();
@@ -329,7 +329,7 @@ public class EgressoControllerTest {
                                 .build();
 
                 Egresso egresso = Egresso.builder()
-                                .id(1L)
+                                .id(egressoDTO.getId())
                                 .nome("Anderson Lopes")
                                 .descricao("Cientista da Computação.")
                                 .foto("https://example.com/foto2.jpg")
@@ -339,12 +339,13 @@ public class EgressoControllerTest {
 
                 Egresso egressoAtualizado = Egresso.builder()
                                 .id(1L)
-                                .nome("Anderson Silva")
-                                .descricao("Egresso Descrição")
-                                .foto("https://example.com/foto2.jpg")
-                                .instagram("https://instagram.com/egresso")
-                                .linkedin("https://linkedin.com/in/egresso")
-                                .status(Status.APROVADO)
+                                .nome(egressoDTO.getNome())
+                                .descricao(egressoDTO.getDescricao())
+                                .foto(egressoDTO.getFoto())
+                                .instagram(egressoDTO.getInstagram())
+                                .linkedin(egressoDTO.getLinkedin())
+                                .status(egressoDTO.getStatus())
+                                .usuario(usuario)
                                 .build();
 
                 Mockito.when(egressoService.buscarPorId(1L))
@@ -367,7 +368,7 @@ public class EgressoControllerTest {
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.descricao")
                                                 .value(egressoDTO.getDescricao()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.status")
-                                                .value(egressoDTO.getStatus()))
+                                                .value(egressoDTO.getStatus().toString()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.foto")
                                                 .value(egressoDTO.getFoto()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.instagram")
