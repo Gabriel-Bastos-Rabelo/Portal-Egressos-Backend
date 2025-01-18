@@ -213,23 +213,12 @@ public class CursoControllerTest {
 
                 // Ação
                 MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                                .get(API +"listar_quantidade_egressos_por_curso/1");
+                                .get(API +"/listar_quantidade_egressos_por_curso/1");
 
                 // Verificação
                 mvc.perform(request)
-                                .andExpect(MockMvcResultMatchers.status().isOk()) // Verificar se o status da resposta é
-                                                                                  // OK (200)
-                                .andExpect(MockMvcResultMatchers.jsonPath("$").value(quantidadeEgressosCurso)); // Verificar
-                                                                                                                // se o
-                                                                                                                // corpo
-                                                                                                                // da
-                                                                                                                // resposta
-                                                                                                                // contém
-                                                                                                                // o
-                                                                                                                // valor
-                                                                                                                // correto
-                                                                                                                // da
-                                                                                                                // quantidade
+                                .andExpect(MockMvcResultMatchers.status().isOk()) 
+                                .andExpect(MockMvcResultMatchers.jsonPath("$").value(quantidadeEgressosCurso));
         }
 
 }
