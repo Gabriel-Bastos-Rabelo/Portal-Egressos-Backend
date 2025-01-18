@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.portal_egressos.portal_egressos_backend.dto.EgressoDTO;
@@ -90,11 +91,9 @@ public class EgressoController {
     }
 
     @GetMapping("/buscarPorNome")
-    public ResponseEntity<?> buscarPorNome(@RequestBody EgressoDTO dto) {
+    public ResponseEntity<?> buscarPorNome(@RequestParam("nome") String nome) {
         try {
-            Egresso egresso = converterParaModelo(dto);
-
-            List<Egresso> egressosRetornado = egressoService.buscarEgresso(egresso);
+            List<Egresso> egressosRetornado = egressoService.buscarEgresso(nome);
             List<EgressoDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(egressosDTO);

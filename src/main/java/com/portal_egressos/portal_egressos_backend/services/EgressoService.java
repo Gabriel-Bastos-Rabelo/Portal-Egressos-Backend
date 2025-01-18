@@ -51,7 +51,12 @@ public class EgressoService {
         return egressoRepositorio.save(egresso);
     }
 
-    public List<Egresso> buscarEgresso(Egresso filtro) {
+    public List<Egresso> buscarEgresso(String nome) {
+        Egresso filtro = new Egresso();
+        if (nome != null && !nome.isEmpty()) {
+            filtro.setNome(nome);
+        }
+
         Example<Egresso> example = Example.of(filtro, ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(StringMatcher.CONTAINING));

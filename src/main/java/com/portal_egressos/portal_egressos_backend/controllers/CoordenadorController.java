@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.portal_egressos.portal_egressos_backend.dto.CoordenadorDTO;
@@ -49,11 +50,10 @@ public class CoordenadorController {
         }
     }
 
-    @GetMapping("/buscar")
-    public ResponseEntity<?> buscarCoordenadorPorNome(@RequestBody CoordenadorDTO dto) {
+    @GetMapping("/buscarPorNome")
+    public ResponseEntity<?> buscarCoordenadorPorNome(@RequestParam("nome") String nome) {
         try {
-            Coordenador coordenador = converterParaModelo(dto);
-            List<Coordenador> coordenadorRetornado = coordenadorService.buscarCoordenadorPorNome(coordenador);
+            List<Coordenador> coordenadorRetornado = coordenadorService.buscarCoordenadorPorNome(nome);
             List<CoordenadorDTO> coordenadorDTO = coordenadorRetornado.stream().map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(coordenadorDTO);

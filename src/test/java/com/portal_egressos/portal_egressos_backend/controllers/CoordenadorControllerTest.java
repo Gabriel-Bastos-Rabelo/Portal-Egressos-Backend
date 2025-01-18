@@ -156,34 +156,29 @@ public class CoordenadorControllerTest {
                                 .usuario(usuario)
                                 .build();
 
-                List<Coordenador> retornoServLista = Arrays.asList(
-                                Coordenador.builder()
-                                                .id(1L)
-                                                .nome("Anderson Lopes")
-                                                .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
-                                                .ativo(true)
-                                                .curso(curso)
-                                                .usuario(usuario)
-                                                .build());
+                List<Coordenador> coordenadorMock = Arrays.asList(coordenador);
 
                 // Simulações
-                Mockito.when(coordService.salvarCoordenador(Mockito.any(Coordenador.class))).thenReturn(coordenador);
-                Mockito.when(coordService.buscarCoordenadorPorNome(coordenador)).thenReturn(retornoServLista);
+                Mockito.when(coordService.buscarCoordenadorPorNome("Anderson")).thenReturn(coordenadorMock);
 
                 // Ação
-                MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/buscar");
+                MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/buscarPorNome")
+                                .param("nome", "Anderson")
+                                .accept(MediaType.APPLICATION_JSON);
 
                 // Verificação
                 mvc.perform(request)
                                 .andExpect(MockMvcResultMatchers.status().isOk())
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id")
-                                                .value(retornoServLista.get(0).getId()))
+                                                .value(coordenador.getId()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome")
-                                                .value(retornoServLista.get(0).getNome()))
+                                                .value(coordenador.getNome()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].dataCriacao")
-                                                .value(retornoServLista.get(0).getDataCriacao()))
+                                                .value(coordenador.getDataCriacao()
+                                                                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].ativo")
-                                                .value(retornoServLista.get(0).getAtivo()));
+                                                .value(coordenador.getAtivo()));
         }
 
         @Test
