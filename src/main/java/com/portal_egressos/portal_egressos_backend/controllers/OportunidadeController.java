@@ -8,6 +8,7 @@ import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 import com.portal_egressos.portal_egressos_backend.services.OportunidadeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,11 +41,12 @@ public class OportunidadeController {
             oportunidade.setEgresso(egresso);
 
             Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
-            return ResponseEntity.ok(converterParaDTO(oportunidadeSalva));
+           return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(oportunidadeSalva));
         } catch (Exception e) {
             System.err.println(e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+        
     }
 
     @PutMapping("atualizar/{id}")

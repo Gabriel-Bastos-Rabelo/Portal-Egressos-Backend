@@ -39,7 +39,7 @@ import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = DepoimentoController.class)
 @AutoConfigureMockMvc
-@Import(TestSecurityConfig.class) // configuração de segurança personalizada que nao precisa de autenticação
+@Import(TestSecurityConfig.class) 
 public class DepoimentoControllerTest {
 
         static final String API = "/api/depoimento";
@@ -142,19 +142,9 @@ public class DepoimentoControllerTest {
                                 .status(Status.PENDENTE)
                                 .build();
 
-                // Mockando o repositório de egresso
                 Mockito.when(egressoRepository.save(Mockito.any(Egresso.class))).thenReturn(egresso);
 
                 Egresso egressoSalvo = egressoRepository.save(egresso);
-
-                // Depoimento
-                Depoimento depoimentoOriginal = Depoimento.builder()
-                                .id(1L)
-                                .texto("Texto Original")
-                                .data(LocalDate.now())
-                                .status(Status.PENDENTE)
-                                .egresso(egressoSalvo)
-                                .build();
 
                 // Depoimento atualizado
                 Depoimento depoimentoAtualizado = Depoimento.builder()
@@ -165,12 +155,11 @@ public class DepoimentoControllerTest {
                                 .egresso(egressoSalvo)
                                 .build();
 
-                // DTO do depoimento a ser atualizado
                 DepoimentoDto depoimentoDTO = DepoimentoDto.builder()
                                 .texto("Texto Atualizado")
                                 .status(Status.APROVADO)
                                 .data(LocalDate.now())
-                                .idEgresso(egressoSalvo.getId()) // Passando o ID do egresso
+                                .idEgresso(egressoSalvo.getId()) 
                                 .build();
 
                 Mockito.when(egressoService.buscarEgresso(Mockito.any(Egresso.class)))
@@ -226,14 +215,6 @@ public class DepoimentoControllerTest {
 
                 Status novoStatus = Status.APROVADO;
 
-                // Depoimento original
-                Depoimento depoimentoOriginal = Depoimento.builder()
-                                .id(idDepoimento)
-                                .texto("Depoimento Original")
-                                .status(Status.PENDENTE)
-                                .build();
-
-                // Status atualizado
                 Depoimento depoimentoAtualizado = Depoimento.builder()
                                 .id(idDepoimento)
                                 .texto("Depoimento Original")
@@ -320,7 +301,7 @@ public class DepoimentoControllerTest {
 
                 Depoimento depoimento1 = Depoimento.builder()
                                 .id(1L)
-                                .texto("Depoimento Aprovado 1")
+                                .texto("Depoimento Teste 1")
                                 .status(Status.APROVADO)
                                 .egresso(egresso1)
                                 .build();
@@ -332,7 +313,7 @@ public class DepoimentoControllerTest {
 
                 Depoimento depoimento2 = Depoimento.builder()
                                 .id(2L)
-                                .texto("Depoimento Aprovado 2")
+                                .texto("Depoimento Teste 2")
                                 .status(Status.APROVADO)
                                 .egresso(egresso2)
                                 .build();
@@ -347,8 +328,20 @@ public class DepoimentoControllerTest {
 
                 // Verificação
                 mvc.perform(request)
-                                .andExpect(MockMvcResultMatchers.status().isOk())
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].texto").value("Depoimento Teste 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
+                                .value(Status.APROVADO.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].idEgresso").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nomeEgresso").value("Egresso Teste 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].texto").value("Depoimento Teste 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].status")
+                                .value(Status.APROVADO.toString()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].idEgresso").value(2))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nomeEgresso").value("Egresso Teste 2"));
         }
 
         @Test
