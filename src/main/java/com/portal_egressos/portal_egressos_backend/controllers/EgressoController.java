@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.portal_egressos.portal_egressos_backend.dto.EgressoDTO;
@@ -56,7 +58,7 @@ public class EgressoController {
             CursoEgresso cursoEgresso = salvarCursoEgresso(dto, egresso, curso);
             cursoEgressoService.salvar(cursoEgresso);
 
-            return ResponseEntity.ok(converterParaDTO(egressoRetornado));
+            return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(egressoRetornado));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -80,8 +82,7 @@ public class EgressoController {
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> deletarEgresso(@PathVariable Long id) {
         try {
-            Egresso egresso = egressoService.buscarPorId(id);
-            egressoService.removerEgresso(egresso);
+            egressoService.removerEgresso(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -90,11 +91,9 @@ public class EgressoController {
     }
 
     @GetMapping("/buscarPorNome")
-    public ResponseEntity<?> buscarPorNome(@RequestBody EgressoDTO dto) {
+    public ResponseEntity<?> buscarPorNome(@RequestParam("nome") String nome) {
         try {
-            Egresso egresso = converterParaModelo(dto);
-
-            List<Egresso> egressosRetornado = egressoService.buscarEgresso(egresso);
+            List<Egresso> egressosRetornado = egressoService.buscarEgresso(nome);
             List<EgressoDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(egressosDTO);

@@ -173,7 +173,7 @@ public class EgressoServiceTest {
                 // acao
                 Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1);
                 Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2);
-                List<Egresso> resultado = egressoService.buscarEgresso(filtro);
+                List<Egresso> resultado = egressoService.buscarEgresso(filtro.getNome());
 
                 // rollback
                 egressoRepositorio.delete(egressoSalvo1);
@@ -255,7 +255,7 @@ public class EgressoServiceTest {
                 // ação
                 Egresso egressoSalvo = egressoService.salvarEgresso(egresso);
                 Long id = egressoSalvo.getId();
-                egressoService.removerEgresso(egressoSalvo);
+                egressoService.removerEgresso(id);
                 Optional<Egresso> temp = egressoRepositorio.findById(id);
 
                 // rollback

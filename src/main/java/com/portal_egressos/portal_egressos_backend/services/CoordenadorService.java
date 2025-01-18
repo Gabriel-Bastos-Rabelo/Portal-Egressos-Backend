@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Coordenador;
+import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.repositories.CoordenadorRepository;
 
 @Service
@@ -117,8 +118,13 @@ public class CoordenadorService {
         return coordenadorRepositorio.findAll();
     }
 
-    public List<Coordenador> buscarCoordenadorPorNome(Coordenador coodenador) {
-        Example<Coordenador> example = Example.of(coodenador, ExampleMatcher.matching()
+    public List<Coordenador> buscarCoordenadorPorNome(String nome) {
+        Coordenador filtro = new Coordenador();
+        if (nome != null && !nome.isEmpty()) {
+            filtro.setNome(nome);
+        }
+
+        Example<Coordenador> example = Example.of(filtro, ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withStringMatcher(StringMatcher.CONTAINING));
 
