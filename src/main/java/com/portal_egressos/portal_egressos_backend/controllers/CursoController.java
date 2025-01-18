@@ -61,7 +61,7 @@ public class CursoController {
     public ResponseEntity listarQuantidadeDeEgressosPorCurso(@PathVariable Long id) {
         Curso curso = Curso.builder()
                 .id(id)
-                .build();
+                .build(); 
         try {
             int quantidade = cursoService.listarQuantidadeDeEgressosPorCurso(curso);
             return ResponseEntity.status(HttpStatus.OK).body(quantidade);

@@ -126,7 +126,7 @@ public class DepoimentoServiceTest {
                 Depoimento depoimento = Depoimento.builder()
                                 .texto("Depoimento Teste.")
                                 .data(LocalDate.now())
-.status(Status.PENDENTE)
+                                .status(Status.PENDENTE)
                                 .egresso(egressoSalvo)
                                 .build();
 

@@ -8,6 +8,7 @@ import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 import com.portal_egressos.portal_egressos_backend.services.DepoimentoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,7 +42,7 @@ public class DepoimentoController {
             depoimento.setEgresso(egresso);
 
             Depoimento depoimentoSalva = depoimentoService.salvarDepoimento(depoimento);
-            return ResponseEntity.ok(converterParaDTO(depoimentoSalva));
+            return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(depoimentoSalva));
         } catch (Exception e) {
             System.err.println(e);
             return ResponseEntity.badRequest().body(e.getMessage());
