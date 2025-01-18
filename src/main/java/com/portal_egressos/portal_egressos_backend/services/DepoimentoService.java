@@ -38,16 +38,35 @@ public class DepoimentoService {
         verificarDepoimentoId(depoimentoAtualizado);
         Depoimento depoimentoExistente = depoimentoRepositorio.findById(depoimentoAtualizado.getId()).get();
 
-        if(!depoimentoAtualizado.getTexto().isEmpty()){
+        if (!depoimentoAtualizado.getTexto().isEmpty()) {
             depoimentoExistente.setTexto(depoimentoAtualizado.getTexto());
         }
-        if(depoimentoAtualizado.getData() != null){
+        if (depoimentoAtualizado.getData() != null) {
             depoimentoExistente.setData(depoimentoAtualizado.getData());
         }
-        if(depoimentoAtualizado.getStatus() != null){
+        if (depoimentoAtualizado.getStatus() != null) {
             depoimentoExistente.setStatus(depoimentoAtualizado.getStatus());
         }
         return depoimentoRepositorio.save(depoimentoExistente);
+    }
+
+    @Transactional
+    public Depoimento atualizarStatusDepoimento(Depoimento depoimentoAtualizado) {
+        if (depoimentoAtualizado.getId() == null) {
+            throw new RegraNegocioRunTime("O id do depoimento é obrigatório.");
+        }
+
+        if (depoimentoAtualizado.getStatus() == null) {
+            throw new RegraNegocioRunTime("O status do depoimento é obrigatório.");
+        }
+
+        Depoimento depoimento = depoimentoRepositorio.findById(depoimentoAtualizado.getId())
+                .orElseThrow(() -> new RegraNegocioRunTime(
+                        "Depoimento não encontrado para o ID: " + depoimentoAtualizado.getId()));
+
+        depoimento.setStatus(depoimentoAtualizado.getStatus());
+
+        return depoimentoRepositorio.save(depoimento);
     }
 
     public void verificarDepoimentoId(Depoimento depoimento) {
@@ -58,21 +77,22 @@ public class DepoimentoService {
     }
 
     @Transactional
-    public void removerDepoimento(Depoimento depoimento){
-        verificarDepoimentoId(depoimento);
+    public void removerDepoimento(Long id) {
+        Depoimento depoimento = depoimentoRepositorio.findById(id)
+                .orElseThrow(() -> new RegraNegocioRunTime("Depoimento não encontrado para o ID: " + id));
         depoimentoRepositorio.delete(depoimento);
     }
 
-    public List<Depoimento> listarDepoimentos(){
+    public List<Depoimento> listarDepoimentos() {
         return depoimentoRepositorio.findAll();
     }
 
-    public List<Depoimento> listarDepoimentoPorEgresso(Long idEgresso){
+    public List<Depoimento> listarDepoimentoPorEgresso(Long idEgresso) {
         Optional<Egresso> egressoExistente = egressoRepositorio.findById(idEgresso);
 
-        if(!egressoExistente.isPresent()){
+        if (!egressoExistente.isPresent()) {
             throw new RegraNegocioRunTime("Egresso com id " + idEgresso + " não encontrado");
-            
+
         }
         Egresso egresso = egressoExistente.get();
         return depoimentoRepositorio.findByEgresso(egresso);

@@ -174,7 +174,7 @@ public class DepoimentoServiceTest {
                 Depoimento depoimentoSalvo = depoimentoService.salvarDepoimento(depoimento);
 
                 // Ação
-                depoimentoService.removerDepoimento(depoimentoSalvo);
+                depoimentoService.removerDepoimento(depoimentoSalvo.getId());
                 Optional<Depoimento> depoimentoRemovido = depoimentoRepositorio.findById(depoimentoSalvo.getId());
 
                 // Verificação

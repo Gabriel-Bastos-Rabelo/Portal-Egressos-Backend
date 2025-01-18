@@ -6,6 +6,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
@@ -114,4 +117,17 @@ public class CoordenadorService {
         return coordenadorRepositorio.findAll();
     }
 
+    public List<Coordenador> buscarCoordenadorPorNome(Coordenador coodenador) {
+        Example<Coordenador> example = Example.of(coodenador, ExampleMatcher.matching()
+                .withIgnoreCase()
+                .withStringMatcher(StringMatcher.CONTAINING));
+
+        return coordenadorRepositorio.findAll(example);
+    }
+
+    public Coordenador buscarPorId(Long id) {
+        Coordenador coordenador = coordenadorRepositorio.findById(id)
+                .orElseThrow(() -> new RuntimeException("Coordenador não encontrado com id: " + id));
+        return coordenador;
+    }
 }

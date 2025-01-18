@@ -2,7 +2,6 @@ package com.portal_egressos.portal_egressos_backend.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,35 +20,34 @@ import com.portal_egressos.portal_egressos_backend.enums.Status;
 
 import jakarta.transaction.Transactional;
 
-
 @SpringBootTest
-public class CursoServiceTest <cursoEgressoService> {
+public class CursoServiceTest<cursoEgressoService> {
 
     @Autowired
-    CursoService cursoService ;
+    CursoService cursoService;
 
     @Autowired
     EgressoService egressoService;
 
-    @Autowired 
+    @Autowired
     CursoEgressoService cursoEgressoService;
 
     @Test
     @Transactional
-    public void deveSalvarCurso(){
-        //cenário
+    public void deveSalvarCurso() {
+        // cenário
         Curso curso = Curso.builder()
                 .nome("Curso Teste")
                 .nivel("Nível Teste")
                 .build();
-        
-        //ação
+
+        // ação
         Curso retorno = cursoService.salvarCurso(curso);
 
-        //rollback
+        // rollback
         cursoService.removerCurso(retorno);
 
-        //verificação 
+        // verificação
         Assertions.assertThat(retorno).isNotNull();
         Assertions.assertThat(retorno.getNome()).isEqualTo(curso.getNome());
         Assertions.assertThat(retorno.getNivel()).isEqualTo(curso.getNivel());
@@ -58,13 +56,13 @@ public class CursoServiceTest <cursoEgressoService> {
 
     @Test
     @Transactional
-    public void deveAtualizarCurso(){
-         //cenário
-         Curso curso = Curso.builder()
-            .nome("Curso Teste")
-            .nivel("Nível Teste")
-            .build();
-        
+    public void deveAtualizarCurso() {
+        // cenário
+        Curso curso = Curso.builder()
+                .nome("Curso Teste")
+                .nivel("Nível Teste")
+                .build();
+
         Curso retorno = cursoService.salvarCurso(curso);
 
         // ação
@@ -72,41 +70,41 @@ public class CursoServiceTest <cursoEgressoService> {
         retorno.setNivel("Teste nivel");
 
         Curso salvo = cursoService.salvarCurso(retorno);
-        
+
         // rollback
         cursoService.removerCurso(retorno);
 
         // Verificação
-        Assertions.assertThat(salvo).isNotNull(); 
-        Assertions.assertThat(salvo.getNome()).isEqualTo(salvo.getNome()); 
-        Assertions.assertThat(salvo.getNivel()).isEqualTo(salvo.getNivel()); 
+        Assertions.assertThat(salvo).isNotNull();
+        Assertions.assertThat(salvo.getNome()).isEqualTo(salvo.getNome());
+        Assertions.assertThat(salvo.getNivel()).isEqualTo(salvo.getNivel());
 
     }
 
     @Test
     @Transactional
-    public void deveRemoverCurso(){
-      //cenário
-      Curso curso = Curso.builder()
-        .nome("Curso Teste")
-        .nivel("Nível Teste")
-        .build();
-      
-      Curso retorno = cursoService.salvarCurso(curso);
+    public void deveRemoverCurso() {
+        // cenário
+        Curso curso = Curso.builder()
+                .nome("Curso Teste")
+                .nivel("Nível Teste")
+                .build();
 
-      // ação
-      cursoService.removerCurso(retorno);
-      List<Curso> temp = cursoService.listarCursos();
+        Curso retorno = cursoService.salvarCurso(curso);
 
-      // verificação
-      Assertions.assertThat(temp.isEmpty());
+        // ação
+        cursoService.removerCurso(retorno);
+        List<Curso> temp = cursoService.listarCursos();
+
+        // verificação
+        Assertions.assertThat(temp.isEmpty());
 
     }
-    
+
     @Test
     @Transactional
-    public void deveListarCursos(){
-        //cenário
+    public void deveListarCursos() {
+        // cenário
         Curso curso1 = Curso.builder()
                 .nome("Curso 1")
                 .nivel("Nível 1")
@@ -116,51 +114,49 @@ public class CursoServiceTest <cursoEgressoService> {
                 .nivel("Nível 2")
                 .build();
 
-        cursoService.salvarCurso(curso1); 
-        cursoService.salvarCurso(curso2); 
+        cursoService.salvarCurso(curso1);
+        cursoService.salvarCurso(curso2);
 
-        //ação
+        // ação
         List<Curso> cursos = cursoService.listarCursos();
 
-        //rollback
+        // rollback
         cursoService.removerCurso(curso1);
         cursoService.removerCurso(curso2);
 
-        //verificação
+        // verificação
         Assertions.assertThat(cursos).isNotEmpty();
         Assertions.assertThat(cursos).contains(curso1, curso2);
 
     }
 
     @Test
-    @Transactional 
-    public void deveBuscarPorId(){
-        //cenário 
+    @Transactional
+    public void deveBuscarPorId() {
+        // cenário
         Curso curso = Curso.builder()
-            .nome("Curso Teste")
-            .nivel("Nível Teste")
-            .build();
-    
-        Curso cursoSalvo = cursoService.salvarCurso(curso); 
+                .nome("Curso Teste")
+                .nivel("Nível Teste")
+                .build();
 
-        //ação
-        Optional<Curso> cursoBuscado = cursoService.buscarPorId(cursoSalvo.getId());
+        Curso cursoSalvo = cursoService.salvarCurso(curso);
+
+        // ação
+        Curso cursoBuscado = cursoService.buscarPorId(cursoSalvo.getId());
 
         // rollback
         cursoService.removerCurso(cursoSalvo);
 
-        //verificação
-        Assertions.assertThat(cursoBuscado).isPresent();
-        Assertions.assertThat(cursoBuscado.get().getId()).isEqualTo(cursoSalvo.getId());
-        Assertions.assertThat(cursoBuscado.get().getNome()).isEqualTo("Curso Teste");
-        Assertions.assertThat(cursoBuscado.get().getNivel()).isEqualTo("Nível Teste");
-    
-    
+        // verificação
+        Assertions.assertThat(cursoBuscado.getId()).isEqualTo(cursoSalvo.getId());
+        Assertions.assertThat(cursoBuscado.getNome()).isEqualTo("Curso Teste");
+        Assertions.assertThat(cursoBuscado.getNivel()).isEqualTo("Nível Teste");
+
     }
-    
+
     @Test
     @Transactional
-    public void deveListarEgressosPorCurso(){
+    public void deveListarEgressosPorCurso() {
         // cenário
         List<Curso> cursos = new ArrayList<Curso>();
         for (int i = 0; i < 2; i++) {
@@ -185,23 +181,23 @@ public class CursoServiceTest <cursoEgressoService> {
                             .role(UserRole.EGRESSO)
                             .build());
         }
-    
+
         List<Egresso> egressos = new ArrayList<Egresso>();
         for (int i = 0; i < 2; i++) {
             egressos.add(
                     Egresso.builder().nome("teste")
                             .descricao("lorem ipsum lore")
                             .foto("urlteste")
-                            .linkedin("https://www.linkedin.com/in/usuario" + (i + 1))  
-                            .instagram("https://www.instagram.com/usuario" + (i + 1))  
+                            .linkedin("https://www.linkedin.com/in/usuario" + (i + 1))
+                            .instagram("https://www.instagram.com/usuario" + (i + 1))
                             .curriculo("lorem ipsum lore")
                             .usuario(usuarios.get(i))
                             .status(Status.PENDENTE)
                             .build());
         }
-    
-        List<Egresso> retornoEgresso = new ArrayList<>(); 
-    
+
+        List<Egresso> retornoEgresso = new ArrayList<>();
+
         for (Egresso egresso : egressos) {
             retornoEgresso.add(egressoService.salvarEgresso(egresso));
         }
@@ -211,21 +207,19 @@ public class CursoServiceTest <cursoEgressoService> {
             CursoEgresso cursoEgresso = CursoEgresso.builder()
                     .egresso(retornoEgresso.get(i))
                     .curso(retornoCurso.get(i))
-                    .anoInicio(2020) 
-                    .anoFim(2023) 
+                    .anoInicio(2020)
+                    .anoFim(2023)
                     .build();
-            
-            
+
             cursoEgressos.add(cursoEgressoService.salvar(cursoEgresso));
         }
 
-        //ação
+        // ação
         List<Egresso> retorno = cursoService.listarEgressosPorCurso(cursos.get(0));
 
-
-        // Rollback 
+        // Rollback
         for (CursoEgresso cursoEgresso : cursoEgressos) {
-        cursoEgressoService.remover(cursoEgresso);
+            cursoEgressoService.remover(cursoEgresso);
         }
         for (Curso curso : retornoCurso) {
             cursoService.removerCurso(curso);
@@ -234,15 +228,14 @@ public class CursoServiceTest <cursoEgressoService> {
             egressoService.removerEgresso(egresso);
         }
 
-    // Verificação 
-    Assertions.assertThat(retorno).isNotNull();
-    Assertions.assertThat(retorno.size()).isEqualTo(1); // Espera-se 1 egresso para o curso
-    for (Egresso egresso : retorno) {
-        Assertions.assertThat(egresso.getId()).isEqualTo(cursoEgressos.get(0).getEgresso().getId());
-        Assertions.assertThat(egresso.getNome()).isEqualTo(cursoEgressos.get(0).getEgresso().getNome());
-    }
+        // Verificação
+        Assertions.assertThat(retorno).isNotNull();
+        Assertions.assertThat(retorno.size()).isEqualTo(1); // Espera-se 1 egresso para o curso
+        for (Egresso egresso : retorno) {
+            Assertions.assertThat(egresso.getId()).isEqualTo(cursoEgressos.get(0).getEgresso().getId());
+            Assertions.assertThat(egresso.getNome()).isEqualTo(cursoEgressos.get(0).getEgresso().getNome());
+        }
 
-   
     }
 
     @Test
@@ -279,16 +272,16 @@ public class CursoServiceTest <cursoEgressoService> {
                     Egresso.builder().nome("teste")
                             .descricao("lorem ipsum lore")
                             .foto("urlteste")
-                            .linkedin("https://www.linkedin.com/in/usuario" + (i + 1))  // URL válida
-                            .instagram("https://www.instagram.com/usuario" + (i + 1))  // URL válida
+                            .linkedin("https://www.linkedin.com/in/usuario" + (i + 1)) // URL válida
+                            .instagram("https://www.instagram.com/usuario" + (i + 1)) // URL válida
                             .curriculo("lorem ipsum lore")
                             .usuario(usuarios.get(i))
                             .status(Status.PENDENTE)
                             .build());
         }
 
-        List<Egresso> retornoEgresso = new ArrayList<>(); 
-        
+        List<Egresso> retornoEgresso = new ArrayList<>();
+
         for (Egresso egresso : egressos) {
             retornoEgresso.add(egressoService.salvarEgresso(egresso));
         }
@@ -298,8 +291,8 @@ public class CursoServiceTest <cursoEgressoService> {
             CursoEgresso cursoEgresso = CursoEgresso.builder()
                     .egresso(retornoEgresso.get(i))
                     .curso(retornoCurso.get(i))
-                    .anoInicio(2020) 
-                    .anoFim(2023) 
+                    .anoInicio(2020)
+                    .anoFim(2023)
                     .build();
 
             cursoEgressos.add(cursoEgressoService.salvar(cursoEgresso));
@@ -309,8 +302,7 @@ public class CursoServiceTest <cursoEgressoService> {
         int quantidadeEgressosCursoId1 = cursoService.listarQuantidadeDeEgressosPorCurso(cursos.get(0));
         int quantidadeEgressosCursoId2 = cursoService.listarQuantidadeDeEgressosPorCurso(cursos.get(1));
 
-
-        // Rollback 
+        // Rollback
         for (CursoEgresso cursoEgresso : cursoEgressos) {
             cursoEgressoService.remover(cursoEgresso);
         }
@@ -321,7 +313,6 @@ public class CursoServiceTest <cursoEgressoService> {
             egressoService.removerEgresso(egresso);
         }
 
-   
         // Verificação
         Assertions.assertThat(quantidadeEgressosCursoId1).isNotNull();
         Assertions.assertThat(quantidadeEgressosCursoId1).isEqualTo(1);
