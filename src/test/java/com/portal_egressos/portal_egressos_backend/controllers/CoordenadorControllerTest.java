@@ -1,6 +1,7 @@
 package com.portal_egressos.portal_egressos_backend.controllers;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +36,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @Import(TestSecurityConfig.class)
-@WebMvcTest(controllers = Coordenador.class)
+@WebMvcTest(controllers = CoordenadorController.class)
 @AutoConfigureMockMvc
 public class CoordenadorControllerTest {
         static final String API = "/api/coordenador";
@@ -115,15 +116,19 @@ public class CoordenadorControllerTest {
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome")
                                                 .value(retornoServLista.get(0).getNome()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].dataCriacao")
-                                                .value(retornoServLista.get(0).getDataCriacao()))
+                                                .value(retornoServLista.get(0).getDataCriacao()
+                                                                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
+
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].ativo")
                                                 .value(retornoServLista.get(0).getAtivo()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id")
                                                 .value(retornoServLista.get(1).getId()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome")
                                                 .value(retornoServLista.get(1).getNome()))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].dataCriacao")
-                                                .value(retornoServLista.get(1).getDataCriacao()))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].dataCriacao")
+                                                .value(retornoServLista.get(0).getDataCriacao()
+                                                                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
+
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].ativo")
                                                 .value(retornoServLista.get(1).getAtivo()));
         }
