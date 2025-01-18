@@ -1,5 +1,8 @@
 package com.portal_egressos.portal_egressos_backend.controllers;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -14,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -21,6 +25,7 @@ import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
 import com.portal_egressos.portal_egressos_backend.dto.EgressoDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
+import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
@@ -102,5 +107,239 @@ public class EgressoControllerTest {
 
                 // ação e verificação
                 mvc.perform(request).andExpect(MockMvcResultMatchers.status().isCreated());
+        }
+
+        @Test
+        public void deveRemoverEgresso() throws Exception {
+                // Configuração dos Mocks
+                Mockito.doNothing().when(egressoService).removerEgresso(1L);
+
+                // Ação
+                MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete(API + "/deletar/1")
+                                .accept(MediaType.APPLICATION_JSON);
+
+                // Verificação
+                mvc.perform(request)
+                                .andExpect(MockMvcResultMatchers.status().isNoContent()); // Verifica o status 204
+        }
+
+        @Test
+        public void deveListarEgressos() throws Exception {
+                Usuario usuario1 = Usuario.builder()
+                                .email("anderson@example.com")
+                                .senha("senha123")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Usuario usuario2 = Usuario.builder()
+                                .email("anderson2@example.com")
+                                .senha("senha123")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Egresso egresso1 = Egresso.builder()
+                                .id(1L)
+                                .nome("Anderson Lopes")
+                                .descricao("Cientista da Computação.")
+                                .foto("https://example.com/foto2.jpg")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes")
+                                .instagram("https://www.instagram.com/anderson_silva")
+                                .curriculo("https://example.com/anderson.pdf")
+                                .status(Status.PENDENTE)
+                                .usuario(usuario1)
+                                .build();
+
+                Egresso egresso2 = Egresso.builder()
+                                .id(2L)
+                                .nome("Anderson Silva")
+                                .descricao("Cientista da Computação.")
+                                .foto("https://example.com/foto2.jpg")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes")
+                                .instagram("https://www.instagram.com/anderson_silva")
+                                .curriculo("https://example.com/anderson.pdf")
+                                .status(Status.PENDENTE)
+                                .usuario(usuario2)
+                                .build();
+
+                List<Egresso> egressosMock = Arrays.asList(egresso1, egresso2);
+
+                Mockito.when(egressoService.listarEgressos()).thenReturn(egressosMock);
+
+                // Ação
+                MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/listar")
+                                .accept(MediaType.APPLICATION_JSON);
+
+                // Verificação
+                mvc.perform(request)
+                                .andExpect(MockMvcResultMatchers.status().isOk())
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Anderson Lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao")
+                                                .value("Cientista da Computação."))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
+                                                .value(Status.PENDENTE.toString()))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].foto")
+                                                .value("https://example.com/foto2.jpg"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].instagram")
+                                                .value("https://www.instagram.com/anderson_silva"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].linkedin")
+                                                .value("https://www.linkedin.com/in/anderson-lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].curriculo")
+                                                .value("https://example.com/anderson.pdf"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Anderson Silva"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].descricao")
+                                                .value("Cientista da Computação."))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].status")
+                                                .value(Status.PENDENTE.toString()))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].foto")
+                                                .value("https://example.com/foto2.jpg"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].instagram")
+                                                .value("https://www.instagram.com/anderson_silva"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].linkedin")
+                                                .value("https://www.linkedin.com/in/anderson-lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].curriculo")
+                                                .value("https://example.com/anderson.pdf"));
+
+        }
+
+        @Test
+        public void deveBuscarEgressosAprovados() throws Exception {
+                Usuario usuario1 = Usuario.builder()
+                                .email("anderson@example.com")
+                                .senha("senha123")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Usuario usuario2 = Usuario.builder()
+                                .email("anderson2@example.com")
+                                .senha("senha123")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Egresso egresso1 = Egresso.builder()
+                                .id(1L)
+                                .nome("Anderson Lopes")
+                                .descricao("Cientista da Computação.")
+                                .foto("https://example.com/foto2.jpg")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes")
+                                .instagram("https://www.instagram.com/anderson_silva")
+                                .curriculo("https://example.com/anderson.pdf")
+                                .status(Status.APROVADO)
+                                .usuario(usuario1)
+                                .build();
+
+                Egresso egresso2 = Egresso.builder()
+                                .id(2L)
+                                .nome("Anderson Silva")
+                                .descricao("Cientista da Computação.")
+                                .foto("https://example.com/foto2.jpg")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes")
+                                .instagram("https://www.instagram.com/anderson_silva")
+                                .curriculo("https://example.com/anderson.pdf")
+                                .status(Status.PENDENTE)
+                                .usuario(usuario2)
+                                .build();
+
+                List<Egresso> egressosMock = Arrays.asList(egresso1);
+
+                Mockito.when(egressoService.listarEgressosAprovados()).thenReturn(egressosMock);
+
+                // Ação
+                MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/buscarAprovados")
+                                .accept(MediaType.APPLICATION_JSON);
+
+                // Verificação
+                mvc.perform(request)
+                                .andDo(MockMvcResultHandlers.print())
+                                .andExpect(MockMvcResultMatchers.status().isOk())
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Anderson Lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao")
+                                                .value("Cientista da Computação."))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
+                                                .value(Status.APROVADO.toString()))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].foto")
+                                                .value("https://example.com/foto2.jpg"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].instagram")
+                                                .value("https://www.instagram.com/anderson_silva"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].linkedin")
+                                                .value("https://www.linkedin.com/in/anderson-lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].curriculo")
+                                                .value("https://example.com/anderson.pdf"));
+        }
+
+        @Test
+        public void deveBuscarEgressosPorNome() throws Exception {
+                Usuario usuario1 = Usuario.builder()
+                                .email("anderson@example.com")
+                                .senha("senha123")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Usuario usuario2 = Usuario.builder()
+                                .email("anderson2@example.com")
+                                .senha("senha123")
+                                .role(UserRole.EGRESSO)
+                                .build();
+
+                Egresso egresso = Egresso.builder()
+                                .nome("Anderson Lopes")
+                                .build();
+
+                Egresso egresso1 = Egresso.builder()
+                                .id(1L)
+                                .nome("Anderson Lopes")
+                                .descricao("Cientista da Computação.")
+                                .foto("https://example.com/foto2.jpg")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes")
+                                .instagram("https://www.instagram.com/anderson_silva")
+                                .curriculo("https://example.com/anderson.pdf")
+                                .status(Status.APROVADO)
+                                .usuario(usuario1)
+                                .build();
+
+                Egresso egresso2 = Egresso.builder()
+                                .id(2L)
+                                .nome("Anderson Silva")
+                                .descricao("Cientista da Computação.")
+                                .foto("https://example.com/foto2.jpg")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes")
+                                .instagram("https://www.instagram.com/anderson_silva")
+                                .curriculo("https://example.com/anderson.pdf")
+                                .status(Status.PENDENTE)
+                                .usuario(usuario2)
+                                .build();
+
+                List<Egresso> egressosMock = Arrays.asList(egresso1);
+
+                Mockito.when(egressoService.buscarEgresso(egresso))
+                                .thenReturn(egressosMock);
+
+                // Ação
+                MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/buscarPorNome")
+                                .accept(MediaType.APPLICATION_JSON);
+
+                // Verificação
+                mvc.perform(request)
+                                .andDo(MockMvcResultHandlers.print())
+                                .andExpect(MockMvcResultMatchers.status().isOk())
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Anderson Lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao")
+                                                .value("Cientista da Computação."))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
+                                                .value(Status.APROVADO.toString()))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].foto")
+                                                .value("https://example.com/foto2.jpg"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].instagram")
+                                                .value("https://www.instagram.com/anderson_silva"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].linkedin")
+                                                .value("https://www.linkedin.com/in/anderson-lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].curriculo")
+                                                .value("https://example.com/anderson.pdf"));
         }
 }

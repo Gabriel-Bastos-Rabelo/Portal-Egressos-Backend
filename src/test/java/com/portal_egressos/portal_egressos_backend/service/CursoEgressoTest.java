@@ -23,14 +23,14 @@ import jakarta.transaction.Transactional;
 
 @SpringBootTest
 public class CursoEgressoTest {
-    
+
     @Autowired
-    CursoService cursoService ;
+    CursoService cursoService;
 
     @Autowired
     EgressoService egressoService;
 
-    @Autowired 
+    @Autowired
     CursoEgressoService cursoEgressoService;
 
     @Autowired
@@ -43,9 +43,9 @@ public class CursoEgressoTest {
         List<Curso> cursos = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             cursos.add(Curso.builder()
-                            .nome("Curso teste" + (i + 1))
-                            .nivel("Nível teste" + (i + 1))
-                            .build());
+                    .nome("Curso teste" + (i + 1))
+                    .nivel("Nível teste" + (i + 1))
+                    .build());
         }
 
         List<Curso> retornoCurso = new ArrayList<>();
@@ -56,24 +56,24 @@ public class CursoEgressoTest {
         List<Usuario> usuarios = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             usuarios.add(Usuario.builder()
-                                .email("teste" + i + "@teste.com")
-                                .senha("senha123" + i)
-                                .role(UserRole.EGRESSO)
-                                .build());
+                    .email("teste" + i + "@teste.com")
+                    .senha("senha123" + i)
+                    .role(UserRole.EGRESSO)
+                    .build());
         }
 
         List<Egresso> egressos = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             egressos.add(Egresso.builder()
-                                .nome("Egresso Teste" + (i + 1))
-                                .descricao("lorem ipsum lore")
-                                .foto("urlteste")
-                                .linkedin("https://www.linkedin.com/in/usuario" + (i + 1))
-                                .instagram("https://www.instagram.com/usuario" + (i + 1))
-                                .curriculo("lorem ipsum lore")
-                                .usuario(usuarios.get(i))
-                                .status(Status.PENDENTE)
-                                .build());
+                    .nome("Egresso Teste" + (i + 1))
+                    .descricao("lorem ipsum lore")
+                    .foto("urlteste")
+                    .linkedin("https://www.linkedin.com/in/usuario" + (i + 1))
+                    .instagram("https://www.instagram.com/usuario" + (i + 1))
+                    .curriculo("lorem ipsum lore")
+                    .usuario(usuarios.get(i))
+                    .status(Status.PENDENTE)
+                    .build());
         }
 
         List<Egresso> retornoEgresso = new ArrayList<>();
@@ -85,11 +85,11 @@ public class CursoEgressoTest {
         List<CursoEgresso> cursoEgressos = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             CursoEgresso cursoEgresso = CursoEgresso.builder()
-                                                    .egresso(retornoEgresso.get(i))
-                                                    .curso(retornoCurso.get(i))
-                                                    .anoInicio(2020)
-                                                    .anoFim(2023)
-                                                    .build();
+                    .egresso(retornoEgresso.get(i))
+                    .curso(retornoCurso.get(i))
+                    .anoInicio(2020)
+                    .anoFim(2023)
+                    .build();
 
             cursoEgressos.add(cursoEgressoService.salvar(cursoEgresso));
         }
@@ -102,14 +102,14 @@ public class CursoEgressoTest {
             cursoService.removerCurso(curso);
         }
         for (Egresso egresso : retornoEgresso) {
-            egressoService.removerEgresso(egresso);
+            egressoService.removerEgresso(egresso.getId());
         }
 
         // Verificação
         for (CursoEgresso cursoEgresso : cursoEgressos) {
-            Assertions.assertThat(cursoEgresso.getId()).isNotNull();  
-            Assertions.assertThat(cursoEgresso.getAnoInicio()).isEqualTo(2020); 
-            Assertions.assertThat(cursoEgresso.getAnoFim()).isEqualTo(2023); 
+            Assertions.assertThat(cursoEgresso.getId()).isNotNull();
+            Assertions.assertThat(cursoEgresso.getAnoInicio()).isEqualTo(2020);
+            Assertions.assertThat(cursoEgresso.getAnoFim()).isEqualTo(2023);
         }
     }
 
@@ -117,7 +117,7 @@ public class CursoEgressoTest {
     @Transactional
     public void deveAtualizarCursoEgresso() {
 
-        //cenário
+        // cenário
         List<Curso> cursos = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             cursos.add(
@@ -172,14 +172,13 @@ public class CursoEgressoTest {
             cursoEgressos.add(cursoEgressoService.salvar(cursoEgresso));
         }
 
-        //Ação
+        // Ação
         for (CursoEgresso cursoEgresso : cursoEgressos) {
             cursoEgresso.setAnoInicio(2021);
             cursoEgresso.setAnoFim(2024);
             cursoEgressoService.atualizar(cursoEgresso);
         }
 
-        
         // Rollback
         for (CursoEgresso cursoEgresso : cursoEgressos) {
             cursoEgressoService.remover(cursoEgresso);
@@ -188,10 +187,10 @@ public class CursoEgressoTest {
             cursoService.removerCurso(curso);
         }
         for (Egresso egresso : retornoEgresso) {
-            egressoService.removerEgresso(egresso);
+            egressoService.removerEgresso(egresso.getId());
         }
 
-        // Verificação 
+        // Verificação
         for (CursoEgresso cursoEgresso : cursoEgressos) {
             Assertions.assertThat(cursoEgresso.getAnoInicio()).isEqualTo(2021);
             Assertions.assertThat(cursoEgresso.getAnoFim()).isEqualTo(2024);
@@ -206,9 +205,9 @@ public class CursoEgressoTest {
         List<Curso> cursos = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             cursos.add(Curso.builder()
-                            .nome("Curso teste" + (i + 1))
-                            .nivel("Nível teste" + (i + 1))
-                            .build());
+                    .nome("Curso teste" + (i + 1))
+                    .nivel("Nível teste" + (i + 1))
+                    .build());
         }
 
         List<Curso> retornoCurso = new ArrayList<>();
@@ -219,24 +218,24 @@ public class CursoEgressoTest {
         List<Usuario> usuarios = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             usuarios.add(Usuario.builder()
-                                .email("teste" + i + "@teste.com")
-                                .senha("senha123" + i)
-                                .role(UserRole.EGRESSO)
-                                .build());
+                    .email("teste" + i + "@teste.com")
+                    .senha("senha123" + i)
+                    .role(UserRole.EGRESSO)
+                    .build());
         }
 
         List<Egresso> egressos = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             egressos.add(Egresso.builder()
-                                .nome("Egresso Teste" + (i + 1))
-                                .descricao("lorem ipsum lore")
-                                .foto("urlteste")
-                                .linkedin("https://www.linkedin.com/in/usuario" + (i + 1))
-                                .instagram("https://www.instagram.com/usuario" + (i + 1))
-                                .curriculo("lorem ipsum lore")
-                                .usuario(usuarios.get(i))
-                                .status(Status.PENDENTE)
-                                .build());
+                    .nome("Egresso Teste" + (i + 1))
+                    .descricao("lorem ipsum lore")
+                    .foto("urlteste")
+                    .linkedin("https://www.linkedin.com/in/usuario" + (i + 1))
+                    .instagram("https://www.instagram.com/usuario" + (i + 1))
+                    .curriculo("lorem ipsum lore")
+                    .usuario(usuarios.get(i))
+                    .status(Status.PENDENTE)
+                    .build());
         }
 
         List<Egresso> retornoEgresso = new ArrayList<>();
@@ -247,22 +246,22 @@ public class CursoEgressoTest {
         List<CursoEgresso> cursoEgressos = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
             CursoEgresso cursoEgresso = CursoEgresso.builder()
-                                                    .egresso(retornoEgresso.get(i))
-                                                    .curso(retornoCurso.get(i))
-                                                    .anoInicio(2020)
-                                                    .anoFim(2023)
-                                                    .build();
+                    .egresso(retornoEgresso.get(i))
+                    .curso(retornoCurso.get(i))
+                    .anoInicio(2020)
+                    .anoFim(2023)
+                    .build();
             cursoEgressos.add(cursoEgressoService.salvar(cursoEgresso));
         }
 
-        //ação
+        // ação
         CursoEgresso cursoEgressoARemover = cursoEgressos.get(0);
         cursoEgressoService.remover(cursoEgressoARemover);
 
         // Verificação
         List<CursoEgresso> cursoEgressoRemovido = cursoEgressoRepo.findAll();
-        Assertions.assertThat(cursoEgressoRemovido).doesNotContain(cursoEgressoARemover); 
-        
+        Assertions.assertThat(cursoEgressoRemovido).doesNotContain(cursoEgressoARemover);
+
     }
 
 }

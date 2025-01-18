@@ -225,7 +225,7 @@ public class CursoServiceTest<cursoEgressoService> {
             cursoService.removerCurso(curso);
         }
         for (Egresso egresso : retornoEgresso) {
-            egressoService.removerEgresso(egresso);
+            egressoService.removerEgresso(egresso.getId());
         }
 
         // Verificação
@@ -310,7 +310,7 @@ public class CursoServiceTest<cursoEgressoService> {
             cursoService.removerCurso(curso);
         }
         for (Egresso egresso : retornoEgresso) {
-            egressoService.removerEgresso(egresso);
+            egressoService.removerEgresso(egresso.getId());
         }
 
         // Verificação

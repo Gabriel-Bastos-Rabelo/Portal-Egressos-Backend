@@ -255,7 +255,7 @@ public class EgressoServiceTest {
                 // ação
                 Egresso egressoSalvo = egressoService.salvarEgresso(egresso);
                 Long id = egressoSalvo.getId();
-                egressoService.removerEgresso(egressoSalvo);
+                egressoService.removerEgresso(id);
                 Optional<Egresso> temp = egressoRepositorio.findById(id);
 
                 // rollback

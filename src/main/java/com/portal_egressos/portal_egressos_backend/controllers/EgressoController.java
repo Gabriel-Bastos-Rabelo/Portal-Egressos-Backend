@@ -81,8 +81,7 @@ public class EgressoController {
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> deletarEgresso(@PathVariable Long id) {
         try {
-            Egresso egresso = egressoService.buscarPorId(id);
-            egressoService.removerEgresso(egresso);
+            egressoService.removerEgresso(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

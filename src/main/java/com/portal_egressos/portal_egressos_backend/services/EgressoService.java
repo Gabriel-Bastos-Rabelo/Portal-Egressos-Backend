@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
+import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 
@@ -95,8 +96,9 @@ public class EgressoService {
     }
 
     @Transactional
-    public void removerEgresso(Egresso egresso) {
-        verificarEgressoId(egresso);
+    public void removerEgresso(Long id) {
+        Egresso egresso = egressoRepositorio.findById(id)
+                .orElseThrow(() -> new RegraNegocioRunTime("Egresso não encontrado para o ID: " + id));
         egressoRepositorio.delete(egresso);
     }
 
