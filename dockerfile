@@ -5,11 +5,17 @@ FROM openjdk:23
 WORKDIR /app
 
 # Copiar o arquivo JAR da aplicação para o contêiner
-COPY target/*.jar app.jar
+COPY target/portal_egressos_backend-0.0.1-SNAPSHOT.jar app.jar
+
+# Copiar o arquivo .env para o contêiner
+COPY .env /app/.env
 
 # Expor a porta usada pelo Spring Boot
 EXPOSE 8080
 
 # Comando para executar a aplicação
 CMD ["java", "-jar", "app.jar"]
+
+
+
 
