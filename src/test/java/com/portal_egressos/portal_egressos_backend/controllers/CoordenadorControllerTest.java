@@ -182,11 +182,15 @@ public class CoordenadorControllerTest {
         }
 
         @Test
-        public void deveAtualizarCurso() throws Exception {
+        public void deveAtualizarCoordenador() throws Exception {
                 // Cenário
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.registerModule(new JavaTimeModule());
+                objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
                 CoordenadorDTO dto = CoordenadorDTO.builder()
                                 .id(1L)
-                                .nome("Anderson Lopes")
+                                .nome("Anderson Lopes Atualizado")
                                 .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
                                 .ativo(true)
                                 .build();
@@ -203,28 +207,50 @@ public class CoordenadorControllerTest {
                                 .nivel("graduação")
                                 .build();
 
-                Coordenador coordenador = Coordenador.builder()
+                Coordenador coordenadorExistente = Coordenador.builder()
                                 .id(dto.getId())
-                                .nome(dto.getNome())
+                                .nome("Anderson Lopes")
+                                .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
+                                .ativo(true)
+                                .curso(curso)
+                                .usuario(usuario)
+                                .build();
+
+                Coordenador coordenadorAtualizado = Coordenador.builder()
+                                .id(dto.getId())
+                                .nome(dto.getNome()) 
                                 .dataCriacao(dto.getDataCriacao())
                                 .ativo(dto.getAtivo())
                                 .curso(curso)
                                 .usuario(usuario)
                                 .build();
 
-                Mockito.when(coordService.atualizarCoordenador(Mockito.any(Coordenador.class)))
-                                .thenReturn(coordenador);
+               
+                Mockito.when(coordService.buscarPorId(1L))
+                                .thenReturn(coordenadorExistente); 
 
-                String json = new ObjectMapper().writeValueAsString(dto);
+                Mockito.when(coordService.atualizarCoordenador(Mockito.any(Coordenador.class)))
+                                .thenReturn(coordenadorAtualizado); 
+                                
+                String json = objectMapper.writeValueAsString(dto);
 
                 // Ação
-                MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(API + "/atualizar/1");
-
-                // Verificação
-                mvc.perform(request
+                MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(API + "/atualizar/1")
                                 .accept(MediaType.APPLICATION_JSON)
                                 .contentType(MediaType.APPLICATION_JSON)
-                                .content(json))
-                                .andExpect(MockMvcResultMatchers.status().isCreated());
+                                .content(json);
+
+                // Verificação
+                mvc.perform(request)
+                                .andExpect(MockMvcResultMatchers.status().isOk()) // Status esperado: 200
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(coordenadorAtualizado.getId()))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.nome")
+                                                .value(coordenadorAtualizado.getNome()))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.dataCriacao")
+                                                .value(coordenadorAtualizado.getDataCriacao()
+                                                                .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.ativo")
+                                                .value(coordenadorAtualizado.getAtivo()));
         }
+
 }
