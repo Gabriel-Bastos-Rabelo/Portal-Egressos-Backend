@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -56,7 +57,7 @@ public class EgressoController {
             CursoEgresso cursoEgresso = salvarCursoEgresso(dto, egresso, curso);
             cursoEgressoService.salvar(cursoEgresso);
 
-            return ResponseEntity.ok(converterParaDTO(egressoRetornado));
+            return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(egressoRetornado));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
