@@ -93,7 +93,7 @@ public class EgressoController {
     @GetMapping("/buscarPorNome")
     public ResponseEntity<?> buscarPorNome(@RequestParam("nome") String nome) {
         try {
-            List<Egresso> egressosRetornado = egressoService.buscarEgresso(nome);
+            List<Egresso> egressosRetornado = egressoService.buscarEgressoPorNome(nome);
             List<EgressoDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(egressosDTO);

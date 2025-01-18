@@ -173,7 +173,7 @@ public class EgressoServiceTest {
                 // acao
                 Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1);
                 Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2);
-                List<Egresso> resultado = egressoService.buscarEgresso(filtro.getNome());
+                List<Egresso> resultado = egressoService.buscarEgressoPorNome(filtro.getNome());
 
                 // rollback
                 egressoRepositorio.delete(egressoSalvo1);

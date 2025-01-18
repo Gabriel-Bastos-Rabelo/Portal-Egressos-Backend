@@ -2,7 +2,6 @@ package com.portal_egressos.portal_egressos_backend.controllers;
 
 import com.portal_egressos.portal_egressos_backend.dto.OportunidadeDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
-import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
@@ -28,66 +27,51 @@ public class OportunidadeController {
     @PostMapping("/salvar")
     public ResponseEntity<?> salvarOportunidade(@RequestBody OportunidadeDTO oportunidadeDTO) {
         try {
-            Egresso filtro = Egresso.builder().id(oportunidadeDTO.getIdEgresso()).build();
-
-            List<Egresso> egressos = egressoService.buscarEgresso(filtro);
-            if (egressos.isEmpty()) {
-                throw new RegraNegocioRunTime("Egresso não encontrado para o ID: " + oportunidadeDTO.getIdEgresso());
-            }
-
-            Egresso egresso = egressos.get(0);
+            Egresso egresso = egressoService.buscarPorId(oportunidadeDTO.getIdEgresso());
             Oportunidade oportunidade = converterParaModelo(oportunidadeDTO);
             oportunidade.setEgresso(egresso);
-
             Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
-           return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(oportunidadeSalva));
+            return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(oportunidadeSalva));
         } catch (Exception e) {
             System.err.println(e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        
+
     }
 
     @PutMapping("atualizar/{id}")
-    public ResponseEntity<?> atualizarOportunidade(@PathVariable Long id, @RequestBody OportunidadeDTO oportunidadeDTO) {
+    public ResponseEntity<?> atualizarOportunidade(@PathVariable Long id,
+            @RequestBody OportunidadeDTO oportunidadeDTO) {
         try {
             Oportunidade oportunidade = converterParaModelo(oportunidadeDTO);
             oportunidade.setId(id);
-
             if (oportunidadeDTO.getIdEgresso() != null) {
-                Egresso filtro = Egresso.builder().id(oportunidadeDTO.getIdEgresso()).build();
-                List<Egresso> egressos = egressoService.buscarEgresso(filtro);
-                if (egressos.isEmpty()) {
-                    throw new RegraNegocioRunTime("Egresso não encontrado para o ID: " + oportunidadeDTO.getIdEgresso());
-                }
-                oportunidade.setEgresso(egressos.get(0));
+                Egresso egresso = egressoService.buscarPorId(oportunidadeDTO.getIdEgresso());
+                oportunidade.setEgresso(egresso);
             }
-
             Oportunidade oportunidadeAtualizada = oportunidadeService.atualizarOportunidade(oportunidade);
             return ResponseEntity.ok(converterParaDTO(oportunidadeAtualizada));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-     
 
     @PutMapping("status/{id}")
     public ResponseEntity<?> atualizarStatusOportunidade(@PathVariable("id") Long id) {
         try {
-            Status status = Status.APROVADO;  
-            
+            Status status = Status.APROVADO;
+
             Oportunidade oportunidade = Oportunidade.builder()
-                                                    .id(id)
-                                                    .status(status) 
-                                                    .build();
+                    .id(id)
+                    .status(status)
+                    .build();
             Oportunidade oportunidadeAtualizada = oportunidadeService.atualizarStatusOportunidade(oportunidade);
             return ResponseEntity.ok(converterParaDTO(oportunidadeAtualizada));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
-    
+
     @GetMapping("/listar")
     public ResponseEntity<?> listarOportunidades() {
         try {
@@ -124,7 +108,7 @@ public class OportunidadeController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
+
     private Oportunidade converterParaModelo(OportunidadeDTO dto) {
         return Oportunidade.builder()
                 .id(dto.getId())
@@ -136,9 +120,10 @@ public class OportunidadeController {
                 .dataExpiracao(dto.getDataExpiracao())
                 .salario(dto.getSalario())
                 .link(dto.getLink())
-                .status(Status.PENDENTE) 
+                .status(Status.PENDENTE)
                 .build();
     }
+
     private OportunidadeDTO converterParaDTO(Oportunidade oportunidade) {
         return OportunidadeDTO.builder()
                 .id(oportunidade.getId())

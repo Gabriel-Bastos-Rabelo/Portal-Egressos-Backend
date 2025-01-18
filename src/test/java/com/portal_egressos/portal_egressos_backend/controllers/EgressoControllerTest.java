@@ -278,7 +278,7 @@ public class EgressoControllerTest {
 
                 List<Egresso> egressosMock = Arrays.asList(egresso);
 
-                Mockito.when(egressoService.buscarEgresso("Anderson"))
+                Mockito.when(egressoService.buscarEgressoPorNome("Anderson"))
                                 .thenReturn(egressosMock);
 
                 MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/buscarPorNome")

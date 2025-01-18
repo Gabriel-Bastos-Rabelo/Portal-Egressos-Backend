@@ -2,7 +2,6 @@ package com.portal_egressos.portal_egressos_backend.controllers;
 
 import com.portal_egressos.portal_egressos_backend.dto.DepoimentoDto;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
-import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 @RestController
 @RequestMapping("/api/depoimento")
 public class DepoimentoController {
@@ -26,25 +24,15 @@ public class DepoimentoController {
     @Autowired
     private EgressoService egressoService;
 
-    
     @PostMapping("/salvar")
     public ResponseEntity<?> salvarDepoimento(@RequestBody DepoimentoDto depoimentoDTO) {
         try {
-            Egresso filtro = Egresso.builder().id(depoimentoDTO.getIdEgresso()).build();
-
-            List<Egresso> egressos = egressoService.buscarEgresso(filtro);
-            if (egressos.isEmpty()) {
-                throw new RegraNegocioRunTime("Egresso não encontrado para o ID: " + depoimentoDTO.getIdEgresso());
-            }
-
-            Egresso egresso = egressos.get(0);
+            Egresso egresso = egressoService.buscarPorId(depoimentoDTO.getIdEgresso());
             Depoimento depoimento = converterParaModelo(depoimentoDTO);
             depoimento.setEgresso(egresso);
-
             Depoimento depoimentoSalva = depoimentoService.salvarDepoimento(depoimento);
             return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(depoimentoSalva));
         } catch (Exception e) {
-            System.err.println(e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -56,12 +44,8 @@ public class DepoimentoController {
             depoimento.setId(id);
 
             if (depoimentoDTO.getIdEgresso() != null) {
-                Egresso filtro = Egresso.builder().id(depoimentoDTO.getIdEgresso()).build();
-                List<Egresso> egressos = egressoService.buscarEgresso(filtro);
-                if (egressos.isEmpty()) {
-                    throw new RegraNegocioRunTime("Egresso não encontrado para o ID: " + depoimentoDTO.getIdEgresso());
-                }
-                depoimento.setEgresso(egressos.get(0));
+                Egresso egresso = egressoService.buscarPorId(depoimentoDTO.getIdEgresso());
+                depoimento.setEgresso(egresso);
             }
 
             Depoimento depoimentoAtualizada = depoimentoService.atualizarDepoimento(depoimento);
@@ -70,25 +54,23 @@ public class DepoimentoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-     
 
     @PutMapping("status/{id}")
     public ResponseEntity<?> atualizarStatusDepoimento(@PathVariable("id") Long id) {
         try {
-            Status status = Status.APROVADO;  
-            
+            Status status = Status.APROVADO;
+
             Depoimento depoimento = Depoimento.builder()
-                                                    .id(id)
-                                                    .status(status)  
-                                                    .build();
+                    .id(id)
+                    .status(status)
+                    .build();
             Depoimento depoimentoAtualizada = depoimentoService.atualizarStatusDepoimento(depoimento);
             return ResponseEntity.ok(converterParaDTO(depoimentoAtualizada));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
-    
+
     @GetMapping("/listar")
     public ResponseEntity<?> listarDepoimentos() {
         try {
@@ -124,15 +106,16 @@ public class DepoimentoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    
+
     private Depoimento converterParaModelo(DepoimentoDto dto) {
         return Depoimento.builder()
                 .id(dto.getId())
                 .texto(dto.getTexto())
                 .data(dto.getData())
-                .status(Status.PENDENTE) 
+                .status(Status.PENDENTE)
                 .build();
     }
+
     private DepoimentoDto converterParaDTO(Depoimento depoimento) {
         return DepoimentoDto.builder()
                 .id(depoimento.getId())
