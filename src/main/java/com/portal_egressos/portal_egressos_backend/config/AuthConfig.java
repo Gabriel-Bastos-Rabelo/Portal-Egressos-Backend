@@ -28,6 +28,7 @@ public class AuthConfig {
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers("/").permitAll()  // Permite acesso à raiz
             .requestMatchers("/api/auth/signin").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/oportunidade/aprovadas").permitAll() // Público
             .requestMatchers(HttpMethod.GET, "/api/oportunidade/listar").hasRole("COORDENADOR") //listar
