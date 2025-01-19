@@ -3,17 +3,19 @@ package com.portal_egressos.portal_egressos_backend.controllers;
 import java.util.Collections;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan.Filter;
-import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -22,44 +24,44 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.portal_egressos.portal_egressos_backend.config.auth.SecurityFilter;
+import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
 import com.portal_egressos.portal_egressos_backend.dto.NoticiaDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Noticia;
+import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 import com.portal_egressos.portal_egressos_backend.services.NoticiaService;
 
 
-@WebMvcTest(
-    controllers = NoticiaController.class,
-    excludeAutoConfiguration = {
-        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
-    },
-    excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityFilter.class)
-)
-
-@AutoConfigureMockMvc
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
+@Import(TestSecurityConfig.class)
+@WebMvcTest(controllers = NoticiaController.class)
+@AutoConfigureMockMvc
 public class NoticiaControllerTest {
 
     static final String API = "/api/noticia";
 
     @Autowired
-    MockMvc mvc; 
+    private MockMvc mvc; 
 
     @MockBean
-    NoticiaService noticiaService; 
+    private NoticiaService noticiaService; 
 
     @MockBean
-    EgressoService egressoService;
+    private EgressoService egressoService;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
-    
+    @MockBean
+    private TokenProvider tokenProvider;
+
+    @MockBean
+    private UsuarioRepository userRepository;
+
     @Test
     public void deveSalvarNoticia() throws Exception {
 
@@ -89,7 +91,7 @@ public class NoticiaControllerTest {
 
         String json = objectMapper.writeValueAsString(dto);
 
-        MockHttpServletRequestBuilder request = post(API)
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(API)
             .accept(MediaType.APPLICATION_JSON)
             .contentType(MediaType.APPLICATION_JSON)
             .content(json);
