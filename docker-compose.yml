@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: portal_egressos
+    ports:
+      - "8080:8080" # Porta exposta
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: postgres:15
+    container_name: db_container
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: portalEgressos_owner
+      POSTGRES_PASSWORD: 34FwDsilMvex
+      POSTGRES_DB: portal_egressos_backend
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
