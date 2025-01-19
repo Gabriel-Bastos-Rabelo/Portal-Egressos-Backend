@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,13 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
+import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
 
 @Service
 public class EgressoService {
 
     @Autowired
     private EgressoRepository egressoRepositorio;
+
+    @Autowired
+    private UsuarioRepository usuarioRepositorio;
 
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -38,10 +44,12 @@ public class EgressoService {
     @Transactional
     public Egresso salvarEgresso(Egresso egresso) {
         verificarEgresso(egresso);
-        Optional<Egresso> egressoExistente = egressoRepositorio.findByUsuarioEmail(egresso.getUsuario().getEmail());
-        if (egressoExistente.isPresent()) {
+        System.out.println(egresso.getUsuario().getEmail());
+        Optional<Usuario> usuarioExistente = usuarioRepositorio.findUsuarioByEmail(egresso.getUsuario().getEmail());
+        System.out.println(usuarioExistente);
+        if (usuarioExistente.isPresent()) {
             throw new RegraNegocioRunTime(
-                    String.format("Egresso com email '%s' já existe.", egresso.getUsuario().getEmail()));
+                    String.format("Usuario com email '%s' já existe.", egresso.getUsuario().getEmail()));
         }
 
         String senhaEncriptada = new BCryptPasswordEncoder().encode(egresso.getUsuario().getSenha());
