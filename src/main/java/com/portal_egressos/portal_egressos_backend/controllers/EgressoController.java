@@ -53,8 +53,8 @@ public class EgressoController {
             Egresso egresso = converterParaModelo(dto);
             egresso.setStatus(Status.PENDENTE);
             egresso.setUsuario(usuario);
-            Egresso egressoRetornado = egressoService.salvarEgresso(egresso);
             Curso curso = cursoService.buscarPorId(dto.getIdCurso());
+            Egresso egressoRetornado = egressoService.salvarEgresso(egresso);
             CursoEgresso cursoEgresso = salvarCursoEgresso(dto, egresso, curso);
             cursoEgressoService.salvar(cursoEgresso);
 

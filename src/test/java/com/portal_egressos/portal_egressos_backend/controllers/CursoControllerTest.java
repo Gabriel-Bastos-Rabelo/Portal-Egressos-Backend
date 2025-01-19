@@ -33,7 +33,7 @@ import java.util.List;
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest(controllers = CursoController.class)
-@Import(TestSecurityConfig.class) // configuração de segurança personalizada que nao precisa de autenticação
+@Import(TestSecurityConfig.class)
 @AutoConfigureMockMvc
 public class CursoControllerTest {
 
@@ -146,7 +146,7 @@ public class CursoControllerTest {
 
                 // ação
                 MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                                .get(API +"/listar_egressos_por_curso/1");
+                                .get(API + "/listar_egressos_por_curso/1");
 
                 // Verificação
                 mvc.perform(request)
@@ -213,11 +213,11 @@ public class CursoControllerTest {
 
                 // Ação
                 MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                                .get(API +"/listar_quantidade_egressos_por_curso/1");
+                                .get(API + "/listar_quantidade_egressos_por_curso/1");
 
                 // Verificação
                 mvc.perform(request)
-                                .andExpect(MockMvcResultMatchers.status().isOk()) 
+                                .andExpect(MockMvcResultMatchers.status().isOk())
                                 .andExpect(MockMvcResultMatchers.jsonPath("$").value(quantidadeEgressosCurso));
         }
 
