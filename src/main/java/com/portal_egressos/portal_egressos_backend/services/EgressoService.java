@@ -44,9 +44,7 @@ public class EgressoService {
     @Transactional
     public Egresso salvarEgresso(Egresso egresso) {
         verificarEgresso(egresso);
-        System.out.println(egresso.getUsuario().getEmail());
         Optional<Usuario> usuarioExistente = usuarioRepositorio.findUsuarioByEmail(egresso.getUsuario().getEmail());
-        System.out.println(usuarioExistente);
         if (usuarioExistente.isPresent()) {
             throw new RegraNegocioRunTime(
                     String.format("Usuario com email '%s' já existe.", egresso.getUsuario().getEmail()));

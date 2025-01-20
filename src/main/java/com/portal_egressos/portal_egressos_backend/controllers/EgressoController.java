@@ -74,7 +74,6 @@ public class EgressoController {
             Egresso egressoAtualizado = egressoService.atualizarEgresso(egresso);
             return ResponseEntity.ok(converterParaDTO(egressoAtualizado));
         } catch (Exception e) {
-            System.out.println(e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

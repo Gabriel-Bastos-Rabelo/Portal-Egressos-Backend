@@ -33,7 +33,6 @@ public class OportunidadeController {
             Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
             return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(oportunidadeSalva));
         } catch (Exception e) {
-            System.err.println(e);
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
