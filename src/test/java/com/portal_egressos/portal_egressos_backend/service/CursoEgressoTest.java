@@ -7,6 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
@@ -22,6 +23,7 @@ import com.portal_egressos.portal_egressos_backend.enums.Status;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class CursoEgressoTest {
 
     @Autowired

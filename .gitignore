@@ -33,4 +33,5 @@ build/
 .vscode/
 
 #env
-.env
+#removendo .env temporariamente
+#.env
