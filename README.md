@@ -1,16 +1,53 @@
-# Projeto desenvolvido para disciplina de Laboratório de Programação
+# Portal Egressos Backend
 
-## Modelagem do banco de dados: https://dbdiagram.io/d/Copy-of-Copy-of-portal_egressos-675779c1e9daa85aca2dcefc
+Projeto desenvolvido para a disciplina de Laboratório de Programação.
 
-## Rodando a aplicação localmente
+---
 
+## Pré-requisitos
 
-Existem várias maneiras de executar uma aplicação Spring Boot na sua máquina local. Uma opção é executar o método main da classe PortalEgressosBackendApplication a partir da sua IDE.
+- Docker e Docker Compose instalados
 
-Alternativamente você pode usar [Spring Boot Maven plugin](https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html) como:
+---
 
-```shell
-mvn spring-boot:run
-```
+## Rodando a aplicação com Docker
 
+1. **Clone o repositório:**
 
+   ```bash
+   git clone https://github.com/Gabriel-Bastos-Rabelo/Portal-Egressos-Backend.git
+   cd Portal-Egressos-Backend
+   ```
+
+2. **Configure o arquivo `.env`:**
+
+   Crie um arquivo `.env` na raiz com as variáveis necessárias, por exemplo:
+
+   ```env
+   DATABASE_URL=jdbc:mysql://localhost:3306/mydb
+   DATABASE_USERNAME=root
+   DATABASE_PASSWORD=password123
+   JWT_SECRET=your-secret-key
+   ```
+
+3. **Suba os containers:**
+
+   ```bash
+   docker-compose up --build
+   ```
+
+4. **Acesse a aplicação:**
+
+   A aplicação estará disponível em:
+   ```
+   http://localhost:8080
+   ```
+
+5. **Parar a aplicação:**
+
+   ```bash
+   docker-compose down
+   ```
+
+---
+  
