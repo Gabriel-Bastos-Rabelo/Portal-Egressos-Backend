@@ -9,10 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
@@ -30,6 +33,9 @@ public class EgressoService {
     @Autowired
     private UsuarioRepository usuarioRepositorio;
 
+    @Autowired
+    private StorageService storageService;
+
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
@@ -42,13 +48,16 @@ public class EgressoService {
     private static final Pattern instagramPattern = Pattern.compile(INSTAGRAM_PATTERN, Pattern.CASE_INSENSITIVE);
 
     @Transactional
-    public Egresso salvarEgresso(Egresso egresso) {
+    public Egresso salvarEgresso(Egresso egresso, MultipartFile imagem) {
         verificarEgresso(egresso);
         Optional<Usuario> usuarioExistente = usuarioRepositorio.findUsuarioByEmail(egresso.getUsuario().getEmail());
         if (usuarioExistente.isPresent()) {
             throw new RegraNegocioRunTime(
                     String.format("Usuario com email '%s' já existe.", egresso.getUsuario().getEmail()));
         }
+
+        String imagePath = storageService.salvarImagem(imagem);
+        egresso.setFoto(imagePath);
 
         String senhaEncriptada = new BCryptPasswordEncoder().encode(egresso.getUsuario().getSenha());
 
@@ -78,7 +87,7 @@ public class EgressoService {
     }
 
     @Transactional
-    public Egresso atualizarEgresso(Egresso egresso) {
+    public Egresso atualizarEgresso(Egresso egresso, MultipartFile imagem) {
         verificarEgressoId(egresso);
 
         Egresso egressoExistente = egressoRepositorio.findById(egresso.getId()).get();
@@ -88,6 +97,10 @@ public class EgressoService {
             egressoExistente.getUsuario().setSenha(senhaEncriptada);
         }
 
+        if(!imagem.isEmpty()){
+            String imagePath = storageService.salvarImagem(imagem);
+            egressoExistente.setFoto(imagePath);
+        }
         if (egresso.getNome() != null && !egresso.getNome().isEmpty()) {
             egressoExistente.setNome(egresso.getNome());
         }
@@ -170,16 +183,22 @@ public class EgressoService {
         }
     }
 
-    public List<Egresso> listarEgressos() {
-        return egressoRepositorio.findAll();
+    public List<Egresso> listarEgressos(int pagina) {
+        Pageable pageable = PageRequest.of(pagina, 20);
+        Page<Egresso> egressos = egressoRepositorio.findAll(pageable);
+        if (pagina >= egressos.getTotalPages()) {
+            throw new RegraNegocioRunTime("Página " + pagina + " não existe. Total de páginas: " + egressos.getTotalPages());
+        }
+        return egressos.getContent();
     }
 
-    public List<Egresso> listarEgressosAprovados() {
-        List<Egresso> egressosAprovados = egressoRepositorio.findAllByStatus(Status.APROVADO);
-        if (egressosAprovados.isEmpty()) {
-            throw new RegraNegocioRunTime("Nenhum egresso encontrado com status APROVADO.");
+    public List<Egresso> listarEgressosAprovados(int pagina) {
+        Pageable pageable = PageRequest.of(pagina, 20); 
+        Page<Egresso> egressosAprovados = egressoRepositorio.findAllByStatus(Status.APROVADO, pageable);
+        if (pagina >= egressosAprovados.getTotalPages()) {
+            throw new RegraNegocioRunTime("Página " + pagina + " não existe. Total de páginas: " + egressosAprovados.getTotalPages());
         }
-        return egressosAprovados;
+        return egressosAprovados.getContent();
     }
 
     public List<Egresso> listarEgressosPendentes() {
@@ -195,4 +214,5 @@ public class EgressoService {
                 .orElseThrow(() -> new RuntimeException("Egresso não encontrado com id: " + id));
         return egresso;
     }
+
 }

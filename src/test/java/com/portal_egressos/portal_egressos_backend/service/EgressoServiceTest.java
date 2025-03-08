@@ -48,7 +48,7 @@ public class EgressoServiceTest {
                                 .status(Status.PENDENTE)
                                 .build();
                 // acao
-                Egresso egressoSalvo = egressoService.salvarEgresso(egresso);
+                Egresso egressoSalvo = egressoService.salvarEgresso(egresso, null);
 
                 // rollback
                 egressoRepositorio.delete(egressoSalvo);
@@ -77,7 +77,7 @@ public class EgressoServiceTest {
                                 .status(Status.PENDENTE)
                                 .build();
 
-                Assertions.assertThrows(RegraNegocioRunTime.class, () -> egressoService.salvarEgresso(egresso),
+                Assertions.assertThrows(RegraNegocioRunTime.class, () -> egressoService.salvarEgresso(egresso, null),
                                 "O nome do egresso deve ser informado.");
         }
 
@@ -99,7 +99,7 @@ public class EgressoServiceTest {
                                 .status(Status.PENDENTE)
                                 .build();
 
-                Assertions.assertThrows(RegraNegocioRunTime.class, () -> egressoService.salvarEgresso(egresso),
+                Assertions.assertThrows(RegraNegocioRunTime.class, () -> egressoService.salvarEgresso(egresso, null),
                                 "O email do egresso deve ser informado.");
         }
 
@@ -121,7 +121,7 @@ public class EgressoServiceTest {
                                 .status(Status.PENDENTE)
                                 .build();
 
-                Assertions.assertThrows(RegraNegocioRunTime.class, () -> egressoService.salvarEgresso(egresso),
+                Assertions.assertThrows(RegraNegocioRunTime.class, () -> egressoService.salvarEgresso(egresso, null),
                                 "A senha do egresso deve ser informada.");
         }
 
@@ -171,8 +171,8 @@ public class EgressoServiceTest {
                                 .build();
 
                 // acao
-                Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1);
-                Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2);
+                Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1, null);
+                Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2, null);
                 List<Egresso> resultado = egressoService.buscarEgressoPorNome(filtro.getNome());
 
                 // rollback
@@ -206,7 +206,7 @@ public class EgressoServiceTest {
                                 .build();
 
                 // ação
-                Egresso egressoSalvo = egressoService.salvarEgresso(egresso);
+                Egresso egressoSalvo = egressoService.salvarEgresso(egresso, null);
                 egressoSalvo.setNome("anderson");
                 egressoSalvo.setDescricao("lorem lore lore ipsum ");
                 egressoSalvo.setFoto("testeUrl");
@@ -253,7 +253,7 @@ public class EgressoServiceTest {
                                 .build();
 
                 // ação
-                Egresso egressoSalvo = egressoService.salvarEgresso(egresso);
+                Egresso egressoSalvo = egressoService.salvarEgresso(egresso, null);
                 Long id = egressoSalvo.getId();
                 egressoService.removerEgresso(id);
                 Optional<Egresso> temp = egressoRepositorio.findById(id);
@@ -302,9 +302,9 @@ public class EgressoServiceTest {
                                 .build();
 
                 // acao
-                Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1);
-                Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2);
-                List<Egresso> resultado = egressoService.listarEgressos();
+                Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1, null);
+                Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2, null);
+                List<Egresso> resultado = egressoService.listarEgressos(0);
 
                 // rollback
                 egressoRepositorio.delete(egressoSalvo1);
@@ -352,9 +352,9 @@ public class EgressoServiceTest {
                                 .build();
 
                 // acao
-                Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1);
-                Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2);
-                List<Egresso> resultado = egressoService.listarEgressos();
+                Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1, null);
+                Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2, null);
+                List<Egresso> resultado = egressoService.listarEgressos(0);
 
                 // rollback
                 egressoRepositorio.delete(egressoSalvo1);
@@ -402,9 +402,9 @@ public class EgressoServiceTest {
                                 .build();
 
                 // acao
-                Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1);
-                Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2);
-                List<Egresso> resultado = egressoService.listarEgressos();
+                Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1, null);
+                Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2, null);
+                List<Egresso> resultado = egressoService.listarEgressos(0);
 
                 // rollback
                 egressoRepositorio.delete(egressoSalvo1);

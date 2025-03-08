@@ -35,3 +35,6 @@ build/
 #env
 #removendo .env temporariamente
 #.env
+
+#uploads
+/uploads
