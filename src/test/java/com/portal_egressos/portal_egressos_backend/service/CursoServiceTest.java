@@ -201,7 +201,7 @@ public class CursoServiceTest<cursoEgressoService> {
         List<Egresso> retornoEgresso = new ArrayList<>();
 
         for (Egresso egresso : egressos) {
-            retornoEgresso.add(egressoService.salvarEgresso(egresso));
+            retornoEgresso.add(egressoService.salvarEgresso(egresso, null));
         }
 
         List<CursoEgresso> cursoEgressos = new ArrayList<>();
@@ -285,7 +285,7 @@ public class CursoServiceTest<cursoEgressoService> {
         List<Egresso> retornoEgresso = new ArrayList<>();
 
         for (Egresso egresso : egressos) {
-            retornoEgresso.add(egressoService.salvarEgresso(egresso));
+            retornoEgresso.add(egressoService.salvarEgresso(egresso, null));
         }
 
         List<CursoEgresso> cursoEgressos = new ArrayList<>();

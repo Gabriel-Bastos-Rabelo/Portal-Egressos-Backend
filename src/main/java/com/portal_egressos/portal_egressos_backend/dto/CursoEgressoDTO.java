@@ -1,0 +1,14 @@
+package com.portal_egressos.portal_egressos_backend.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CursoEgressoDTO {
+    private String nome;
+    private Integer anoInicio;
+    private Integer anoFim;
+}
