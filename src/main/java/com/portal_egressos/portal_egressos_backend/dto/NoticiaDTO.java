@@ -14,14 +14,11 @@ import lombok.Setter;
 public class NoticiaDTO {
 
     private Long id;
-    private String titulo;
     private String descricao;
-    private LocalDate dataPublicacao;
-    private LocalDate dataExtracao;
+    private String data;
     private String linkNoticia;
     private Status status;
-    private Long egressoId;
-    private String nomeEgresso;
-    private String fotoEgresso;
+    private String autor;
+    private String imagemUrl;
 
 }

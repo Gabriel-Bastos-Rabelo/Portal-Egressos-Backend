@@ -14,10 +14,9 @@ import org.springframework.test.context.ActiveProfiles;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
-
+import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
-import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.OportunidadeRepository;
 import com.portal_egressos.portal_egressos_backend.services.OportunidadeService;
@@ -68,7 +67,7 @@ public class OportunidadeServiceTest {
                                 .status(Status.APROVADO)
                                 .build();
                 // Ação
-                Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
+                Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade, "teste@teste.com");
 
                 // Rollback
                 oportunidadeRepositorio.delete(oportunidadeSalva);
@@ -82,9 +81,23 @@ public class OportunidadeServiceTest {
         @Test
         @Transactional
         public void deveGerarErroAoTentarSalvarOportunidadeNulo() {
+                Usuario usuario = Usuario.builder()
+                .email("teste@teste.com")
+                .senha("123456")
+                .role(UserRole.EGRESSO)
+                .build();
+
+                Egresso egresso = Egresso.builder()
+                                .nome("Egresso")
+                                .descricao("estudante de ciencia da computacao")
+                                .usuario(usuario)
+                .status(Status.APROVADO)
+                                .build();
+
+                Egresso egressoSalvo = egressoRepositorio.save(egresso);
                 // Verificação
                 Assertions.assertThrows(RegraNegocioRunTime.class, () -> {
-                        oportunidadeService.salvarOportunidade(null);
+                        oportunidadeService.salvarOportunidade(null, "teste@teste.com");
                 }, "A oportunidade não pode ser nula");
         }
 
@@ -120,7 +133,7 @@ public class OportunidadeServiceTest {
                                 .build();
                 // Verificação
                 Assertions.assertThrows(RegraNegocioRunTime.class,
-                                () -> oportunidadeService.salvarOportunidade(oportunidade),
+                                () -> oportunidadeService.salvarOportunidade(oportunidade, "teste@teste.com"),
                                 "O Título da oportunidade desse ser Infomado.");
         }
 
@@ -157,7 +170,7 @@ public class OportunidadeServiceTest {
 
                 // Verificação
                 Assertions.assertThrows(RegraNegocioRunTime.class,
-                                () -> oportunidadeService.salvarOportunidade(oportunidade),
+                                () -> oportunidadeService.salvarOportunidade(oportunidade, "teste@teste.com"),
                                 "A Descrição da oportunidade desse ser Infomada.");
         }
 
@@ -194,7 +207,7 @@ public class OportunidadeServiceTest {
 
                 // Verificação
                 Assertions.assertThrows(RegraNegocioRunTime.class,
-                                () -> oportunidadeService.salvarOportunidade(oportunidade),
+                                () -> oportunidadeService.salvarOportunidade(oportunidade, "teste@teste.com"),
                                 "O local da oportunidade desse ser Infomado.");
         }
 
@@ -231,7 +244,7 @@ public class OportunidadeServiceTest {
 
                 // Verificação
                 Assertions.assertThrows(RegraNegocioRunTime.class,
-                                () -> oportunidadeService.salvarOportunidade(oportunidade),
+                                () -> oportunidadeService.salvarOportunidade(oportunidade, "teste@teste.com"),
                                 "O Tipo da oportunidade desse ser Infomado.");
         }
 
@@ -267,7 +280,7 @@ public class OportunidadeServiceTest {
                                 .build();
                 // Verificação
                 Assertions.assertThrows(RegraNegocioRunTime.class,
-                                () -> oportunidadeService.salvarOportunidade(oportunidade),
+                                () -> oportunidadeService.salvarOportunidade(oportunidade, "teste@teste.com"),
                                 "A data da oportunidade desse ser Infomada.");
         }
 
@@ -304,7 +317,7 @@ public class OportunidadeServiceTest {
 
                 // Verificação
                 Assertions.assertThrows(RegraNegocioRunTime.class,
-                                () -> oportunidadeService.salvarOportunidade(oportunidade),
+                                () -> oportunidadeService.salvarOportunidade(oportunidade, "teste@teste.com"),
                                 "O Status da oportunidade desse ser Infomado.");
         }
 
@@ -339,7 +352,7 @@ public class OportunidadeServiceTest {
                                 .link("link vaga")
                                 .status(Status.APROVADO)
                                 .build();
-                Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
+                Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade, "teste@teste.com");
 
                 // Ação
                 oportunidadeSalva.setTitulo("Desenvolvedor Java");
@@ -404,7 +417,7 @@ public class OportunidadeServiceTest {
                                 .link("link vaga")
                                 .status(Status.APROVADO)
                                 .build();
-                Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
+                Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade, "teste@teste.com");
 
                 // ação
                 oportunidadeService.removerOportunidade(oportunidadeSalva);
@@ -449,7 +462,7 @@ public class OportunidadeServiceTest {
                                 .link("link vaga")
                                 .status(Status.APROVADO)
                                 .build();
-                Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade);
+                Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade, "teste@teste.com");
 
                 // ação
                 List<Oportunidade> oportunidades = oportunidadeService.buscarPorTitulo("Desenvolvedor Backend");

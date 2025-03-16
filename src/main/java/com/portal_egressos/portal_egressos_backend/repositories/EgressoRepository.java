@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
 @Repository
 public interface EgressoRepository extends JpaRepository<Egresso, Long> {
@@ -17,6 +18,8 @@ public interface EgressoRepository extends JpaRepository<Egresso, Long> {
         Optional<Egresso> findByNome(String nome);
 
         Optional<Egresso> findByUsuarioEmail(String email);
+
+        Egresso findByUsuario(Usuario usuario);
 
         List<Egresso> findAllByStatus(Status status);
 

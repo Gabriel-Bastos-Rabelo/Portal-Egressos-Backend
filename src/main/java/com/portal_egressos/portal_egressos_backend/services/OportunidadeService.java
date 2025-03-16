@@ -1,14 +1,19 @@
 package com.portal_egressos.portal_egressos_backend.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
+import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
+import com.portal_egressos.portal_egressos_backend.models.Usuario;
+import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.OportunidadeRepository;
+import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -16,13 +21,33 @@ import jakarta.transaction.Transactional;
 public class OportunidadeService {
 
     @Autowired
+    private UsuarioRepository usuarioRepositorio;
+
+    @Autowired
+    private EgressoRepository egressoRepositorio;
+
+    @Autowired
     private OportunidadeRepository oportunidadeRepositorio;
 
     @Transactional
-    public Oportunidade salvarOportunidade(Oportunidade oportunidade) {
+    public Oportunidade salvarOportunidade(Oportunidade oportunidade, String email) {
+        Optional<Usuario> usuarioOpt = usuarioRepositorio.findUsuarioByEmail(email);
+        Usuario usuario = usuarioOpt.orElseThrow(
+            () -> new RegraNegocioRunTime("Usuário não encontrado para o e-mail: " + email)
+        );
+
+        Egresso egresso = egressoRepositorio.findByUsuario(usuario);
+
+        if (egresso == null || egresso.getStatus().equals(Status.NAO_APROVADO)) {
+            throw new RegraNegocioRunTime("Egresso não encontrado para o usuário de ID: " + usuario.getId());
+        }
+        
         if (oportunidade == null) {
             throw new RegraNegocioRunTime("A oportunidade não pode ser nula.");
         }
+
+        oportunidade.setEgresso(egresso);
+        
         validarCamposObrigatorios(oportunidade);
         return oportunidadeRepositorio.save(oportunidade);
     }
