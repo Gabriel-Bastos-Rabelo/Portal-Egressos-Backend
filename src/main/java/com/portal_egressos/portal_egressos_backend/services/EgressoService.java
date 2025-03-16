@@ -65,6 +65,17 @@ public class EgressoService {
         return egressoRepositorio.save(egresso);
     }
 
+    @Transactional
+    public void aprovarEgressos(List<Long> ids){
+        for(Long id: ids){
+            Egresso egresso = egressoRepositorio.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Egresso não encontrado com ID: " + id));
+
+            egresso.setStatus(Status.APROVADO);
+            egressoRepositorio.save(egresso); 
+        }
+    }
+
     public List<Egresso> buscarEgresso(Egresso filtro) {
         Example<Egresso> example = Example.of(filtro, ExampleMatcher.matching()
                 .withIgnoreCase()

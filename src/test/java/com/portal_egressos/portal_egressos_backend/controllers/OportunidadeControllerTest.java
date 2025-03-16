@@ -1,22 +1,5 @@
 package com.portal_egressos.portal_egressos_backend.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
-import com.portal_egressos.portal_egressos_backend.dto.OportunidadeDTO;
-import com.portal_egressos.portal_egressos_backend.enums.Status;
-import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
-import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
-import com.portal_egressos.portal_egressos_backend.repositories.OportunidadeRepository;
-import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
-import com.portal_egressos.portal_egressos_backend.services.EgressoService;
-import com.portal_egressos.portal_egressos_backend.services.OportunidadeService;
-import com.portal_egressos.portal_egressos_backend.models.Usuario;
-import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
-import com.portal_egressos.portal_egressos_backend.enums.UserRole;
-import com.portal_egressos.portal_egressos_backend.models.Egresso;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -37,6 +20,22 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
+import com.portal_egressos.portal_egressos_backend.dto.OportunidadeDTO;
+import com.portal_egressos.portal_egressos_backend.enums.Status;
+import com.portal_egressos.portal_egressos_backend.enums.UserRole;
+import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
+import com.portal_egressos.portal_egressos_backend.models.Usuario;
+import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
+import com.portal_egressos.portal_egressos_backend.repositories.OportunidadeRepository;
+import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
+import com.portal_egressos.portal_egressos_backend.services.EgressoService;
+import com.portal_egressos.portal_egressos_backend.services.OportunidadeService;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = OportunidadeController.class)
@@ -99,6 +98,7 @@ public class OportunidadeControllerTest {
                                 .link("linkOportunidade.com")
                                 .idEgresso(1L)
                                 .nomeEgresso(null)
+                                .email("teste@teste.com")
                                 .build();
 
                 Oportunidade oportunidade = Oportunidade.builder()
@@ -115,10 +115,8 @@ public class OportunidadeControllerTest {
                                 .egresso(egresso)
                                 .build();
 
-                Mockito.when(egressoService.buscarEgresso(Mockito.any(Egresso.class)))
-                                .thenReturn(List.of(egresso));
-
-                Mockito.when(oportunidadeService.salvarOportunidade(Mockito.any(Oportunidade.class)))
+               
+                Mockito.when(oportunidadeService.salvarOportunidade(Mockito.any(Oportunidade.class), Mockito.anyString()))
                                 .thenReturn(oportunidade);
 
                 String json = new ObjectMapper()

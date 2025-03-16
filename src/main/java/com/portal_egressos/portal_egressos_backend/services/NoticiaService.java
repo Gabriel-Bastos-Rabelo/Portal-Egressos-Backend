@@ -22,42 +22,27 @@ public class NoticiaService {
         if(noticia == null){
             throw new RegraNegocioRunTime("A notícia não pode ser nula.");
         }
-        if(noticia.getTitulo() == null || noticia.getTitulo().isEmpty()){
-            throw new RegraNegocioRunTime("O título da notícia deve ser informado.");
-        }
         if(noticia.getDescricao() == null || noticia.getDescricao().isEmpty()){
             throw new RegraNegocioRunTime("A descrição da notícia deve ser informada.");
         }
-        if(noticia.getDataPublicacao() == null){
+        if(noticia.getData() == null){
             throw new RegraNegocioRunTime("A data de publicação deve ser informada.");
-        }
-        if(noticia.getDataExtracao() == null){
-            throw new RegraNegocioRunTime("A data de extração deve ser informada.");
-        }
-        if(noticia.getLinkNoticia() == null || noticia.getLinkNoticia().isEmpty()){
-            throw new RegraNegocioRunTime("O link da notícia deve ser informado.");
         }
         if(noticia.getStatus() == null){
             throw new RegraNegocioRunTime("O status da notícia deve ser informado.");
         }
     }
     
-    @Transactional
-    public Noticia salvarNoticia(Noticia noticia) {
-        verificarNoticia(noticia);
-        return noticiaRepositorio.save(noticia);
-    }
-
     public List<Noticia> listarNoticias(){
-        return noticiaRepositorio.findAllByOrderByDataPublicacaoDesc();
+        return noticiaRepositorio.findAll();
     }
 
     public List<Noticia> listarNoticiasAprovadas() {
-        return noticiaRepositorio.findAllByStatusOrderByDataPublicacaoDesc(Status.APROVADO);
+        return noticiaRepositorio.findAllByStatus(Status.APROVADO);
     }
 
     public List<Noticia> listarNoticiasPendentes() {
-        return noticiaRepositorio.findAllByStatusOrderByDataPublicacaoDesc(Status.PENDENTE);
+        return noticiaRepositorio.findAllByStatus(Status.PENDENTE);
     }
     
     @Transactional

@@ -8,19 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.portal_egressos.portal_egressos_backend.dto.NoticiaDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
-import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
-import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Noticia;
-import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 import com.portal_egressos.portal_egressos_backend.services.NoticiaService;
 
 @RestController
@@ -30,32 +25,7 @@ public class NoticiaController {
     @Autowired
     private NoticiaService noticiaService;
 
-    @Autowired
-    private EgressoService egressoService;
-
-    @PostMapping
-    public ResponseEntity<?> salvarNoticia(@RequestBody NoticiaDTO noticiaDTO) {
-        try {
-            Egresso filtro = Egresso.builder().id(noticiaDTO.getEgressoId()).build();
-
-            List<Egresso> egressos = egressoService.buscarEgresso(filtro);
-
-            if (egressos.isEmpty()) {
-                throw new RegraNegocioRunTime("Egresso não encontrado para o ID: " + noticiaDTO.getEgressoId());
-            }
-
-            Egresso egresso = egressos.get(0);
-
-            Noticia noticia = converterParaModelo(noticiaDTO);
-            noticia.setEgresso(egresso);
-
-            Noticia noticiaSalva = noticiaService.salvarNoticia(noticia);
-            return ResponseEntity.ok(converterParaDTO(noticiaSalva));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
+    
     @GetMapping
     public ResponseEntity<?> listarNoticias() {
         try {
@@ -116,30 +86,16 @@ public class NoticiaController {
 
     }
 
-    private Noticia converterParaModelo(NoticiaDTO dto) {
-        return Noticia.builder()
-                .id(dto.getId())
-                .titulo(dto.getTitulo())
-                .descricao(dto.getDescricao())
-                .dataPublicacao(dto.getDataPublicacao())
-                .dataExtracao(dto.getDataExtracao())
-                .linkNoticia(dto.getLinkNoticia())
-                .status(Status.PENDENTE)
-                .build();
-    }
 
     private NoticiaDTO converterParaDTO(Noticia noticia) {
         return NoticiaDTO.builder()
                 .id(noticia.getId())
-                .titulo(noticia.getTitulo())
                 .descricao(noticia.getDescricao())
-                .dataPublicacao(noticia.getDataPublicacao())
-                .dataExtracao(noticia.getDataExtracao())
-                .linkNoticia(noticia.getLinkNoticia())
+                .data(noticia.getData())
+                .linkNoticia(noticia.getLink_noticia())
                 .status(noticia.getStatus())
-                .egressoId(noticia.getEgresso().getId())
-                .nomeEgresso(noticia.getEgresso().getNome())
-                .fotoEgresso(noticia.getEgresso().getFoto())
+                .imagemUrl(noticia.getImagem_url())
+                .autor(noticia.getAutor())
                 .build();
     }
 

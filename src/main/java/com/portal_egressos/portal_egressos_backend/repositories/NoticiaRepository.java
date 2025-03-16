@@ -11,10 +11,6 @@ import com.portal_egressos.portal_egressos_backend.models.Noticia;
 @Repository
 public interface NoticiaRepository extends JpaRepository<Noticia, Long> {
 
-    List<Noticia> findAllByStatusOrderByDataPublicacaoDesc(Status status);
-
-    List<Noticia> findAllByOrderByDataPublicacaoDesc();
-
-
+    List<Noticia> findAllByStatus(Status status);
     
 }

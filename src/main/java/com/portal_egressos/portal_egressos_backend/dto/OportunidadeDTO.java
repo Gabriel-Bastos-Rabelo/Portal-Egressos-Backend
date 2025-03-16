@@ -26,6 +26,7 @@ public class OportunidadeDTO {
     private Status status;
     private Long idEgresso;
     private String nomeEgresso;
+    private String email;
 
 }
 

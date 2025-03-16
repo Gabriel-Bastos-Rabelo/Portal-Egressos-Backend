@@ -1,6 +1,5 @@
 package com.portal_egressos.portal_egressos_backend.repositories;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
@@ -10,10 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import com.portal_egressos.portal_egressos_backend.enums.Status;
-import com.portal_egressos.portal_egressos_backend.enums.UserRole;
-import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Noticia;
-import com.portal_egressos.portal_egressos_backend.models.Usuario;
 
 import jakarta.transaction.Transactional;
 
@@ -24,81 +20,18 @@ public class NoticiaRepositoryTest {
         @Autowired
         NoticiaRepository noticiaRepositorio;
 
-        @Autowired
-        EgressoRepository egressoRepositorio;
-
-        @Test
-        @Transactional
-        public void deveVerificarSalvarNoticia() {
-                Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .role(UserRole.EGRESSO)
-                                .build();
-
-                Egresso egresso = Egresso.builder()
-                                .nome("Gabriel Bastos")
-                                .descricao("estudante de ciencia da computacao")
-                                .usuario(usuario)
-                                .status(Status.PENDENTE)
-                                .build();
-
-                Egresso egressoSalvo = egressoRepositorio.save(egresso);
-
-                Noticia noticia = Noticia.builder()
-                                .egresso(egressoSalvo)
-                                .titulo("um titulo tql")
-                                .descricao("descricao massa")
-                                .dataPublicacao(LocalDate.of(2024, 12, 10))
-                                .dataExtracao(LocalDate.of(2024, 12, 10))
-                                .linkNoticia("link da noticia")
-                                .imagemCapa("url imagem capa")
-                                .status(Status.PENDENTE)
-                                .build();
-
-                Noticia noticiaSalva = noticiaRepositorio.save(noticia);
-
-                Assertions.assertNotNull(noticiaSalva);
-                Assertions.assertNotNull(noticiaSalva.getId());
-                Assertions.assertEquals("um titulo tql", noticiaSalva.getTitulo());
-                Assertions.assertEquals("descricao massa", noticiaSalva.getDescricao());
-                Assertions.assertEquals("link da noticia", noticiaSalva.getLinkNoticia());
-                Assertions.assertEquals("url imagem capa", noticiaSalva.getImagemCapa());
-                Assertions.assertEquals(Status.PENDENTE, noticiaSalva.getStatus());
-                Assertions.assertEquals(LocalDate.of(2024, 12, 10), noticiaSalva.getDataPublicacao());
-                Assertions.assertEquals(LocalDate.of(2024, 12, 10), noticiaSalva.getDataExtracao());
-
-                noticiaRepositorio.delete(noticiaSalva);
-                egressoRepositorio.delete(egressoSalvo);
-        }
-
         @Test
         @Transactional
         public void deveVerificarLeituraNoticia() {
-                Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .role(UserRole.EGRESSO)
-                                .build();
-
-                Egresso egresso = Egresso.builder()
-                                .nome("Gabriel Bastos")
-                                .descricao("estudante de ciencia da computacao")
-                                .usuario(usuario)
-                                .status(Status.PENDENTE)
-                                .build();
-
-                Egresso egressoSalvo = egressoRepositorio.save(egresso);
+                
 
                 Noticia noticia = Noticia.builder()
-                                .egresso(egressoSalvo)
-                                .titulo("um titulo tql")
                                 .descricao("descricao massa")
-                                .dataPublicacao(LocalDate.of(2024, 12, 10))
-                                .dataExtracao(LocalDate.of(2024, 12, 10))
-                                .linkNoticia("link da noticia")
-                                .imagemCapa("url imagem capa")
+                                .data("6 months ago")
+                                .link_noticia("link da noticia")
+                                .imagem_url("url imagem capa")
                                 .status(Status.PENDENTE)
+                                .autor("UFMA")
                                 .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);
@@ -108,90 +41,53 @@ public class NoticiaRepositoryTest {
                 Noticia noticiaLida = noticiaLidaOpt.get();
 
                 Assertions.assertNotNull(noticiaLida);
-                Assertions.assertEquals("um titulo tql", noticiaLida.getTitulo());
                 Assertions.assertEquals("descricao massa", noticiaLida.getDescricao());
-                Assertions.assertEquals("link da noticia", noticiaLida.getLinkNoticia());
-                Assertions.assertEquals("url imagem capa", noticiaLida.getImagemCapa());
+                Assertions.assertEquals("link da noticia", noticiaLida.getLink_noticia());
+                Assertions.assertEquals("url imagem capa", noticiaLida.getImagem_url());
                 Assertions.assertEquals(Status.PENDENTE, noticiaLida.getStatus());
-                Assertions.assertEquals(LocalDate.of(2024, 12, 10), noticiaLida.getDataPublicacao());
-                Assertions.assertEquals(LocalDate.of(2024, 12, 10), noticiaLida.getDataExtracao());
+                Assertions.assertEquals("6 months ago", noticiaLida.getData());
 
                 noticiaRepositorio.delete(noticiaSalva);
-                egressoRepositorio.delete(egressoSalvo);
         }
 
         @Test
         @Transactional
         public void deveVerificarAtualizarNoticia() {
-                Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .role(UserRole.EGRESSO)
-                                .build();
-
-                Egresso egresso = Egresso.builder()
-                                .nome("Gabriel Bastos")
-                                .descricao("estudante de ciencia da computacao")
-                                .usuario(usuario)
-                                .status(Status.PENDENTE)
-                                .build();
-
-                Egresso egressoSalvo = egressoRepositorio.save(egresso);
-
+               
                 Noticia noticia = Noticia.builder()
-                                .egresso(egressoSalvo)
-                                .titulo("um titulo tql")
-                                .descricao("descricao massa")
-                                .dataPublicacao(LocalDate.of(2024, 12, 10))
-                                .dataExtracao(LocalDate.of(2024, 12, 10))
-                                .linkNoticia("link da noticia")
-                                .imagemCapa("url imagem capa")
-                                .status(Status.PENDENTE)
-                                .build();
+                        .descricao("descricao massa")
+                        .data("6 months ago")
+                        .link_noticia("link da noticia")
+                        .imagem_url("url imagem capa")
+                        .status(Status.PENDENTE)
+                        .autor("UFMA")
+                        .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);
-                noticiaSalva.setTitulo("Titulo atualizado");
                 noticiaSalva.setDescricao("Descricao atualizada");
                 noticiaSalva.setStatus(Status.APROVADO);
 
                 Noticia noticiaAtualizada = noticiaRepositorio.save(noticiaSalva);
 
-                Assertions.assertEquals("Titulo atualizado", noticiaAtualizada.getTitulo());
                 Assertions.assertEquals("Descricao atualizada", noticiaAtualizada.getDescricao());
                 Assertions.assertEquals(Status.APROVADO, noticiaAtualizada.getStatus());
 
                 noticiaRepositorio.delete(noticiaAtualizada);
-                egressoRepositorio.delete(egressoSalvo);
         }
 
         @Test
         @Transactional
         public void deveVerificarRemoverNoticia() {
-                Usuario usuario = Usuario.builder()
-                                .email("teste@teste.com")
-                                .senha("123456")
-                                .role(UserRole.EGRESSO)
-                                .build();
-
-                Egresso egresso = Egresso.builder()
-                                .nome("Gabriel Bastos")
-                                .descricao("estudante de ciencia da computacao")
-                                .usuario(usuario)
-                                .status(Status.PENDENTE)
-                                .build();
-
-                Egresso egressoSalvo = egressoRepositorio.save(egresso);
+               
 
                 Noticia noticia = Noticia.builder()
-                                .egresso(egressoSalvo)
-                                .titulo("um titulo tql")
-                                .descricao("descricao massa")
-                                .dataPublicacao(LocalDate.of(2024, 12, 10))
-                                .dataExtracao(LocalDate.of(2024, 12, 10))
-                                .linkNoticia("link da noticia")
-                                .imagemCapa("url imagem capa")
-                                .status(Status.PENDENTE)
-                                .build();
+                        .descricao("descricao massa")
+                        .data("6 months ago")
+                        .link_noticia("link da noticia")
+                        .imagem_url("url imagem capa")
+                        .status(Status.PENDENTE)
+                        .autor("UFMA")
+                        .build();
 
                 Noticia noticiaSalva = noticiaRepositorio.save(noticia);
                 Long id = noticiaSalva.getId();
@@ -200,6 +96,5 @@ public class NoticiaRepositoryTest {
                 Optional<Noticia> noticiaRemovida = noticiaRepositorio.findById(id);
                 Assertions.assertFalse(noticiaRemovida.isPresent());
 
-                egressoRepositorio.delete(egressoSalvo);
         }
 }
