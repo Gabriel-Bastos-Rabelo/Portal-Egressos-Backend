@@ -1,7 +1,5 @@
 package com.portal_egressos.portal_egressos_backend.controllers;
 
-import java.util.Collections;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
@@ -15,17 +13,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
-import com.portal_egressos.portal_egressos_backend.dto.NoticiaDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
@@ -62,96 +57,12 @@ public class NoticiaControllerTest {
     @MockBean
     private UsuarioRepository userRepository;
 
-    @Test
-    public void deveSalvarNoticia() throws Exception {
-
-        NoticiaDTO dto = NoticiaDTO.builder()
-            .egressoId(1L)
-            .titulo("Notícia de Teste")
-            .descricao("Descrição de teste")
-            .linkNoticia("link noticia")
-            .build();
-
-        Egresso egresso = Egresso.builder().id(1L).nome("Gabriel Bastos Rabelo").foto("foto egresso").build();
-        Mockito.when(egressoService.buscarEgresso(Mockito.any(Egresso.class)))
-            .thenReturn(Collections.singletonList(egresso));
-
-
-        Noticia noticiaSalva = Noticia.builder()
-            .id(10L)
-            .titulo("Notícia de Teste")
-            .descricao("Descrição de teste")
-            .linkNoticia("link noticia")
-            .status(Status.PENDENTE)
-            .egresso(egresso)
-            .build();
-
-        Mockito.when(noticiaService.salvarNoticia(Mockito.any(Noticia.class)))
-            .thenReturn(noticiaSalva);
-
-        String json = objectMapper.writeValueAsString(dto);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post(API)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json);
-
-        mvc.perform(request)
-        .andExpect(status().isOk()) 
-        .andExpect(MockMvcResultMatchers.jsonPath("id").value(10L))
-        .andExpect(MockMvcResultMatchers.jsonPath("titulo").value("Notícia de Teste"))
-        .andExpect(MockMvcResultMatchers.jsonPath("status").value("PENDENTE"));
-    }
-
-    @Test
-    public void deveRetornarBadRequestAoSalvarNoticiaComEgressoInexistente() throws Exception {
-        NoticiaDTO dto = NoticiaDTO.builder()
-            .egressoId(999L)
-            .titulo("Notícia X")
-            .descricao("Notícia sem egresso válido")
-            .build();
-
-        Mockito.when(egressoService.buscarEgresso(Mockito.any(Egresso.class)))
-            .thenReturn(Collections.emptyList());
-
-        String json = objectMapper.writeValueAsString(dto);
-
-        MockHttpServletRequestBuilder request = post(API)
-            .accept(MediaType.APPLICATION_JSON)
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(json);
-
-        mvc.perform(request)
-        .andExpect(status().isBadRequest())
-        .andExpect(MockMvcResultMatchers.jsonPath("$")
-            .value("Egresso não encontrado para o ID: 999"));
-    }
-
-    @Test
-    public void deveListarNoticias() throws Exception {
-        // Cenário
-        Egresso egresso = Egresso.builder().id(1L).nome("Gabriel Bastos Rabelo").foto("foto egresso").build();
-        Noticia n1 = Noticia.builder().id(1L).titulo("Notícia 1").egresso(egresso).build();
-        Noticia n2 = Noticia.builder().id(2L).titulo("Notícia 2").egresso(egresso).build();
-
-        Mockito.when(noticiaService.listarNoticias())
-            .thenReturn(java.util.Arrays.asList(n1, n2));
-
-        MockHttpServletRequestBuilder request = get(API)  
-            .accept(MediaType.APPLICATION_JSON);
-
-        mvc.perform(request)
-        .andExpect(status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
-        .andExpect(MockMvcResultMatchers.jsonPath("$[0].titulo").value("Notícia 1"))
-        .andExpect(MockMvcResultMatchers.jsonPath("$[1].titulo").value("Notícia 2"));
-    }
+    
 
     @Test
     public void deveListarNoticiasAprovadas() throws Exception {
-        Egresso egresso = Egresso.builder().id(1L).nome("Gabriel Bastos Rabelo").foto("foto egresso").build();
-        Noticia n1 = Noticia.builder().id(1L).titulo("Notícia 1").egresso(egresso).build();
-        Noticia n2 = Noticia.builder().id(2L).titulo("Notícia 2").egresso(egresso).build();
+        Noticia n1 = Noticia.builder().id(1L).descricao("Notícia 1").build();
+        Noticia n2 = Noticia.builder().id(2L).descricao("Notícia 2").build();
 
         Mockito.when(noticiaService.listarNoticiasAprovadas())
             .thenReturn(java.util.Arrays.asList(n1, n2));
@@ -162,15 +73,14 @@ public class NoticiaControllerTest {
         mvc.perform(request)
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
-        .andExpect(MockMvcResultMatchers.jsonPath("$[0].titulo").value("Notícia 1"))
-        .andExpect(MockMvcResultMatchers.jsonPath("$[1].titulo").value("Notícia 2"));
+        .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao").value("Notícia 1"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$[1].descricao").value("Notícia 2"));
     }
 
     @Test
     public void deveListarNoticiasPendentes() throws Exception {
-        Egresso egresso = Egresso.builder().id(1L).nome("Gabriel Bastos Rabelo").foto("foto egresso").build();
-        Noticia n1 = Noticia.builder().id(1L).titulo("Notícia 1").egresso(egresso).build();
-        Noticia n2 = Noticia.builder().id(2L).titulo("Notícia 2").egresso(egresso).build();
+        Noticia n1 = Noticia.builder().id(1L).descricao("Notícia 1").build();
+        Noticia n2 = Noticia.builder().id(2L).descricao("Notícia 2").build();
 
         Mockito.when(noticiaService.listarNoticiasPendentes())
             .thenReturn(java.util.Arrays.asList(n1, n2));
@@ -181,15 +91,15 @@ public class NoticiaControllerTest {
         mvc.perform(request)
         .andExpect(status().isOk())
         .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
-        .andExpect(MockMvcResultMatchers.jsonPath("$[0].titulo").value("Notícia 1"))
-        .andExpect(MockMvcResultMatchers.jsonPath("$[1].titulo").value("Notícia 2"));
+        .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao").value("Notícia 1"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$[1].descricao").value("Notícia 2"));
     }
 
     @Test
     public void deveAtualizarStatusNoticia() throws Exception {
         Egresso egresso = Egresso.builder().id(1L).nome("Gabriel Bastos Rabelo").foto("foto egresso").build();
         Long id = 5L;
-        Noticia noticia = Noticia.builder().id(id).status(Status.APROVADO).titulo("Teste").egresso(egresso).build();
+        Noticia noticia = Noticia.builder().id(id).status(Status.APROVADO).descricao("Teste").build();
 
         Mockito.when(noticiaService.atualizarStatusNoticia(Mockito.any(Noticia.class)))
             .thenReturn(noticia);

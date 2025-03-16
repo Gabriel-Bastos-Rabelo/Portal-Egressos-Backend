@@ -17,34 +17,27 @@ public class Noticia {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_noticia")
+    @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_egresso", referencedColumnName = "id_egresso", nullable = false)
-    private Egresso egresso;
-
-    @Column(name = "titulo", nullable = false)
-    private String titulo;
-
-    @Column(name = "descricao", nullable = false)
+    @Column(name = "descricao", columnDefinition = "TEXT")
     private String descricao;
 
-    @Column(name = "data_publicacao", nullable = false)
-    private LocalDate dataPublicacao;
+    @Column(name = "data", nullable = false)
+    private String data;
 
-    @Column(name = "data_extracao", nullable = false)
-    private LocalDate dataExtracao;
-
-    @Column(name = "imagem_capa")
-    private String imagemCapa;
+    @Column(name = "imagem_url", nullable = false)
+    private String imagem_url;
 
     @Column(name = "link_noticia", nullable = false)
-    private String linkNoticia;
+    private String link_noticia;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
+
+    @Column(name = "autor", nullable = false)
+    private String autor;
 
 
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +36,7 @@ import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 import com.portal_egressos.portal_egressos_backend.services.UsuarioService;
+
 
 @RestController
 @RequestMapping("/api/egresso")
@@ -112,6 +114,19 @@ public class EgressoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @PostMapping("/aprovar")
+    public ResponseEntity<?> aprovarEgressos(@RequestBody List<Long> ids) {
+
+        try{
+            egressoService.aprovarEgressos(ids);
+            return ResponseEntity.noContent().build();
+        }
+        catch(Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    
 
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> deletarEgresso(@PathVariable Long id,  @RequestHeader("Authorization") String authorization) {
