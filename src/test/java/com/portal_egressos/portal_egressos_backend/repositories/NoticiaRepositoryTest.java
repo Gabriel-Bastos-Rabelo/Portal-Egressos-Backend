@@ -28,8 +28,8 @@ public class NoticiaRepositoryTest {
                 Noticia noticia = Noticia.builder()
                                 .descricao("descricao massa")
                                 .data("6 months ago")
-                                .link_noticia("link da noticia")
-                                .imagem_url("url imagem capa")
+                                .linkNoticia("link da noticia")
+                                .imagemUrl("url imagem capa")
                                 .status(Status.PENDENTE)
                                 .autor("UFMA")
                                 .build();
@@ -42,8 +42,8 @@ public class NoticiaRepositoryTest {
 
                 Assertions.assertNotNull(noticiaLida);
                 Assertions.assertEquals("descricao massa", noticiaLida.getDescricao());
-                Assertions.assertEquals("link da noticia", noticiaLida.getLink_noticia());
-                Assertions.assertEquals("url imagem capa", noticiaLida.getImagem_url());
+                Assertions.assertEquals("link da noticia", noticiaLida.getLinkNoticia());
+                Assertions.assertEquals("url imagem capa", noticiaLida.getImagemUrl());
                 Assertions.assertEquals(Status.PENDENTE, noticiaLida.getStatus());
                 Assertions.assertEquals("6 months ago", noticiaLida.getData());
 
@@ -57,8 +57,8 @@ public class NoticiaRepositoryTest {
                 Noticia noticia = Noticia.builder()
                         .descricao("descricao massa")
                         .data("6 months ago")
-                        .link_noticia("link da noticia")
-                        .imagem_url("url imagem capa")
+                        .linkNoticia("link da noticia")
+                        .imagemUrl("url imagem capa")
                         .status(Status.PENDENTE)
                         .autor("UFMA")
                         .build();
@@ -83,8 +83,8 @@ public class NoticiaRepositoryTest {
                 Noticia noticia = Noticia.builder()
                         .descricao("descricao massa")
                         .data("6 months ago")
-                        .link_noticia("link da noticia")
-                        .imagem_url("url imagem capa")
+                        .linkNoticia("link da noticia")
+                        .imagemUrl("url imagem capa")
                         .status(Status.PENDENTE)
                         .autor("UFMA")
                         .build();
