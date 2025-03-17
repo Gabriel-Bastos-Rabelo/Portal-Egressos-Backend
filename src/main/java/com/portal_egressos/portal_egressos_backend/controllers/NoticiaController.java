@@ -52,9 +52,11 @@ public class NoticiaController {
     }
 
     @GetMapping("/aprovadas")
-    public ResponseEntity<?> listarNoticiasAprovadas() {
+    public ResponseEntity<?> listarNoticiasAprovadas() { 
         try {
+            System.out.println("aquiii");
             List<Noticia> noticias = noticiaService.listarNoticiasAprovadas();
+            System.out.println(noticias);
             List<NoticiaDTO> noticiasDTO = noticias.stream().map(this::converterParaDTO).collect(Collectors.toList());
             return ResponseEntity.ok(noticiasDTO);
         } catch (Exception e) {
@@ -92,10 +94,10 @@ public class NoticiaController {
                 .id(noticia.getId())
                 .descricao(noticia.getDescricao())
                 .data(noticia.getData())
-                .linkNoticia(noticia.getLink_noticia())
                 .status(noticia.getStatus())
-                .imagemUrl(noticia.getImagem_url())
                 .autor(noticia.getAutor())
+                .linkNoticia(noticia.getLinkNoticia())
+                .imagemUrl(noticia.getImagemUrl())
                 .build();
     }
 
