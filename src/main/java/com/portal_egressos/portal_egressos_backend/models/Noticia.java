@@ -2,9 +2,6 @@ package com.portal_egressos.portal_egressos_backend.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalDate;
-
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 
 @Entity
@@ -20,17 +17,20 @@ public class Noticia {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "descricao", columnDefinition = "TEXT")
+    @Column(name = "descricao", columnDefinition = "TEXT", nullable = false)
     private String descricao;
 
     @Column(name = "data", nullable = false)
     private String data;
 
     @Column(name = "imagem_url", nullable = false)
-    private String imagem_url;
+    private String imagemUrl;
+
+    @Column(name = "imagem_capa")
+    private String imagemCapa;
 
     @Column(name = "link_noticia", nullable = false)
-    private String link_noticia;
+    private String linkNoticia;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
@@ -38,6 +38,4 @@ public class Noticia {
 
     @Column(name = "autor", nullable = false)
     private String autor;
-
-
 }
