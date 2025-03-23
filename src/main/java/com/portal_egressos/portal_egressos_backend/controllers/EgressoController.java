@@ -63,7 +63,7 @@ public class EgressoController {
     private TokenProvider tokenService;
 
     @PostMapping(value = "/salvar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> salvarEgresso(@RequestPart(value = "dto", required = false) EgressoDTO dto,
+    public ResponseEntity<?> salvarEgresso(@RequestPart(value = "dto", required = true) EgressoDTO dto,
             @RequestPart(value = "imagem", required = false) MultipartFile imagem) {
         try {
             Usuario usuario = Usuario.builder()
