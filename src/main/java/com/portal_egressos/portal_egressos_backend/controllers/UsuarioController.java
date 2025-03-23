@@ -28,15 +28,23 @@ public class UsuarioController {
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody SignInDto data) {
         try {
+            // Autentica o usuário
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
             var authUser = authenticationManager.authenticate(usernamePassword);
+
+            // Gera o token de acesso
             var accessToken = tokenService.generateAccessToken((Usuario) authUser.getPrincipal());
-            return ResponseEntity.ok(new JwtDto(accessToken));
+
+            // Obtém o papel do usuário
+            Usuario user = (Usuario) authUser.getPrincipal();
+            String role = user.getRole().name(); // Obtém o papel do usuário (COORDENADOR ou EGRESSO)
+
+            // Retorna o token de acesso e o papel do usuário
+            return ResponseEntity.ok(new JwtDto(accessToken, role));
         } catch (AuthenticationException ex) {
             Map<String, Object> errorResponse = Map.of(
-                "message", "Credenciais inválidas",
-                "status", 401
-            );
+                    "message", "Credenciais inválidas",
+                    "status", 401);
             return ResponseEntity.status(401).body(errorResponse);
         }
     }

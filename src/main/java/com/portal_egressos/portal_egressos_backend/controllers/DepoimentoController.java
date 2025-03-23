@@ -1,10 +1,14 @@
 package com.portal_egressos.portal_egressos_backend.controllers;
 
 import com.portal_egressos.portal_egressos_backend.dto.DepoimentoDto;
+import com.portal_egressos.portal_egressos_backend.dto.DepoimentoResponseDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.models.Curso;
+import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
+import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.DepoimentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -23,6 +28,9 @@ public class DepoimentoController {
 
     @Autowired
     private EgressoService egressoService;
+
+    @Autowired
+    private CursoEgressoService cursoEgressoService;
 
     @PostMapping("/salvar")
     public ResponseEntity<?> salvarDepoimento(@RequestBody DepoimentoDto depoimentoDTO) {
@@ -75,7 +83,7 @@ public class DepoimentoController {
     public ResponseEntity<?> listarDepoimentos() {
         try {
             List<Depoimento> depoimentos = depoimentoService.listarDepoimentos();
-            List<DepoimentoDto> depoimentosDTO = depoimentos.stream()
+            List<DepoimentoResponseDTO> depoimentosDTO = depoimentos.stream()
                     .map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(depoimentosDTO);
@@ -88,7 +96,7 @@ public class DepoimentoController {
     public ResponseEntity<?> listarDepoimentosAprovadas() {
         try {
             List<Depoimento> depoimentos = depoimentoService.listarDepoimentosAprovados();
-            List<DepoimentoDto> depoimentosDTO = depoimentos.stream()
+            List<DepoimentoResponseDTO> depoimentosDTO = depoimentos.stream()
                     .map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(depoimentosDTO);
@@ -116,14 +124,18 @@ public class DepoimentoController {
                 .build();
     }
 
-    private DepoimentoDto converterParaDTO(Depoimento depoimento) {
-        return DepoimentoDto.builder()
+    private DepoimentoResponseDTO converterParaDTO(Depoimento depoimento) {
+        Optional<CursoEgresso> cursoEgresso = cursoEgressoService.buscarPorId(depoimento.getEgresso().getId());
+        Curso curso = cursoEgresso.isPresent() ? cursoEgresso.get().getCurso() : null;
+
+        return DepoimentoResponseDTO.builder()
                 .id(depoimento.getId())
                 .texto(depoimento.getTexto())
                 .data(depoimento.getData())
                 .status(depoimento.getStatus())
                 .idEgresso(depoimento.getEgresso().getId())
                 .nomeEgresso(depoimento.getEgresso().getNome())
+                .nomeCurso(curso != null ? curso.getNome() : null)
                 .build();
     }
 }

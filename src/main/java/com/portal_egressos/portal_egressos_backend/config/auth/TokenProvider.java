@@ -26,6 +26,7 @@ public class TokenProvider {
       return JWT.create()
           .withSubject(user.getEmail())
           .withClaim("email", user.getEmail())
+          .withClaim("role", user.getRole().name())
           .withExpiresAt(genAccessExpirationDate())
           .sign(algorithm);
     } catch (JWTCreationException exception) {
@@ -46,19 +47,28 @@ public class TokenProvider {
   }
 
   public String extrairEmailDoToken(String token) {
-        try {
-            Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
-            JWTVerifier verifier = JWT.require(algorithm).build();
-            DecodedJWT decodedJWT = verifier.verify(token);
-            return decodedJWT.getClaim("email").asString();
-        } catch (JWTVerificationException e) {
-            throw new RuntimeException("Token inválido ou expirado", e);
-        }
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
+      JWTVerifier verifier = JWT.require(algorithm).build();
+      DecodedJWT decodedJWT = verifier.verify(token);
+      return decodedJWT.getClaim("email").asString();
+    } catch (JWTVerificationException e) {
+      throw new RuntimeException("Token inválido ou expirado", e);
+    }
   }
-
-
 
   private Instant genAccessExpirationDate() {
     return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+  }
+
+  public String extrairRoleDoToken(String token) {
+    try {
+      Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
+      JWTVerifier verifier = JWT.require(algorithm).build();
+      DecodedJWT decodedJWT = verifier.verify(token);
+      return decodedJWT.getClaim("role").asString();
+    } catch (JWTVerificationException e) {
+      throw new RuntimeException("Token inválido ou expirado", e);
+    }
   }
 }

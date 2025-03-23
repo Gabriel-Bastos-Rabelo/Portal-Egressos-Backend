@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 
 @Data
 @Builder
@@ -21,5 +20,7 @@ public class EgressoResponseDTO {
     private String curriculo;
     private Status status;
     private String emailUsuario;
-    private List<CursoEgressoDTO> cursos;
+    private String curso; // Adicionando o campo 'curso'
+    private Long idCurso;
+    private String cargo;
 }

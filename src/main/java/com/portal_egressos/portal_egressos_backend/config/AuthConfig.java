@@ -1,5 +1,7 @@
 package com.portal_egressos.portal_egressos_backend.config;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.portal_egressos.portal_egressos_backend.config.auth.SecurityFilter;
 
@@ -27,8 +32,7 @@ public class AuthConfig {
   SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
     return httpSecurity
         .headers(headers -> headers
-            .contentTypeOptions(HeadersConfigurer.ContentTypeOptionsConfig::disable) 
-        )
+            .contentTypeOptions(HeadersConfigurer.ContentTypeOptionsConfig::disable))
         .csrf(csrf -> csrf.disable())
         .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(authorize -> authorize
@@ -66,6 +70,7 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.DELETE, "/api/cargo/{id}").hasAnyRole("COORDENADOR", "EGRESSO")
 
             .anyRequest().authenticated())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
         .build();
   }
@@ -79,5 +84,19 @@ public class AuthConfig {
   @Bean
   PasswordEncoder passwordEncoder() {
     return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration corsConfig = new CorsConfiguration();
+    corsConfig.setAllowedOrigins(Arrays.asList("http://localhost:5173")); // Seu frontend
+    corsConfig.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Métodos permitidos
+    corsConfig.setAllowedHeaders(Arrays.asList("*")); // Permite todos os cabeçalhos
+    corsConfig.setAllowCredentials(true); // Permite credenciais
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", corsConfig); // Aplica para todas as rotas
+
+    return source;
   }
 }
