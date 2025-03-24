@@ -86,6 +86,16 @@ public class EgressoController {
         }
     }
 
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<?> buscarEgressoPorId(@PathVariable Long id) {
+        try {
+            Egresso egresso = egressoService.buscarPorId(id); // Exemplo de serviço que busca pelo ID
+            return ResponseEntity.ok(converterParaDTO(egresso)); // Converter para DTO antes de enviar
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @PutMapping(value = "/atualizar/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> atualizarEgresso(
             @PathVariable Long id,
@@ -209,9 +219,10 @@ public class EgressoController {
     }
 
     private EgressoResponseDTO converterParaDTO(Egresso egresso) {
-        List<Cargo> cargos = cargoService.listarCargos();
-        Optional<CursoEgresso> cursoEgresso = cursoEgressoService.buscarPorId(egresso.getId());
-        Curso curso = cursoEgresso.isPresent() ? cursoEgresso.get().getCurso() : null; // Desembrulhando o Optional
+        List<Cargo> cargos = cargoService.listarCargoPorEgressoId(egresso.getId());
+        String cargoDescricao = cargos.isEmpty() ? null : cargos.get(0).getDescricao();
+        Optional<CursoEgresso> cursoEgresso = cursoEgressoService.buscarPorEgressoId(egresso.getId());
+        Curso curso = cursoEgresso.isPresent() ? cursoEgresso.get().getCurso() : null;
 
         return EgressoResponseDTO.builder()
                 .id(egresso.getId())
@@ -223,8 +234,9 @@ public class EgressoController {
                 .curriculo(egresso.getCurriculo())
                 .status(egresso.getStatus())
                 .emailUsuario(egresso.getUsuario().getEmail())
-                .curso(curso != null ? curso.getNome() : null) // Pegando o nome do curso
-                .cargo(cargos != null ? cargos.get(0).getDescricao() : null) // Pegando o cargo
+                .curso(curso != null ? curso.getNivel() : null)
+                .cargo(cargoDescricao)
+                .idCurso(curso != null ? curso.getId() : null)
                 .build();
     }
 

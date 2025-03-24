@@ -47,13 +47,14 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.POST, "/api/depoimento/salvar").permitAll()
             .requestMatchers(HttpMethod.PUT, "/api/depoimento/atualizar/{id}").hasAnyRole("COORDENADOR", "EGRESSO") // Atualizar
             .requestMatchers(HttpMethod.PUT, "/api/depoimento/status/{id}").hasAnyRole("COORDENADOR") // Atualizar //
-                                                                                                      // status
+            .requestMatchers(HttpMethod.GET, "/api/depoimento/buscar/{id}").hasAnyRole("COORDENADOR", "EGRESSO") // listar
             .requestMatchers(HttpMethod.GET, "/api/depoimento/listar").hasAnyRole("COORDENADOR") // listar
             .requestMatchers(HttpMethod.GET, "/api/depoimento/aprovados").permitAll()
             .requestMatchers(HttpMethod.DELETE, "/api/depoimento/remover/{id}").hasAnyRole("COORDENADOR", "EGRESSO") // remover
             .requestMatchers(HttpMethod.GET, "/api/noticia/aprovadas").permitAll()
             .requestMatchers("/api/noticia/**").hasRole("COORDENADOR")
             .requestMatchers(HttpMethod.POST, "/api/egresso/salvar").permitAll()
+            .requestMatchers(HttpMethod.GET, "/api/egresso//buscar/{id}").hasAnyRole("EGRESSO")
             .requestMatchers(HttpMethod.PUT, "/api/egresso/atualizar/{id}").hasAnyRole("COORDENADOR", "EGRESSO")
             .requestMatchers(HttpMethod.DELETE, "/api/egresso/deletar/{id}").hasAnyRole("COORDENADOR", "EGRESSO")
             .requestMatchers(HttpMethod.GET, "/api/egresso/buscarPorNome").permitAll()

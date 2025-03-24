@@ -26,12 +26,16 @@ public class DepoimentoService {
     @Transactional
     public Depoimento salvarDepoimento(Depoimento depoimento) {
         verificarDepoimento(depoimento);
-        List<Depoimento> depoimentosExistentes = depoimentoRepositorio.findByEgresso(depoimento.getEgresso());
-        if (!depoimentosExistentes.isEmpty()) {
+    
+        Optional<Depoimento> depoimentoExistente = depoimentoRepositorio.findByEgresso(depoimento.getEgresso());
+        
+        if (depoimentoExistente.isPresent()) {
             throw new RegraNegocioRunTime("O egresso já possui um depoimento cadastrado.");
         }
+    
         return depoimentoRepositorio.save(depoimento);
     }
+    
 
     @Transactional
     public Depoimento atualizarDepoimento(Depoimento depoimentoAtualizado) {
@@ -87,16 +91,18 @@ public class DepoimentoService {
         return depoimentoRepositorio.findAll();
     }
 
-    public List<Depoimento> listarDepoimentoPorEgresso(Long idEgresso) {
-        Optional<Egresso> egressoExistente = egressoRepositorio.findById(idEgresso);
-
-        if (!egressoExistente.isPresent()) {
+    public Optional<Depoimento> buscarDepoimentoPorEgresso(Long idEgresso) {
+        Optional<Egresso> egressoOpt = egressoRepositorio.findById(idEgresso);
+    
+        if (egressoOpt.isEmpty()) {
             throw new RegraNegocioRunTime("Egresso com id " + idEgresso + " não encontrado");
-
         }
-        Egresso egresso = egressoExistente.get();
+    
+        Egresso egresso = egressoOpt.get();
+    
         return depoimentoRepositorio.findByEgresso(egresso);
     }
+    
 
     public void verificarDepoimento(Depoimento depoimento) {
         if (depoimento.getTexto() == null || depoimento.getTexto().isEmpty()) {
@@ -122,4 +128,5 @@ public class DepoimentoService {
         }
         return depoimentosPendentes;
     }
+    
 }
