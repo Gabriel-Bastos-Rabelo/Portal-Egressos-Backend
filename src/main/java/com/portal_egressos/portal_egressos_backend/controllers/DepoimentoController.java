@@ -4,6 +4,7 @@ import com.portal_egressos.portal_egressos_backend.dto.DepoimentoDto;
 import com.portal_egressos.portal_egressos_backend.dto.DepoimentoResponseDTO;
 import com.portal_egressos.portal_egressos_backend.dto.OportunidadeDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
+import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
@@ -129,6 +130,21 @@ public class DepoimentoController {
         }
     }
 
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<?> buscarDepoimentoPorEgresso(@PathVariable Long id) {
+        Optional<Depoimento> depoimentoOpt = depoimentoService.buscarDepoimentoPorEgresso(id);
+
+        if (depoimentoOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Depoimento não encontrado para o egresso com id " + id);
+        }
+
+        DepoimentoResponseDTO dto = converterParaDTO(depoimentoOpt.get());
+
+        return ResponseEntity.ok(dto);
+    }
+
+    
     private Depoimento converterParaModelo(DepoimentoDto dto) {
         return Depoimento.builder()
                 .id(dto.getId())

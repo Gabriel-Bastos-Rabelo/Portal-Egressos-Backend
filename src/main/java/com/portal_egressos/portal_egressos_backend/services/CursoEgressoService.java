@@ -40,6 +40,11 @@ public class CursoEgressoService {
         return cursoEgressoRepo.findById(id);
     }
 
+    public Optional<CursoEgresso> buscarPorEgressoId(Long egressoId) {
+        return cursoEgressoRepo.findByEgressoId(egressoId);
+    }
+    
+
     public void verificarId(CursoEgresso cursoEgresso){
         if((cursoEgresso == null) || (cursoEgresso.getId() == null) || (!cursoEgressoRepo.existsById(cursoEgresso.getId())))
             throw new RegraNegocioRunTime("ID inválido.");

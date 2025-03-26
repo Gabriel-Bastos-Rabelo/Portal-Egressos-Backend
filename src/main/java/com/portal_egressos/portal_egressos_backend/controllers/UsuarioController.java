@@ -1,6 +1,7 @@
 package com.portal_egressos.portal_egressos_backend.controllers;
 
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,37 +17,54 @@ import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
 import com.portal_egressos.portal_egressos_backend.dto.JwtDto;
 import com.portal_egressos.portal_egressos_backend.dto.SignInDto;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
+import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 
 @RestController
 @RequestMapping("/api/auth")
 public class UsuarioController {
+
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @Autowired
     private TokenProvider tokenService;
+
+    @Autowired
+    private EgressoRepository egressoRepository;
 
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody SignInDto data) {
         try {
-            // Autentica o usuário
             var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
             var authUser = authenticationManager.authenticate(usernamePassword);
 
-            // Gera o token de acesso
-            var accessToken = tokenService.generateAccessToken((Usuario) authUser.getPrincipal());
-
-            // Obtém o papel do usuário
             Usuario user = (Usuario) authUser.getPrincipal();
-            String role = user.getRole().name(); // Obtém o papel do usuário (COORDENADOR ou EGRESSO)
 
-            // Retorna o token de acesso e o papel do usuário
-            return ResponseEntity.ok(new JwtDto(accessToken, role));
+            var accessToken = tokenService.generateAccessToken(user);
+
+            String role = user.getRole().name(); // COORDENADOR ou EGRESSO
+            Long userId = user.getId();
+            String email = user.getEmail();
+            Long egressoId = null;
+
+            if (role.equals("EGRESSO")) {
+                Optional<Egresso> egressoOptional = egressoRepository.findByUsuarioId(userId);
+
+                if (egressoOptional.isPresent()) {
+                    egressoId = egressoOptional.get().getId();
+                }
+            }
+
+            return ResponseEntity.ok(new JwtDto(accessToken, role,egressoId,email));
+
         } catch (AuthenticationException ex) {
+            // Retorna erro de autenticação
             Map<String, Object> errorResponse = Map.of(
                     "message", "Credenciais inválidas",
-                    "status", 401);
+                    "status", 401
+            );
             return ResponseEntity.status(401).body(errorResponse);
         }
     }
-
 }
