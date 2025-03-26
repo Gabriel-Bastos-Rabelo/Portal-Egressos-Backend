@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EgressoResponseDTO {
     private Long id;
-    private String nome;
+    private String nomeEgresso;
     private String descricao;
     private String foto;
     private String linkedin;

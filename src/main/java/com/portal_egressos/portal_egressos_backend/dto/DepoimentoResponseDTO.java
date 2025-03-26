@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DepoimentoResponseDTO {
     private Long id;
-    private String texto;
+    private String descricao;
     private LocalDate data;
     private Status status;
     private Long idEgresso;

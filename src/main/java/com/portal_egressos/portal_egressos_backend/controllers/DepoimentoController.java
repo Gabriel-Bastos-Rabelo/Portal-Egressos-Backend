@@ -2,8 +2,10 @@ package com.portal_egressos.portal_egressos_backend.controllers;
 
 import com.portal_egressos.portal_egressos_backend.dto.DepoimentoDto;
 import com.portal_egressos.portal_egressos_backend.dto.DepoimentoResponseDTO;
+import com.portal_egressos.portal_egressos_backend.dto.OportunidadeDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
 import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Depoimento;
@@ -105,6 +107,18 @@ public class DepoimentoController {
         }
     }
 
+    @GetMapping("/pendentes")
+    public ResponseEntity<?> listarPendentes() {
+        try {
+            List<Depoimento> depoimentos = depoimentoService.listarDepoimentosPendentes();
+            List<DepoimentoResponseDTO> depoimentoDTO = depoimentos.stream().map(this::converterParaDTO)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(depoimentoDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("remover/{id}")
     public ResponseEntity<?> removerDepoimento(@PathVariable Long id) {
         try {
@@ -130,7 +144,7 @@ public class DepoimentoController {
 
         return DepoimentoResponseDTO.builder()
                 .id(depoimento.getId())
-                .texto(depoimento.getTexto())
+                .descricao(depoimento.getTexto())
                 .data(depoimento.getData())
                 .status(depoimento.getStatus())
                 .idEgresso(depoimento.getEgresso().getId())

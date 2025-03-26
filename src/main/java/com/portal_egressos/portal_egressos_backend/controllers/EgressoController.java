@@ -26,6 +26,7 @@ import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
 import com.portal_egressos.portal_egressos_backend.dto.CursoEgressoDTO;
 import com.portal_egressos.portal_egressos_backend.dto.EgressoDTO;
 import com.portal_egressos.portal_egressos_backend.dto.EgressoResponseDTO;
+import com.portal_egressos.portal_egressos_backend.dto.NoticiaDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
@@ -33,6 +34,7 @@ import com.portal_egressos.portal_egressos_backend.models.Cargo;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
 import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.models.Noticia;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.services.CargoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
@@ -187,6 +189,18 @@ public class EgressoController {
         }
     }
 
+    @GetMapping("/pendentes")
+    public ResponseEntity<?> listarPendentes() {
+        try {
+            List<Egresso> egressos = egressoService.listarEgressosPendentes();
+            List<EgressoResponseDTO> egressosDTO = egressos.stream().map(this::converterParaDTO)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(egressosDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     private Egresso converterParaModelo(EgressoDTO dto) {
         return Egresso.builder()
                 .id(dto.getId())
@@ -215,7 +229,7 @@ public class EgressoController {
 
         return EgressoResponseDTO.builder()
                 .id(egresso.getId())
-                .nome(egresso.getNome())
+                .nomeEgresso(egresso.getNome())
                 .descricao(egresso.getDescricao())
                 .foto(egresso.getFoto())
                 .linkedin(egresso.getLinkedin())
