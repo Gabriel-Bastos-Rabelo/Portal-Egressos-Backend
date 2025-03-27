@@ -66,13 +66,24 @@ public class EgressoService {
     }
 
     @Transactional
-    public void aprovarEgressos(List<Long> ids){
-        for(Long id: ids){
+    public void aprovarEgressos(List<Long> ids) {
+        for (Long id : ids) {
             Egresso egresso = egressoRepositorio.findById(id)
                     .orElseThrow(() -> new RuntimeException("Egresso não encontrado com ID: " + id));
 
             egresso.setStatus(Status.APROVADO);
-            egressoRepositorio.save(egresso); 
+            egressoRepositorio.save(egresso);
+        }
+    }
+
+    @Transactional
+    public void reprovarEgressos(List<Long> ids) {
+        for (Long id : ids) {
+            Egresso egresso = egressoRepositorio.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Egresso não encontrado com ID: " + id));
+
+            egresso.setStatus(Status.NAO_APROVADO);
+            egressoRepositorio.save(egresso);
         }
     }
 
@@ -108,7 +119,7 @@ public class EgressoService {
             egressoExistente.getUsuario().setSenha(senhaEncriptada);
         }
 
-        if(!imagem.isEmpty()){
+        if (!imagem.isEmpty()) {
             String imagePath = storageService.salvarImagem(imagem);
             egressoExistente.setFoto(imagePath);
         }
@@ -198,16 +209,18 @@ public class EgressoService {
         Pageable pageable = PageRequest.of(pagina, 20);
         Page<Egresso> egressos = egressoRepositorio.findAll(pageable);
         if (pagina >= egressos.getTotalPages()) {
-            throw new RegraNegocioRunTime("Página " + pagina + " não existe. Total de páginas: " + egressos.getTotalPages());
+            throw new RegraNegocioRunTime(
+                    "Página " + pagina + " não existe. Total de páginas: " + egressos.getTotalPages());
         }
         return egressos.getContent();
     }
 
     public List<Egresso> listarEgressosAprovados(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 20); 
+        Pageable pageable = PageRequest.of(pagina, 20);
         Page<Egresso> egressosAprovados = egressoRepositorio.findAllByStatus(Status.APROVADO, pageable);
         if (pagina >= egressosAprovados.getTotalPages()) {
-            throw new RegraNegocioRunTime("Página " + pagina + " não existe. Total de páginas: " + egressosAprovados.getTotalPages());
+            throw new RegraNegocioRunTime(
+                    "Página " + pagina + " não existe. Total de páginas: " + egressosAprovados.getTotalPages());
         }
         return egressosAprovados.getContent();
     }

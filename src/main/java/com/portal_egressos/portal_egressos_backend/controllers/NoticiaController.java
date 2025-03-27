@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +27,6 @@ public class NoticiaController {
     @Autowired
     private NoticiaService noticiaService;
 
-    
     @GetMapping
     public ResponseEntity<?> listarNoticias() {
         try {
@@ -51,10 +52,31 @@ public class NoticiaController {
 
     }
 
-    @GetMapping("/aprovadas")
-    public ResponseEntity<?> listarNoticiasAprovadas() { 
+    @PostMapping("/aprovar")
+    public ResponseEntity<?> aprovarNoticias(@RequestBody List<Long> ids) {
+
         try {
-            System.out.println("aquiii");
+            noticiaService.aprovarNoticias(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reprovar")
+    public ResponseEntity<?> reprovarNoticias(@RequestBody List<Long> ids) {
+
+        try {
+            noticiaService.reprovarNoticias(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/aprovadas")
+    public ResponseEntity<?> listarNoticiasAprovadas() {
+        try {
             List<Noticia> noticias = noticiaService.listarNoticiasAprovadas();
             System.out.println(noticias);
             List<NoticiaDTO> noticiasDTO = noticias.stream().map(this::converterParaDTO).collect(Collectors.toList());
@@ -87,7 +109,6 @@ public class NoticiaController {
         }
 
     }
-
 
     private NoticiaDTO converterParaDTO(Noticia noticia) {
         return NoticiaDTO.builder()

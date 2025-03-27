@@ -79,6 +79,28 @@ public class OportunidadeController {
         }
     }
 
+    @PostMapping("/aprovar")
+    public ResponseEntity<?> aprovarOportunidades(@RequestBody List<Long> ids) {
+
+        try {
+            oportunidadeService.aprovarOportunidades(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reprovar")
+    public ResponseEntity<?> reprovarOportunidades(@RequestBody List<Long> ids) {
+
+        try {
+            oportunidadeService.reprovarOportunidades(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/listar")
     public ResponseEntity<?> listarOportunidades() {
         try {

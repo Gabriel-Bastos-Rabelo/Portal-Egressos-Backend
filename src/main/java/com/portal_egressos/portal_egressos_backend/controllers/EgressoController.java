@@ -142,6 +142,17 @@ public class EgressoController {
         }
     }
 
+    @PostMapping("/reprovar")
+    public ResponseEntity<?> reprovarEgressos(@RequestBody List<Long> ids) {
+
+        try {
+            egressoService.reprovarEgressos(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<?> deletarEgresso(@PathVariable Long id,
             @RequestHeader("Authorization") String authorization) {

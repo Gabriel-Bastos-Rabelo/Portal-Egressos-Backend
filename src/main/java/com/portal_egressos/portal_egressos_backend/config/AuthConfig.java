@@ -44,6 +44,8 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.POST, "/api/oportunidade/salvar").hasAnyRole("COORDENADOR", "EGRESSO") // Criar
             .requestMatchers(HttpMethod.PUT, "/api/oportunidade/atualizar/{id}").hasRole("COORDENADOR") // Atualizar
             .requestMatchers(HttpMethod.PUT, "/api/oportunidade/status/{id}").hasRole("COORDENADOR") // Atualizar status
+            .requestMatchers(HttpMethod.POST, "/api/oportunidade/aprovar").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.POST, "/api/oportunidade/reprovar").hasRole("COORDENADOR")
             .requestMatchers(HttpMethod.DELETE, "/api/oportunidade/remover/{id}").hasRole("COORDENADOR") // Deletar
             .requestMatchers(HttpMethod.POST, "/api/depoimento/salvar").permitAll()
             .requestMatchers(HttpMethod.PUT, "/api/depoimento/atualizar/{id}").hasAnyRole("COORDENADOR", "EGRESSO") // Atualizar
@@ -52,9 +54,13 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.GET, "/api/depoimento/listar").hasAnyRole("COORDENADOR") // listar
             .requestMatchers(HttpMethod.GET, "/api/depoimento/pendentes").hasAnyRole("COORDENADOR") // listar
             .requestMatchers(HttpMethod.GET, "/api/depoimento/aprovados").permitAll()
+            .requestMatchers(HttpMethod.POST, "/api/depoimento/aprovar").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.POST, "/api/depoimento/reprovar").hasRole("COORDENADOR")
             .requestMatchers(HttpMethod.DELETE, "/api/depoimento/remover/{id}").hasAnyRole("COORDENADOR", "EGRESSO") // remover
             .requestMatchers(HttpMethod.GET, "/api/noticia/aprovadas").permitAll()
             .requestMatchers("/api/noticia/**").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.POST, "/api/noticia/aprovar").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.POST, "/api/noticia/reprovar").hasRole("COORDENADOR")
             .requestMatchers(HttpMethod.POST, "/api/egresso/salvar").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/egresso//buscar/{id}").hasAnyRole("EGRESSO")
             .requestMatchers(HttpMethod.PUT, "/api/egresso/atualizar/{id}").hasAnyRole("COORDENADOR", "EGRESSO")
@@ -62,6 +68,8 @@ public class AuthConfig {
             .requestMatchers(HttpMethod.GET, "/api/egresso/buscarPorNome").permitAll()
             .requestMatchers(HttpMethod.GET, "/api/egresso/listar").hasRole("COORDENADOR")
             .requestMatchers(HttpMethod.GET, "/api/egresso/pendentes").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.POST, "/api/egresso/aprovar").hasRole("COORDENADOR")
+            .requestMatchers(HttpMethod.POST, "/api/egresso/reprovar").hasRole("COORDENADOR")
             .requestMatchers(HttpMethod.GET, "/api/egresso/buscarAprovados").permitAll()
             .requestMatchers(HttpMethod.PUT, "/api/coordenador/atualizar/{id}").hasRole("COORDENADOR")
             .requestMatchers(HttpMethod.GET, "/api/coordenador/listar").hasRole("COORDENADOR")

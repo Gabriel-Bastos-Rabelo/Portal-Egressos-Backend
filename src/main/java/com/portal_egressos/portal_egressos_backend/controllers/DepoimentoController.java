@@ -82,6 +82,28 @@ public class DepoimentoController {
         }
     }
 
+    @PostMapping("/aprovar")
+    public ResponseEntity<?> aprovarDepoimento(@RequestBody List<Long> ids) {
+
+        try {
+            depoimentoService.aprovarDepoimentos(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reprovar")
+    public ResponseEntity<?> reprovarDepoimento(@RequestBody List<Long> ids) {
+
+        try {
+            depoimentoService.reprovarDepoimentos(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/listar")
     public ResponseEntity<?> listarDepoimentos() {
         try {
@@ -144,7 +166,6 @@ public class DepoimentoController {
         return ResponseEntity.ok(dto);
     }
 
-    
     private Depoimento converterParaModelo(DepoimentoDto dto) {
         return Depoimento.builder()
                 .id(dto.getId())

@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter 
+@Getter
 @Setter
 @Builder
 public class NoticiaDTO {
