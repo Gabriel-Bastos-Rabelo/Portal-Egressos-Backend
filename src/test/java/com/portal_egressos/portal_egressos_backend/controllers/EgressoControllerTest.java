@@ -33,6 +33,7 @@ import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
+import com.portal_egressos.portal_egressos_backend.services.CargoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
@@ -60,6 +61,9 @@ public class EgressoControllerTest {
 
         @MockBean
         private CursoService cursoService;
+
+        @MockBean
+        private CargoService cargoService;
 
         @MockBean
         private CursoEgressoService cursoEgressoService;
@@ -138,7 +142,7 @@ public class EgressoControllerTest {
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                         .andExpect(MockMvcResultMatchers.status().isCreated())
                         .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(11))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Anderson Lopes"));
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.nomeEgresso").value("Anderson Lopes"));
         }
 
         @Test
@@ -216,7 +220,7 @@ public class EgressoControllerTest {
 
                 List<Egresso> egressosMock = Arrays.asList(egresso1, egresso2);
 
-                Mockito.when(egressoService.listarEgressos(0)).thenReturn(egressosMock);
+                Mockito.when(egressoService.listarEgressos()).thenReturn(egressosMock);
 
                 // Ação
                 MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/listar")
@@ -227,7 +231,7 @@ public class EgressoControllerTest {
                                 .andExpect(MockMvcResultMatchers.status().isOk())
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Anderson Lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nomeEgresso").value("Anderson Lopes"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao")
                                                 .value("Cientista da Computação."))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
@@ -241,7 +245,7 @@ public class EgressoControllerTest {
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].curriculo")
                                                 .value("https://example.com/anderson.pdf"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Anderson Silva"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nomeEgresso").value("Anderson Silva"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].descricao")
                                                 .value("Cientista da Computação."))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].status")
@@ -279,7 +283,7 @@ public class EgressoControllerTest {
 
                 List<Egresso> egressosMock = Arrays.asList(egresso);
 
-                Mockito.when(egressoService.listarEgressosAprovados(0)).thenReturn(egressosMock);
+                Mockito.when(egressoService.listarEgressosAprovados()).thenReturn(egressosMock);
 
                 // Ação
                 MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/buscarAprovados")
@@ -290,7 +294,7 @@ public class EgressoControllerTest {
                                 .andExpect(MockMvcResultMatchers.status().isOk())
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Anderson Lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nomeEgresso").value("Anderson Lopes"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao")
                                                 .value("Cientista da Computação."))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
@@ -338,7 +342,7 @@ public class EgressoControllerTest {
                                 .andExpect(MockMvcResultMatchers.status().isOk())
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Anderson Lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nomeEgresso").value("Anderson Lopes"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao")
                                                 .value("Cientista da Computação."))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
@@ -423,7 +427,7 @@ public class EgressoControllerTest {
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                         .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value(egressoDTO.getNome()))
+                        .andExpect(MockMvcResultMatchers.jsonPath("$.nomeEgresso").value(egressoDTO.getNome()))
                         .andExpect(MockMvcResultMatchers.jsonPath("$.descricao").value(egressoDTO.getDescricao()))
                         .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(egressoDTO.getStatus().toString()));
         }
