@@ -186,7 +186,8 @@ public class DepoimentoController {
                 .status(depoimento.getStatus())
                 .idEgresso(depoimento.getEgresso().getId())
                 .nomeEgresso(depoimento.getEgresso().getNome())
-                .nomeCurso(curso != null ? curso.getNome() : null)
+                .curso(curso != null ? curso.getNivel() : null)
+                .anoConclusao(cursoEgresso.isPresent() ? cursoEgresso.get().getAnoFim() : null)
                 .build();
     }
 }
