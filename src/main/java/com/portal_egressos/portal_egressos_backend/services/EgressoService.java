@@ -205,24 +205,15 @@ public class EgressoService {
         }
     }
 
-    public List<Egresso> listarEgressos(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 20);
-        Page<Egresso> egressos = egressoRepositorio.findAll(pageable);
-        if (pagina >= egressos.getTotalPages()) {
-            throw new RegraNegocioRunTime(
-                    "Página " + pagina + " não existe. Total de páginas: " + egressos.getTotalPages());
-        }
-        return egressos.getContent();
+    public List<Egresso> listarEgressos() {
+        List<Egresso> egressos = egressoRepositorio.findAll();
+
+        return egressos;
     }
 
-    public List<Egresso> listarEgressosAprovados(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 20);
-        Page<Egresso> egressosAprovados = egressoRepositorio.findAllByStatus(Status.APROVADO, pageable);
-        if (pagina >= egressosAprovados.getTotalPages()) {
-            throw new RegraNegocioRunTime(
-                    "Página " + pagina + " não existe. Total de páginas: " + egressosAprovados.getTotalPages());
-        }
-        return egressosAprovados.getContent();
+    public List<Egresso> listarEgressosAprovados() {
+        List<Egresso> egressosAprovados = egressoRepositorio.findAllByStatus(Status.APROVADO);
+        return egressosAprovados;
     }
 
     public List<Egresso> listarEgressosPendentes() {
