@@ -19,5 +19,6 @@ public class DepoimentoResponseDTO {
     private Status status;
     private Long idEgresso;
     private String nomeEgresso;
-    private String nomeCurso;
+    private String curso;
+    private Integer anoConclusao;
 }
