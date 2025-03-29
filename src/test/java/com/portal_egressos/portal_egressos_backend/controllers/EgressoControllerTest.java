@@ -216,7 +216,7 @@ public class EgressoControllerTest {
 
                 List<Egresso> egressosMock = Arrays.asList(egresso1, egresso2);
 
-                Mockito.when(egressoService.listarEgressos(0)).thenReturn(egressosMock);
+                Mockito.when(egressoService.listarEgressos()).thenReturn(egressosMock);
 
                 // Ação
                 MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/listar")
@@ -279,7 +279,7 @@ public class EgressoControllerTest {
 
                 List<Egresso> egressosMock = Arrays.asList(egresso);
 
-                Mockito.when(egressoService.listarEgressosAprovados(0)).thenReturn(egressosMock);
+                Mockito.when(egressoService.listarEgressosAprovados()).thenReturn(egressosMock);
 
                 // Ação
                 MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/buscarAprovados")
