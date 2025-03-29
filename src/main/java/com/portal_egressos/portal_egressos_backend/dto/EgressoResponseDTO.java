@@ -20,7 +20,8 @@ public class EgressoResponseDTO {
     private String curriculo;
     private Status status;
     private String emailUsuario;
-    private String curso; // Adicionando o campo 'curso'
+    private String curso;
+    private Integer anoConclusao;
     private Long idCurso;
     private String cargo;
 }
