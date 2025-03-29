@@ -1,6 +1,5 @@
 package com.portal_egressos.portal_egressos_backend.controllers;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,10 +22,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
-import com.portal_egressos.portal_egressos_backend.dto.CursoEgressoDTO;
 import com.portal_egressos.portal_egressos_backend.dto.EgressoDTO;
 import com.portal_egressos.portal_egressos_backend.dto.EgressoResponseDTO;
-import com.portal_egressos.portal_egressos_backend.dto.NoticiaDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
@@ -34,7 +31,6 @@ import com.portal_egressos.portal_egressos_backend.models.Cargo;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
 import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
-import com.portal_egressos.portal_egressos_backend.models.Noticia;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.services.CargoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
@@ -185,10 +181,9 @@ public class EgressoController {
     }
 
     @GetMapping("/buscarAprovados")
-    public ResponseEntity<?> buscarEgressoAprovados(
-            @RequestParam(defaultValue = "0") int pagina) {
+    public ResponseEntity<?> buscarEgressoAprovados() {
         try {
-            List<Egresso> egressosRetornado = egressoService.listarEgressosAprovados(pagina);
+            List<Egresso> egressosRetornado = egressoService.listarEgressosAprovados();
             List<EgressoResponseDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(egressosDTO);
@@ -198,10 +193,9 @@ public class EgressoController {
     }
 
     @GetMapping("/listar")
-    public ResponseEntity<?> listarEgressos(
-            @RequestParam(defaultValue = "0") int pagina) {
+    public ResponseEntity<?> listarEgressos() {
         try {
-            List<Egresso> egressosRetornado = egressoService.listarEgressos(pagina);
+            List<Egresso> egressosRetornado = egressoService.listarEgressos();
             List<EgressoResponseDTO> egressosDTO = egressosRetornado.stream().map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(egressosDTO);
@@ -261,6 +255,7 @@ public class EgressoController {
                 .emailUsuario(egresso.getUsuario().getEmail())
                 .curso(curso != null ? curso.getNivel() : null)
                 .cargo(cargoDescricao)
+                .anoConclusao(cursoEgresso.isPresent() ? cursoEgresso.get().getAnoFim() : null)
                 .idCurso(curso != null ? curso.getId() : null)
                 .build();
     }
