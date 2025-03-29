@@ -23,4 +23,6 @@ public class EgressoResponseDTO {
     private String curso; // Adicionando o campo 'curso'
     private Long idCurso;
     private String cargo;
+    private Integer anoInicio;
+    private Integer anoFim;
 }

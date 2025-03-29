@@ -108,7 +108,7 @@ public class EgressoService {
             egressoExistente.getUsuario().setSenha(senhaEncriptada);
         }
 
-        if(!imagem.isEmpty()){
+        if (imagem != null && !imagem.isEmpty()) {
             String imagePath = storageService.salvarImagem(imagem);
             egressoExistente.setFoto(imagePath);
         }

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,22 +43,43 @@ public class CargoController {
     @Autowired
     private TokenProvider tokenService;
 
+    // @PostMapping
+    // public ResponseEntity<?> salvarCargo(@RequestBody CargoDTO cargoDTO,
+    //         @RequestHeader("Authorization") String authorization) {
+    //     try {
+    //         Usuario usuario = obterUsuarioDoToken(authorization.substring(7));
+    //         Egresso egresso = obterEgressoDoUsuario(usuario);
+
+    //         Cargo cargo = converterParaModelo(cargoDTO);
+    //         cargo.setEgresso(egresso);
+
+    //         Cargo cargoSalvo = cargoService.salvarCargo(cargo);
+    //         return ResponseEntity.ok(converterParaDTO(cargoSalvo));
+    //     } catch (Exception e) {
+    //         return ResponseEntity.badRequest().body(e.getMessage());
+    //     }
+    // }
+
     @PostMapping
-    public ResponseEntity<?> salvarCargo(@RequestBody CargoDTO cargoDTO,
-            @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<?> salvarCargo(@RequestBody CargoDTO cargoDTO) {
         try {
-            Usuario usuario = obterUsuarioDoToken(authorization.substring(7));
-            Egresso egresso = obterEgressoDoUsuario(usuario);
+            // Obter o Egresso pelo ID diretamente, sem precisar do token
+            Egresso egresso = egressoService.buscarPorId(cargoDTO.getEgressoId());
 
+            // Criar o cargo com base nas informações do DTO
             Cargo cargo = converterParaModelo(cargoDTO);
-            cargo.setEgresso(egresso);
+            cargo.setEgresso(egresso); // Associa o cargo ao egresso
 
+            // Salvar o cargo
             Cargo cargoSalvo = cargoService.salvarCargo(cargo);
-            return ResponseEntity.ok(converterParaDTO(cargoSalvo));
+
+            // Retornar a resposta com o DTO do cargo salvo
+            return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(cargoSalvo));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
 
     @GetMapping("/egresso/{egressoId}")
     public ResponseEntity<?> listarCargosPorEgresso(@PathVariable Long egressoId) {

@@ -4,5 +4,6 @@ public record JwtDto(
         String accessToken,
         String role,
         Long egressoId,
-        String email) {
+        String email,
+        Long coordId) {
 }

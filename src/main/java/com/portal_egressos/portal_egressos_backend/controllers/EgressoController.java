@@ -237,6 +237,8 @@ public class EgressoController {
                 .curso(curso != null ? curso.getNivel() : null)
                 .cargo(cargoDescricao)
                 .idCurso(curso != null ? curso.getId() : null)
+                .anoInicio(cursoEgresso.get().getAnoInicio())
+                .anoFim(cursoEgresso.get().getAnoFim())
                 .build();
     }
 
