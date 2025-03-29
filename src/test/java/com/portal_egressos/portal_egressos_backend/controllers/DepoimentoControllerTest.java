@@ -33,6 +33,7 @@ import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.DepoimentoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
+import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.DepoimentoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 
@@ -47,6 +48,9 @@ public class DepoimentoControllerTest {
         @Autowired
         MockMvc mvc;
 
+        @MockBean
+        private CursoEgressoService cursoEgressoService;
+        
         @MockBean
         DepoimentoService depoimentoService;
 
