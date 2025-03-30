@@ -53,8 +53,7 @@ public class NoticiaController {
     }
 
     @PostMapping("/aprovar")
-    public ResponseEntity<?> aprovarNoticias(@RequestBody List<Long> ids) {
-
+    public ResponseEntity<?> aprovarNoticias(@RequestBody List<String> ids) {
         try {
             noticiaService.aprovarNoticias(ids);
             return ResponseEntity.noContent().build();
@@ -64,8 +63,7 @@ public class NoticiaController {
     }
 
     @PostMapping("/reprovar")
-    public ResponseEntity<?> reprovarNoticias(@RequestBody List<Long> ids) {
-
+    public ResponseEntity<?> reprovarNoticias(@RequestBody List<String> ids) {
         try {
             noticiaService.reprovarNoticias(ids);
             return ResponseEntity.noContent().build();
@@ -112,7 +110,7 @@ public class NoticiaController {
 
     private NoticiaDTO converterParaDTO(Noticia noticia) {
         return NoticiaDTO.builder()
-                .id(noticia.getId())
+                .id(String.valueOf(noticia.getId()))
                 .descricao(noticia.getDescricao())
                 .data(noticia.getData())
                 .status(noticia.getStatus())

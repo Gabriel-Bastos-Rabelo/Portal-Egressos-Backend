@@ -23,7 +23,7 @@ public class Noticia {
     @Column(name = "data", nullable = false)
     private String data;
 
-    @Column(name = "imagem_url", nullable = false)
+    @Column(name = "imagem_url", nullable = true)
     private String imagemUrl;
 
     @Column(name = "imagem_capa")

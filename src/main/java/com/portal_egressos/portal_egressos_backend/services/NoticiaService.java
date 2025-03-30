@@ -60,26 +60,29 @@ public class NoticiaService {
     }
 
     @Transactional
-    public void aprovarNoticias(List<Long> ids) {
-        for (Long id : ids) {
+    public void aprovarNoticias(List<String> ids) {
+        for (String idStr : ids) {
+            System.out.println(idStr);
+            Long id = Long.parseLong(idStr);
             Noticia noticia = noticiaRepositorio.findById(id)
                     .orElseThrow(() -> new RuntimeException("Notícia não encontrada com ID: " + id));
-
             noticia.setStatus(Status.APROVADO);
+            System.out.println("Salvando notícia: " + noticia);
             noticiaRepositorio.save(noticia);
         }
     }
 
     @Transactional
-    public void reprovarNoticias(List<Long> ids) {
-        for (Long id : ids) {
+    public void reprovarNoticias(List<String> ids) {
+        for (String idStr : ids) {
+            Long id = Long.parseLong(idStr);
             Noticia noticia = noticiaRepositorio.findById(id)
                     .orElseThrow(() -> new RuntimeException("Notícia não encontrada com ID: " + id));
-
             noticia.setStatus(Status.NAO_APROVADO);
             noticiaRepositorio.save(noticia);
         }
     }
+
 
     public void verificarNoticiaId(Noticia noticia) {
         if ((noticia == null) || (noticia.getId() == null)
