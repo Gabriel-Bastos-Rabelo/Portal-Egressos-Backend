@@ -24,4 +24,6 @@ public class EgressoResponseDTO {
     private Integer anoConclusao;
     private Long idCurso;
     private String cargo;
+    private Integer anoInicio;
+    private Integer anoFim;
 }

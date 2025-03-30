@@ -225,6 +225,7 @@ public class EgressoController {
                 .linkedin(dto.getLinkedin())
                 .instagram(dto.getInstagram())
                 .curriculo(dto.getCurriculo())
+                .status(Status.PENDENTE)
                 .build();
     }
 
@@ -257,6 +258,8 @@ public class EgressoController {
                 .cargo(cargoDescricao)
                 .anoConclusao(cursoEgresso.isPresent() ? cursoEgresso.get().getAnoFim() : null)
                 .idCurso(curso != null ? curso.getId() : null)
+                .anoInicio(cursoEgresso.get().getAnoInicio())
+                .anoFim(cursoEgresso.get().getAnoFim())
                 .build();
     }
 

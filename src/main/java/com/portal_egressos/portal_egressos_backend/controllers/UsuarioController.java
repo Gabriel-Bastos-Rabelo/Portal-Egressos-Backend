@@ -18,6 +18,7 @@ import com.portal_egressos.portal_egressos_backend.dto.JwtDto;
 import com.portal_egressos.portal_egressos_backend.dto.SignInDto;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.repositories.CoordenadorRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 
 @RestController
@@ -33,6 +34,9 @@ public class UsuarioController {
     @Autowired
     private EgressoRepository egressoRepository;
 
+    @Autowired 
+    private CoordenadorRepository coordenadorRepository;
+
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(@RequestBody SignInDto data) {
         try {
@@ -47,6 +51,7 @@ public class UsuarioController {
             Long userId = user.getId();
             String email = user.getEmail();
             Long egressoId = null;
+            Long coordId = null;
 
             if (role.equals("EGRESSO")) {
                 Optional<Egresso> egressoOptional = egressoRepository.findByUsuarioId(userId);
@@ -56,9 +61,17 @@ public class UsuarioController {
                 }
             }
 
-            return ResponseEntity.ok(new JwtDto(accessToken, role,egressoId,email));
+            if (role.equals("COORDENADOR")) {
+                coordId = coordenadorRepository.findByUsuarioId(userId)
+                    .map(c -> c.getId())
+                    .orElse(null);
+            }
+            
+
+            return ResponseEntity.ok(new JwtDto(accessToken, role,egressoId,email,coordId));
 
         } catch (AuthenticationException ex) {
+            System.err.println(ex);
             // Retorna erro de autenticação
             Map<String, Object> errorResponse = Map.of(
                     "message", "Credenciais inválidas",
