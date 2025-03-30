@@ -206,6 +206,7 @@ public class EgressoController {
                 .linkedin(dto.getLinkedin())
                 .instagram(dto.getInstagram())
                 .curriculo(dto.getCurriculo())
+                .status(Status.PENDENTE)
                 .build();
     }
 
