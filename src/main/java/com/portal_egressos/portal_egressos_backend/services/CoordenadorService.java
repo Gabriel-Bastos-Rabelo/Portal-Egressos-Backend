@@ -52,12 +52,8 @@ public class CoordenadorService {
     @Transactional
     public Coordenador atualizarCoordenador(Coordenador coordenador) {
         verificarCoordenadorId(coordenador);
-
+        System.out.println(coordenador);
         Coordenador coordenadorExistente = coordenadorRepositorio.findById(coordenador.getId()).get();
-        if (coordenador.getUsuario().getSenha() != null && !coordenador.getUsuario().getSenha().isEmpty()) {
-            String senhaEncriptada = new BCryptPasswordEncoder().encode(coordenador.getUsuario().getSenha());
-            coordenadorExistente.getUsuario().setSenha(senhaEncriptada);
-        }
         if (coordenador.getNome() != null && !coordenador.getNome().isEmpty()) {
             coordenadorExistente.setNome(coordenador.getNome());
         }
