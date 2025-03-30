@@ -43,37 +43,14 @@ public class CargoController {
     @Autowired
     private TokenProvider tokenService;
 
-    // @PostMapping
-    // public ResponseEntity<?> salvarCargo(@RequestBody CargoDTO cargoDTO,
-    //         @RequestHeader("Authorization") String authorization) {
-    //     try {
-    //         Usuario usuario = obterUsuarioDoToken(authorization.substring(7));
-    //         Egresso egresso = obterEgressoDoUsuario(usuario);
-
-    //         Cargo cargo = converterParaModelo(cargoDTO);
-    //         cargo.setEgresso(egresso);
-
-    //         Cargo cargoSalvo = cargoService.salvarCargo(cargo);
-    //         return ResponseEntity.ok(converterParaDTO(cargoSalvo));
-    //     } catch (Exception e) {
-    //         return ResponseEntity.badRequest().body(e.getMessage());
-    //     }
-    // }
-
     @PostMapping
     public ResponseEntity<?> salvarCargo(@RequestBody CargoDTO cargoDTO) {
         try {
-            // Obter o Egresso pelo ID diretamente, sem precisar do token
             Egresso egresso = egressoService.buscarPorId(cargoDTO.getEgressoId());
-
-            // Criar o cargo com base nas informações do DTO
             Cargo cargo = converterParaModelo(cargoDTO);
-            cargo.setEgresso(egresso); // Associa o cargo ao egresso
-
-            // Salvar o cargo
+            cargo.setEgresso(egresso); 
             Cargo cargoSalvo = cargoService.salvarCargo(cargo);
 
-            // Retornar a resposta com o DTO do cargo salvo
             return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(cargoSalvo));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
