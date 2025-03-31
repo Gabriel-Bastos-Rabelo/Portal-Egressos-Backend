@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
 import com.portal_egressos.portal_egressos_backend.dto.JwtDto;
 import com.portal_egressos.portal_egressos_backend.dto.SignInDto;
+import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.repositories.CoordenadorRepository;
@@ -54,8 +56,12 @@ public class UsuarioController {
             Long coordId = null;
 
             if (role.equals("EGRESSO")) {
+
                 Optional<Egresso> egressoOptional = egressoRepository.findByUsuarioId(userId);
 
+                if (egressoOptional.isEmpty() || egressoOptional.get().getStatus() != Status.APROVADO) {
+                    throw new BadCredentialsException("Usuário ainda não aprovado.");
+                }
                 if (egressoOptional.isPresent()) {
                     egressoId = egressoOptional.get().getId();
                 }
