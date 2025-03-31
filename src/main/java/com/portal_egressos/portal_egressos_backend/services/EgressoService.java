@@ -38,10 +38,11 @@ public class EgressoService {
 
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+            
+    private static final String LINKEDIN_PATTERN = "^https:\\/\\/(www\\.)?linkedin\\.com\\/in\\/[A-Za-z0-9\\-_.]+\\/?$";
 
-    private static final String LINKEDIN_PATTERN = "^https:\\/\\/(www\\.)?linkedin\\.com\\/in\\/[A-Za-z0-9\\-_.]+$";
-
-    private static final String INSTAGRAM_PATTERN = "^(https?:\\/\\/)?(www\\.)?instagram\\.com\\/[A-Za-z0-9_.]+$";
+    private static final String INSTAGRAM_PATTERN = "^(https?:\\/\\/)?(www\\.)?instagram\\.com\\/[A-Za-z0-9_.]+\\/?$";
+            
 
     private static final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
     private static final Pattern linkedinPattern = Pattern.compile(LINKEDIN_PATTERN, Pattern.CASE_INSENSITIVE);
