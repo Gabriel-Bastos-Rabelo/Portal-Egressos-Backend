@@ -130,7 +130,7 @@ public class CargoControllerTest {
             .content(json);
 
         mvc.perform(request)
-        .andExpect(status().isOk())
+        .andExpect(status().isCreated())
         .andExpect(jsonPath("id").value(1L))
         .andExpect(jsonPath("descricao").value("Desenvolvedor"))
         .andExpect(jsonPath("local").value("Empresa XYZ"))
