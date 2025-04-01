@@ -179,6 +179,7 @@ public class DepoimentoController {
         Optional<CursoEgresso> cursoEgresso = cursoEgressoService.buscarPorId(depoimento.getEgresso().getId());
         Curso curso = cursoEgresso.isPresent() ? cursoEgresso.get().getCurso() : null;
 
+
         return DepoimentoResponseDTO.builder()
                 .id(depoimento.getId())
                 .descricao(depoimento.getTexto())
@@ -188,6 +189,7 @@ public class DepoimentoController {
                 .nomeEgresso(depoimento.getEgresso().getNome())
                 .curso(curso != null ? curso.getNivel() : null)
                 .anoConclusao(cursoEgresso.isPresent() ? cursoEgresso.get().getAnoFim() : null)
+                .foto(depoimento.getEgresso().getFoto())
                 .build();
     }
 }

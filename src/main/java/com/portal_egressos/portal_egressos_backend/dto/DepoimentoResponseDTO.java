@@ -21,4 +21,5 @@ public class DepoimentoResponseDTO {
     private String nomeEgresso;
     private String curso;
     private Integer anoConclusao;
+    private String foto;
 }
