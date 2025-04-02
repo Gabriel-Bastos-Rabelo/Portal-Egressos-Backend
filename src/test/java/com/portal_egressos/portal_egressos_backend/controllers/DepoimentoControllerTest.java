@@ -33,6 +33,7 @@ import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.DepoimentoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
+import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.DepoimentoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 
@@ -47,6 +48,9 @@ public class DepoimentoControllerTest {
         @Autowired
         MockMvc mvc;
 
+        @MockBean
+        private CursoEgressoService cursoEgressoService;
+        
         @MockBean
         DepoimentoService depoimentoService;
 
@@ -182,7 +186,7 @@ public class DepoimentoControllerTest {
                 // Verificando
                 mvc.perform(request)
                                 .andExpect(MockMvcResultMatchers.status().isOk())
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.texto").value("Texto Atualizado"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.descricao").value("Texto Atualizado"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(Status.APROVADO.toString()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.data").value(LocalDate.now().toString()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.idEgresso").value(egressoSalvo.getId()))
@@ -235,7 +239,7 @@ public class DepoimentoControllerTest {
                                 .andExpect(MockMvcResultMatchers.status().isOk())
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(idDepoimento))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(novoStatus.toString()))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.texto").value("Depoimento Original"));
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.descricao").value("Depoimento Original"));
         }
 
         @Test
@@ -278,13 +282,13 @@ public class DepoimentoControllerTest {
                                 .andExpect(MockMvcResultMatchers.status().isOk())
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].texto").value("Depoimento Teste 1"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao").value("Depoimento Teste 1"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
                                                 .value(Status.APROVADO.toString()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].idEgresso").value(1))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].nomeEgresso").value("Egresso Teste 1"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].texto").value("Depoimento Teste 2"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].descricao").value("Depoimento Teste 2"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].status")
                                                 .value(Status.PENDENTE.toString()))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].idEgresso").value(2))
@@ -331,13 +335,13 @@ public class DepoimentoControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].texto").value("Depoimento Teste 1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao").value("Depoimento Teste 1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
                                 .value(Status.APROVADO.toString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].idEgresso").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].nomeEgresso").value("Egresso Teste 1"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].texto").value("Depoimento Teste 2"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].descricao").value("Depoimento Teste 2"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].status")
                                 .value(Status.APROVADO.toString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].idEgresso").value(2))

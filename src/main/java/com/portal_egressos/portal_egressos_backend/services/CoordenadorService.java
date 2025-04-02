@@ -15,13 +15,18 @@ import org.springframework.stereotype.Service;
 
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Coordenador;
+import com.portal_egressos.portal_egressos_backend.models.Curso;
 import com.portal_egressos.portal_egressos_backend.repositories.CoordenadorRepository;
+import com.portal_egressos.portal_egressos_backend.repositories.CursoRepository;
 
 @Service
 public class CoordenadorService {
 
     @Autowired
     private CoordenadorRepository coordenadorRepositorio;
+
+    @Autowired
+    private CursoRepository cursoRepository;
 
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -47,12 +52,8 @@ public class CoordenadorService {
     @Transactional
     public Coordenador atualizarCoordenador(Coordenador coordenador) {
         verificarCoordenadorId(coordenador);
-
+        System.out.println(coordenador);
         Coordenador coordenadorExistente = coordenadorRepositorio.findById(coordenador.getId()).get();
-        if (coordenador.getUsuario().getSenha() != null && !coordenador.getUsuario().getSenha().isEmpty()) {
-            String senhaEncriptada = new BCryptPasswordEncoder().encode(coordenador.getUsuario().getSenha());
-            coordenadorExistente.getUsuario().setSenha(senhaEncriptada);
-        }
         if (coordenador.getNome() != null && !coordenador.getNome().isEmpty()) {
             coordenadorExistente.setNome(coordenador.getNome());
         }
@@ -61,6 +62,12 @@ public class CoordenadorService {
         }
         if (coordenador.getAtivo() != null) {
             coordenadorExistente.setAtivo(coordenador.getAtivo());
+        }
+        if (coordenador.getCurso().getId() != null) { 
+            Curso novoCurso = cursoRepository.findById(coordenador.getCurso().getId())
+                    .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+
+            coordenadorExistente.setCurso(novoCurso); 
         }
 
         return coordenadorRepositorio.save(coordenadorExistente);

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.portal_egressos.portal_egressos_backend.dto.CoordenadorDTO;
 import com.portal_egressos.portal_egressos_backend.models.Coordenador;
+import com.portal_egressos.portal_egressos_backend.models.Curso;
+import com.portal_egressos.portal_egressos_backend.repositories.CursoRepository;
 import com.portal_egressos.portal_egressos_backend.services.CoordenadorService;
 
 @RestController
@@ -23,6 +25,9 @@ public class CoordenadorController {
 
     @Autowired
     private CoordenadorService coordenadorService;
+
+    @Autowired
+    private CursoRepository cursoRepository;
 
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<?> atualizarCoordenador(@RequestBody CoordenadorDTO dto, @PathVariable Long id) {
@@ -62,14 +67,31 @@ public class CoordenadorController {
         }
     }
 
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<?> buscarCoordenadorPorId(@PathVariable Long id) {
+        try {
+            Coordenador coordenador = coordenadorService.buscarPorId(id);
+            CoordenadorDTO dto = converterParaDTO(coordenador);
+            return ResponseEntity.ok(dto);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     private Coordenador converterParaModelo(CoordenadorDTO dto) {
+        //Pra poder editar o curso 
+        Curso curso = cursoRepository.findById(dto.getIdCurso())
+            .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
+
         return Coordenador.builder()
                 .id(dto.getId())
                 .nome(dto.getNome())
                 .dataCriacao(dto.getDataCriacao())
                 .ativo(dto.getAtivo())
+                .curso(curso)  
                 .build();
     }
+
 
     private CoordenadorDTO converterParaDTO(Coordenador coordenador) {
         return CoordenadorDTO.builder()

@@ -38,10 +38,11 @@ public class EgressoService {
 
     private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
             + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+            
+    private static final String LINKEDIN_PATTERN = "^https:\\/\\/(www\\.)?linkedin\\.com\\/in\\/[A-Za-z0-9\\-_.]+\\/?$";
 
-    private static final String LINKEDIN_PATTERN = "^https:\\/\\/(www\\.)?linkedin\\.com\\/in\\/[A-Za-z0-9\\-_.]+$";
-
-    private static final String INSTAGRAM_PATTERN = "^(https?:\\/\\/)?(www\\.)?instagram\\.com\\/[A-Za-z0-9_.]+$";
+    private static final String INSTAGRAM_PATTERN = "^(https?:\\/\\/)?(www\\.)?instagram\\.com\\/[A-Za-z0-9_.]+\\/?$";
+            
 
     private static final Pattern emailPattern = Pattern.compile(EMAIL_PATTERN, Pattern.CASE_INSENSITIVE);
     private static final Pattern linkedinPattern = Pattern.compile(LINKEDIN_PATTERN, Pattern.CASE_INSENSITIVE);
@@ -66,13 +67,24 @@ public class EgressoService {
     }
 
     @Transactional
-    public void aprovarEgressos(List<Long> ids){
-        for(Long id: ids){
+    public void aprovarEgressos(List<Long> ids) {
+        for (Long id : ids) {
             Egresso egresso = egressoRepositorio.findById(id)
                     .orElseThrow(() -> new RuntimeException("Egresso não encontrado com ID: " + id));
 
             egresso.setStatus(Status.APROVADO);
-            egressoRepositorio.save(egresso); 
+            egressoRepositorio.save(egresso);
+        }
+    }
+
+    @Transactional
+    public void reprovarEgressos(List<Long> ids) {
+        for (Long id : ids) {
+            Egresso egresso = egressoRepositorio.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Egresso não encontrado com ID: " + id));
+
+            egresso.setStatus(Status.NAO_APROVADO);
+            egressoRepositorio.save(egresso);
         }
     }
 
@@ -108,7 +120,7 @@ public class EgressoService {
             egressoExistente.getUsuario().setSenha(senhaEncriptada);
         }
 
-        if(!imagem.isEmpty()){
+        if (imagem != null && !imagem.isEmpty()) {
             String imagePath = storageService.salvarImagem(imagem);
             egressoExistente.setFoto(imagePath);
         }
@@ -194,22 +206,15 @@ public class EgressoService {
         }
     }
 
-    public List<Egresso> listarEgressos(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 20);
-        Page<Egresso> egressos = egressoRepositorio.findAll(pageable);
-        if (pagina >= egressos.getTotalPages()) {
-            throw new RegraNegocioRunTime("Página " + pagina + " não existe. Total de páginas: " + egressos.getTotalPages());
-        }
-        return egressos.getContent();
+    public List<Egresso> listarEgressos() {
+        List<Egresso> egressos = egressoRepositorio.findAll();
+
+        return egressos;
     }
 
-    public List<Egresso> listarEgressosAprovados(int pagina) {
-        Pageable pageable = PageRequest.of(pagina, 20); 
-        Page<Egresso> egressosAprovados = egressoRepositorio.findAllByStatus(Status.APROVADO, pageable);
-        if (pagina >= egressosAprovados.getTotalPages()) {
-            throw new RegraNegocioRunTime("Página " + pagina + " não existe. Total de páginas: " + egressosAprovados.getTotalPages());
-        }
-        return egressosAprovados.getContent();
+    public List<Egresso> listarEgressosAprovados() {
+        List<Egresso> egressosAprovados = egressoRepositorio.findAllByStatus(Status.APROVADO);
+        return egressosAprovados;
     }
 
     public List<Egresso> listarEgressosPendentes() {

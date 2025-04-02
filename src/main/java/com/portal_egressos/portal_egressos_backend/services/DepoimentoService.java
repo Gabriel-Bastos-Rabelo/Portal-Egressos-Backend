@@ -26,10 +26,13 @@ public class DepoimentoService {
     @Transactional
     public Depoimento salvarDepoimento(Depoimento depoimento) {
         verificarDepoimento(depoimento);
-        List<Depoimento> depoimentosExistentes = depoimentoRepositorio.findByEgresso(depoimento.getEgresso());
-        if (!depoimentosExistentes.isEmpty()) {
+
+        Optional<Depoimento> depoimentoExistente = depoimentoRepositorio.findByEgresso(depoimento.getEgresso());
+
+        if (depoimentoExistente.isPresent()) {
             throw new RegraNegocioRunTime("O egresso já possui um depoimento cadastrado.");
         }
+
         return depoimentoRepositorio.save(depoimento);
     }
 
@@ -69,6 +72,28 @@ public class DepoimentoService {
         return depoimentoRepositorio.save(depoimento);
     }
 
+    @Transactional
+    public void aprovarDepoimentos(List<Long> ids) {
+        for (Long id : ids) {
+            Depoimento depoimento = depoimentoRepositorio.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Depoimento não encontrado com ID: " + id));
+
+            depoimento.setStatus(Status.APROVADO);
+            depoimentoRepositorio.save(depoimento);
+        }
+    }
+
+    @Transactional
+    public void reprovarDepoimentos(List<Long> ids) {
+        for (Long id : ids) {
+            Depoimento depoimento = depoimentoRepositorio.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Depoimento não encontrado com ID: " + id));
+
+            depoimento.setStatus(Status.NAO_APROVADO);
+            depoimentoRepositorio.save(depoimento);
+        }
+    }
+
     public void verificarDepoimentoId(Depoimento depoimento) {
         if ((depoimento == null) || (depoimento.getId() == null)
                 || !(depoimentoRepositorio.existsById(depoimento.getId()))) {
@@ -87,14 +112,15 @@ public class DepoimentoService {
         return depoimentoRepositorio.findAll();
     }
 
-    public List<Depoimento> listarDepoimentoPorEgresso(Long idEgresso) {
-        Optional<Egresso> egressoExistente = egressoRepositorio.findById(idEgresso);
+    public Optional<Depoimento> buscarDepoimentoPorEgresso(Long idEgresso) {
+        Optional<Egresso> egressoOpt = egressoRepositorio.findById(idEgresso);
 
-        if (!egressoExistente.isPresent()) {
+        if (egressoOpt.isEmpty()) {
             throw new RegraNegocioRunTime("Egresso com id " + idEgresso + " não encontrado");
-
         }
-        Egresso egresso = egressoExistente.get();
+
+        Egresso egresso = egressoOpt.get();
+
         return depoimentoRepositorio.findByEgresso(egresso);
     }
 
@@ -122,4 +148,5 @@ public class DepoimentoService {
         }
         return depoimentosPendentes;
     }
+
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
+import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 import com.portal_egressos.portal_egressos_backend.models.Noticia;
 import com.portal_egressos.portal_egressos_backend.repositories.NoticiaRepository;
 
@@ -17,23 +18,23 @@ public class NoticiaService {
 
     @Autowired
     NoticiaRepository noticiaRepositorio;
-    
-    private void verificarNoticia(Noticia noticia){
-        if(noticia == null){
+
+    private void verificarNoticia(Noticia noticia) {
+        if (noticia == null) {
             throw new RegraNegocioRunTime("A notícia não pode ser nula.");
         }
-        if(noticia.getDescricao() == null || noticia.getDescricao().isEmpty()){
+        if (noticia.getDescricao() == null || noticia.getDescricao().isEmpty()) {
             throw new RegraNegocioRunTime("A descrição da notícia deve ser informada.");
         }
-        if(noticia.getData() == null){
+        if (noticia.getData() == null) {
             throw new RegraNegocioRunTime("A data de publicação deve ser informada.");
         }
-        if(noticia.getStatus() == null){
+        if (noticia.getStatus() == null) {
             throw new RegraNegocioRunTime("O status da notícia deve ser informado.");
         }
     }
-    
-    public List<Noticia> listarNoticias(){
+
+    public List<Noticia> listarNoticias() {
         return noticiaRepositorio.findAll();
     }
 
@@ -44,19 +45,44 @@ public class NoticiaService {
     public List<Noticia> listarNoticiasPendentes() {
         return noticiaRepositorio.findAllByStatus(Status.PENDENTE);
     }
-    
+
     @Transactional
     public Noticia atualizarStatusNoticia(Noticia noticiaAtualizada) {
-        if(noticiaAtualizada.getId() == null){
+        if (noticiaAtualizada.getId() == null) {
             throw new RegraNegocioRunTime("O id da notícia é obrigatório.");
         }
-        if(noticiaAtualizada.getStatus() == null){
+        if (noticiaAtualizada.getStatus() == null) {
             throw new RegraNegocioRunTime("O status da notícia é obrigatório.");
         }
         Noticia noticia = buscarPorNoticiaId(noticiaAtualizada.getId());
-        noticia.setStatus(noticiaAtualizada.getStatus());     
-        return noticiaRepositorio.save(noticia);  
+        noticia.setStatus(noticiaAtualizada.getStatus());
+        return noticiaRepositorio.save(noticia);
     }
+
+    @Transactional
+    public void aprovarNoticias(List<String> ids) {
+        for (String idStr : ids) {
+            System.out.println(idStr);
+            Long id = Long.parseLong(idStr);
+            Noticia noticia = noticiaRepositorio.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Notícia não encontrada com ID: " + id));
+            noticia.setStatus(Status.APROVADO);
+            System.out.println("Salvando notícia: " + noticia);
+            noticiaRepositorio.save(noticia);
+        }
+    }
+
+    @Transactional
+    public void reprovarNoticias(List<String> ids) {
+        for (String idStr : ids) {
+            Long id = Long.parseLong(idStr);
+            Noticia noticia = noticiaRepositorio.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Notícia não encontrada com ID: " + id));
+            noticia.setStatus(Status.NAO_APROVADO);
+            noticiaRepositorio.save(noticia);
+        }
+    }
+
 
     public void verificarNoticiaId(Noticia noticia) {
         if ((noticia == null) || (noticia.getId() == null)

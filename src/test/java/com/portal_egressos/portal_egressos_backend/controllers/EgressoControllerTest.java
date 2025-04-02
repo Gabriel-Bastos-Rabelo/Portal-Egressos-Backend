@@ -3,6 +3,7 @@ package com.portal_egressos.portal_egressos_backend.controllers;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,25 +29,24 @@ import com.portal_egressos.portal_egressos_backend.config.auth.TokenProvider;
 import com.portal_egressos.portal_egressos_backend.dto.EgressoDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.enums.UserRole;
+import com.portal_egressos.portal_egressos_backend.models.Cargo;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
+import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
 import com.portal_egressos.portal_egressos_backend.repositories.EgressoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
+import com.portal_egressos.portal_egressos_backend.services.CargoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.CursoService;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
 import com.portal_egressos.portal_egressos_backend.services.UsuarioService;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(
-    controllers = EgressoController.class,
-    excludeAutoConfiguration = {
-        org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
-        org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
-    },
-    excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityFilter.class)
-)
+@WebMvcTest(controllers = EgressoController.class, excludeAutoConfiguration = {
+                org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
+                org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration.class
+}, excludeFilters = @Filter(type = FilterType.ASSIGNABLE_TYPE, classes = SecurityFilter.class))
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 public class EgressoControllerTest {
@@ -60,6 +60,9 @@ public class EgressoControllerTest {
 
         @MockBean
         private CursoService cursoService;
+
+        @MockBean
+        private CargoService cargoService;
 
         @MockBean
         private CursoEgressoService cursoEgressoService;
@@ -77,68 +80,82 @@ public class EgressoControllerTest {
         private UsuarioService usuarioService;
 
         @Test
-        public void deveSalvarUsuario() throws Exception {
+        public void deveSalvarEgresso() throws Exception {
 
                 EgressoDTO egressoDTO = EgressoDTO.builder()
-                        .nome("Anderson Lopes")
-                        .descricao("Cientista da Computação.")
-                        .foto("https://example.com/foto2.jpg")
-                        .linkedin("https://www.linkedin.com/in/anderson-lopes")
-                        .instagram("https://www.instagram.com/anderson_silva")
-                        .curriculo("https://example.com/anderson.pdf")
-                        .status(Status.PENDENTE)
-                        .emailUsuario("anderson@example.com")
-                        .senhaUsuario("senha123") 
-                        .idCurso(600L)
-                        .anoInicio(2022)
-                        .anoFim(2025)
-                        .build();
+                                .nome("Anderson Lopes")
+                                .descricao("Cientista da Computação.")
+                                .foto("https://example.com/foto2.jpg")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes")
+                                .instagram("https://www.instagram.com/anderson_silva")
+                                .curriculo("https://example.com/anderson.pdf")
+                                .status(Status.PENDENTE)
+                                .emailUsuario("anderson@example.com")
+                                .senhaUsuario("senha123")
+                                .idCurso(600L)
+                                .anoInicio(2022)
+                                .anoFim(2025)
+                                .build();
 
                 Usuario usuario = Usuario.builder()
-                        .email("anderson@example.com")
-                        .senha("senha123")
-                        .role(UserRole.EGRESSO)
-                        .build();
+                                .email("anderson@example.com")
+                                .senha("senha123")
+                                .role(UserRole.EGRESSO)
+                                .build();
 
                 Egresso egresso = Egresso.builder()
-                        .id(11L)
-                        .nome("Anderson Lopes")
-                        .descricao("Cientista da Computação.")
-                        .foto("https://example.com/foto2.jpg")
-                        .linkedin("https://www.linkedin.com/in/anderson-lopes")
-                        .instagram("https://www.instagram.com/anderson_silva")
-                        .curriculo("https://example.com/anderson.pdf")
-                        .status(Status.PENDENTE)
-                        .usuario(usuario)
-                        .build();
+                                .id(11L)
+                                .nome("Anderson Lopes")
+                                .descricao("Cientista da Computação.")
+                                .foto("https://example.com/foto2.jpg")
+                                .linkedin("https://www.linkedin.com/in/anderson-lopes")
+                                .instagram("https://www.instagram.com/anderson_silva")
+                                .curriculo("https://example.com/anderson.pdf")
+                                .status(Status.PENDENTE)
+                                .usuario(usuario)
+                                .build();
+                Curso curso = Curso.builder()
+                                .id(1L)
+                                .nivel("Graduação")
+                                .build();
 
-                Mockito.when(cursoService.buscarPorId(Mockito.anyLong())).thenReturn(new Curso());
+                CursoEgresso cursoEgresso = CursoEgresso.builder()
+                                .anoInicio(2017)
+                                .anoFim(2021)
+                                .curso(curso)
+                                .egresso(egresso)
+                                .build();
+
+                Cargo cargo = Cargo.builder()
+                                .descricao("Desenvolvedor")
+                                .build();
+
+                Mockito.when(cargoService.listarCargoPorEgressoId(11L)).thenReturn(Collections.singletonList(cargo));
+                Mockito.when(cursoEgressoService.buscarPorEgressoId(11L)).thenReturn(Optional.of(cursoEgresso));
                 Mockito.when(egressoService.salvarEgresso(Mockito.any(Egresso.class), Mockito.any()))
-                        .thenReturn(egresso);
-                
+                                .thenReturn(egresso);
+
                 String dtoJson = new ObjectMapper().writeValueAsString(egressoDTO);
-                
+
                 MockMultipartFile dtoPart = new MockMultipartFile(
-                        "dto", 
-                        "dto", 
-                        MediaType.APPLICATION_JSON_VALUE, 
-                        dtoJson.getBytes()
-                );
+                                "dto",
+                                "dto",
+                                MediaType.APPLICATION_JSON_VALUE,
+                                dtoJson.getBytes());
 
                 MockMultipartFile imagemPart = new MockMultipartFile(
-                        "imagem", 
-                        "imagem.png", 
-                        MediaType.IMAGE_PNG_VALUE, 
-                        "conteúdo da imagem".getBytes()
-                );
+                                "imagem",
+                                "imagem.png",
+                                MediaType.IMAGE_PNG_VALUE,
+                                "conteúdo da imagem".getBytes());
 
                 mvc.perform(MockMvcRequestBuilders.multipart(API + "/salvar")
-                        .file(dtoPart)
-                        .file(imagemPart)
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
-                        .andExpect(MockMvcResultMatchers.status().isCreated())
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(11))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value("Anderson Lopes"));
+                                .file(dtoPart)
+                                .file(imagemPart)
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                                .andExpect(MockMvcResultMatchers.status().isCreated())
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(11))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.nomeEgresso").value("Anderson Lopes"));
         }
 
         @Test
@@ -148,21 +165,21 @@ public class EgressoControllerTest {
                 Mockito.when(tokenProvider.extrairEmailDoToken(token)).thenReturn(email);
 
                 Usuario usuario = Usuario.builder()
-                .id(1L)
-                .email(email)
-                .role(UserRole.EGRESSO)
-                .build();
+                                .id(1L)
+                                .email(email)
+                                .role(UserRole.EGRESSO)
+                                .build();
                 Mockito.when(usuarioService.buscarUsuarioPorEmail(email)).thenReturn(usuario);
 
                 Egresso egresso = Egresso.builder()
-                .id(1L)
-                .nome("Gabriel B")
-                .foto("foto.jpg")
-                .usuario(usuario)
-                .build();
+                                .id(1L)
+                                .nome("Gabriel B")
+                                .foto("foto.jpg")
+                                .usuario(usuario)
+                                .build();
                 Mockito.when(egressoService.buscarEgresso(Mockito.any()))
-                .thenReturn(Collections.singletonList(egresso));
-                
+                                .thenReturn(Collections.singletonList(egresso));
+
                 // Configuração dos Mocks
                 Mockito.doNothing().when(egressoService).removerEgresso(1L);
 
@@ -214,9 +231,29 @@ public class EgressoControllerTest {
                                 .usuario(usuario2)
                                 .build();
 
+                Curso curso = Curso.builder()
+                                .id(1L)
+                                .nivel("Graduação")
+                                .build();
+
+                CursoEgresso cursoEgresso = CursoEgresso.builder()
+                                .anoInicio(2017)
+                                .anoFim(2021)
+                                .curso(curso)
+                                .egresso(egresso1)
+                                .build();
+
+                Cargo cargo = Cargo.builder()
+                                .descricao("Desenvolvedor")
+                                .build();
+
                 List<Egresso> egressosMock = Arrays.asList(egresso1, egresso2);
 
-                Mockito.when(egressoService.listarEgressos(0)).thenReturn(egressosMock);
+                Mockito.when(cargoService.listarCargoPorEgressoId(1L)).thenReturn(Collections.singletonList(cargo));
+                Mockito.when(cargoService.listarCargoPorEgressoId(2L)).thenReturn(Collections.singletonList(cargo));
+                Mockito.when(cursoEgressoService.buscarPorEgressoId(1L)).thenReturn(Optional.of(cursoEgresso));
+                Mockito.when(cursoEgressoService.buscarPorEgressoId(2L)).thenReturn(Optional.of(cursoEgresso));
+                Mockito.when(egressoService.listarEgressos()).thenReturn(egressosMock);
 
                 // Ação
                 MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/listar")
@@ -227,7 +264,7 @@ public class EgressoControllerTest {
                                 .andExpect(MockMvcResultMatchers.status().isOk())
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(2))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Anderson Lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nomeEgresso").value("Anderson Lopes"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao")
                                                 .value("Cientista da Computação."))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
@@ -241,7 +278,7 @@ public class EgressoControllerTest {
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].curriculo")
                                                 .value("https://example.com/anderson.pdf"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").value(2))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nome").value("Anderson Silva"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[1].nomeEgresso").value("Anderson Silva"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].descricao")
                                                 .value("Cientista da Computação."))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].status")
@@ -277,9 +314,26 @@ public class EgressoControllerTest {
                                 .usuario(usuario)
                                 .build();
 
-                List<Egresso> egressosMock = Arrays.asList(egresso);
+                Curso curso = Curso.builder()
+                                .id(1L)
+                                .nivel("Graduação")
+                                .build();
 
-                Mockito.when(egressoService.listarEgressosAprovados(0)).thenReturn(egressosMock);
+                CursoEgresso cursoEgresso = CursoEgresso.builder()
+                                .anoInicio(2017)
+                                .anoFim(2021)
+                                .curso(curso)
+                                .egresso(egresso)
+                                .build();
+
+                Cargo cargo = Cargo.builder()
+                                .descricao("Desenvolvedor")
+                                .build();
+
+                List<Egresso> egressosMock = Arrays.asList(egresso);
+                Mockito.when(cargoService.listarCargoPorEgressoId(1L)).thenReturn(Collections.singletonList(cargo));
+                Mockito.when(cursoEgressoService.buscarPorEgressoId(1L)).thenReturn(Optional.of(cursoEgresso));
+                Mockito.when(egressoService.listarEgressosAprovados()).thenReturn(egressosMock);
 
                 // Ação
                 MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(API + "/buscarAprovados")
@@ -290,7 +344,7 @@ public class EgressoControllerTest {
                                 .andExpect(MockMvcResultMatchers.status().isOk())
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Anderson Lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nomeEgresso").value("Anderson Lopes"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao")
                                                 .value("Cientista da Computação."))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
@@ -325,8 +379,25 @@ public class EgressoControllerTest {
                                 .usuario(usuario)
                                 .build();
 
-                List<Egresso> egressosMock = Arrays.asList(egresso);
+                Curso curso = Curso.builder()
+                                .id(1L)
+                                .nivel("Graduação")
+                                .build();
 
+                CursoEgresso cursoEgresso = CursoEgresso.builder()
+                                .anoInicio(2017)
+                                .anoFim(2021)
+                                .curso(curso)
+                                .egresso(egresso)
+                                .build();
+
+                Cargo cargo = Cargo.builder()
+                                .descricao("Desenvolvedor")
+                                .build();
+
+                List<Egresso> egressosMock = Arrays.asList(egresso);
+                Mockito.when(cargoService.listarCargoPorEgressoId(1L)).thenReturn(Collections.singletonList(cargo));
+                Mockito.when(cursoEgressoService.buscarPorEgressoId(1L)).thenReturn(Optional.of(cursoEgresso));
                 Mockito.when(egressoService.buscarEgressoPorNome("Anderson"))
                                 .thenReturn(egressosMock);
 
@@ -338,7 +409,7 @@ public class EgressoControllerTest {
                                 .andExpect(MockMvcResultMatchers.status().isOk())
                                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(1))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nome").value("Anderson Lopes"))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].nomeEgresso").value("Anderson Lopes"))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].descricao")
                                                 .value("Cientista da Computação."))
                                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].status")
@@ -357,74 +428,92 @@ public class EgressoControllerTest {
         public void deveAtualizarEgresso() throws Exception {
                 String token = "token-valido";
                 String email = "coordenador@example.com";
-                
+
                 Usuario usuarioCoordenador = Usuario.builder()
-                        .email(email)
-                        .senha("senha123")
-                        .role(UserRole.COORDENADOR)
-                        .build();
+                                .email(email)
+                                .senha("senha123")
+                                .role(UserRole.COORDENADOR)
+                                .build();
 
                 Mockito.when(tokenProvider.extrairEmailDoToken(token)).thenReturn(email);
                 Mockito.when(usuarioService.buscarUsuarioPorEmail(email)).thenReturn(usuarioCoordenador);
 
                 EgressoDTO egressoDTO = EgressoDTO.builder()
-                        .id(1L)
-                        .nome("Anderson Silva")
-                        .descricao("Nova descrição")
-                        .foto("nova-foto.jpg")
-                        .instagram("novo-instagram")
-                        .linkedin("novo-linkedin")
-                        .status(Status.APROVADO)
-                        .emailUsuario("egresso@example.com")
-                        .build();
+                                .id(1L)
+                                .nome("Anderson Silva")
+                                .descricao("Nova descrição")
+                                .foto("nova-foto.jpg")
+                                .instagram("novo-instagram")
+                                .linkedin("novo-linkedin")
+                                .status(Status.APROVADO)
+                                .emailUsuario("egresso@example.com")
+                                .build();
 
                 Usuario usuarioEgresso = Usuario.builder()
-                        .email("egresso@example.com")
-                        .role(UserRole.EGRESSO)
-                        .build();
+                                .email("egresso@example.com")
+                                .role(UserRole.EGRESSO)
+                                .build();
 
                 Egresso egressoExistente = Egresso.builder()
-                        .id(1L)
-                        .nome("Anderson Antigo")
-                        .usuario(usuarioEgresso)
-                        .build();
+                                .id(1L)
+                                .nome("Anderson Antigo")
+                                .usuario(usuarioEgresso)
+                                .build();
 
                 Egresso egressoAtualizado = Egresso.builder()
-                        .id(1L)
-                        .nome(egressoDTO.getNome())
-                        .descricao(egressoDTO.getDescricao())
-                        .foto(egressoDTO.getFoto())
-                        .instagram(egressoDTO.getInstagram())
-                        .linkedin(egressoDTO.getLinkedin())
-                        .status(egressoDTO.getStatus())
-                        .usuario(usuarioEgresso)
-                        .build();
+                                .id(1L)
+                                .nome(egressoDTO.getNome())
+                                .descricao(egressoDTO.getDescricao())
+                                .foto(egressoDTO.getFoto())
+                                .instagram(egressoDTO.getInstagram())
+                                .linkedin(egressoDTO.getLinkedin())
+                                .status(egressoDTO.getStatus())
+                                .usuario(usuarioEgresso)
+                                .build();
+                Curso curso = Curso.builder()
+                                .id(1L)
+                                .nivel("Graduação")
+                                .build();
 
+                CursoEgresso cursoEgresso = CursoEgresso.builder()
+                                .anoInicio(2017)
+                                .anoFim(2021)
+                                .curso(curso)
+                                .egresso(egressoExistente)
+                                .build();
+
+                Cargo cargo = Cargo.builder()
+                                .descricao("Desenvolvedor")
+                                .build();
+
+                Mockito.when(cargoService.listarCargoPorEgressoId(1L)).thenReturn(Collections.singletonList(cargo));
+                Mockito.when(cursoEgressoService.buscarPorEgressoId(1L)).thenReturn(Optional.of(cursoEgresso));
                 Mockito.when(egressoService.buscarPorId(1L)).thenReturn(egressoExistente);
                 Mockito.when(egressoService.atualizarEgresso(Mockito.any(Egresso.class), Mockito.any()))
-                        .thenReturn(egressoAtualizado);
+                                .thenReturn(egressoAtualizado);
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 String json = objectMapper.writeValueAsString(egressoDTO);
 
                 MockMultipartFile dtoPart = new MockMultipartFile(
-                        "dto",
-                        "dto",
-                        MediaType.APPLICATION_JSON_VALUE,
-                        json.getBytes()
-                );
+                                "dto",
+                                "dto",
+                                MediaType.APPLICATION_JSON_VALUE,
+                                json.getBytes());
 
                 mvc.perform(MockMvcRequestBuilders.multipart(API + "/atualizar/1")
-                        .file(dtoPart)
-                        .with(request -> {
-                                request.setMethod("PUT");
-                                return request;
-                        })
-                        .header("Authorization", "Bearer " + token)
-                        .contentType(MediaType.MULTIPART_FORM_DATA))
-                        .andExpect(MockMvcResultMatchers.status().isOk())
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.nome").value(egressoDTO.getNome()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.descricao").value(egressoDTO.getDescricao()))
-                        .andExpect(MockMvcResultMatchers.jsonPath("$.status").value(egressoDTO.getStatus().toString()));
+                                .file(dtoPart)
+                                .with(request -> {
+                                        request.setMethod("PUT");
+                                        return request;
+                                })
+                                .header("Authorization", "Bearer " + token)
+                                .contentType(MediaType.MULTIPART_FORM_DATA))
+                                .andExpect(MockMvcResultMatchers.status().isOk())
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.nomeEgresso").value(egressoDTO.getNome()))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.descricao")
+                                                .value(egressoDTO.getDescricao()))
+                                .andExpect(MockMvcResultMatchers.jsonPath("$.status")
+                                                .value(egressoDTO.getStatus().toString()));
         }
 }

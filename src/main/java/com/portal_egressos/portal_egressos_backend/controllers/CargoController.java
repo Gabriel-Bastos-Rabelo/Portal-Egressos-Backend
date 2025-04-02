@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,17 +44,17 @@ public class CargoController {
     private TokenProvider tokenService;
 
     @PostMapping
-    public ResponseEntity<?> salvarCargo(@RequestBody CargoDTO cargoDTO,
-            @RequestHeader("Authorization") String authorization) {
+    public ResponseEntity<?> salvarCargo(@RequestBody CargoDTO cargoDTO) {
         try {
-            Usuario usuario = obterUsuarioDoToken(authorization.substring(7));
-            Egresso egresso = obterEgressoDoUsuario(usuario);
-
+            Egresso egresso = egressoService.buscarPorId(cargoDTO.getEgressoId());
+            if (egresso == null) {
+                throw new IllegalArgumentException("Egresso não encontrado para o usuário associado.");
+            }
             Cargo cargo = converterParaModelo(cargoDTO);
             cargo.setEgresso(egresso);
-
             Cargo cargoSalvo = cargoService.salvarCargo(cargo);
-            return ResponseEntity.ok(converterParaDTO(cargoSalvo));
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(cargoSalvo));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -1,10 +1,17 @@
 package com.portal_egressos.portal_egressos_backend.controllers;
 
 import com.portal_egressos.portal_egressos_backend.dto.DepoimentoDto;
+import com.portal_egressos.portal_egressos_backend.dto.DepoimentoResponseDTO;
+import com.portal_egressos.portal_egressos_backend.dto.OportunidadeDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
+import com.portal_egressos.portal_egressos_backend.exceptions.RegraNegocioRunTime;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
+import com.portal_egressos.portal_egressos_backend.models.Oportunidade;
+import com.portal_egressos.portal_egressos_backend.models.Curso;
+import com.portal_egressos.portal_egressos_backend.models.CursoEgresso;
 import com.portal_egressos.portal_egressos_backend.models.Depoimento;
 import com.portal_egressos.portal_egressos_backend.services.EgressoService;
+import com.portal_egressos.portal_egressos_backend.services.CursoEgressoService;
 import com.portal_egressos.portal_egressos_backend.services.DepoimentoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -23,6 +31,9 @@ public class DepoimentoController {
 
     @Autowired
     private EgressoService egressoService;
+
+    @Autowired
+    private CursoEgressoService cursoEgressoService;
 
     @PostMapping("/salvar")
     public ResponseEntity<?> salvarDepoimento(@RequestBody DepoimentoDto depoimentoDTO) {
@@ -71,11 +82,33 @@ public class DepoimentoController {
         }
     }
 
+    @PostMapping("/aprovar")
+    public ResponseEntity<?> aprovarDepoimento(@RequestBody List<Long> ids) {
+
+        try {
+            depoimentoService.aprovarDepoimentos(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reprovar")
+    public ResponseEntity<?> reprovarDepoimento(@RequestBody List<Long> ids) {
+
+        try {
+            depoimentoService.reprovarDepoimentos(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/listar")
     public ResponseEntity<?> listarDepoimentos() {
         try {
             List<Depoimento> depoimentos = depoimentoService.listarDepoimentos();
-            List<DepoimentoDto> depoimentosDTO = depoimentos.stream()
+            List<DepoimentoResponseDTO> depoimentosDTO = depoimentos.stream()
                     .map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(depoimentosDTO);
@@ -88,10 +121,22 @@ public class DepoimentoController {
     public ResponseEntity<?> listarDepoimentosAprovadas() {
         try {
             List<Depoimento> depoimentos = depoimentoService.listarDepoimentosAprovados();
-            List<DepoimentoDto> depoimentosDTO = depoimentos.stream()
+            List<DepoimentoResponseDTO> depoimentosDTO = depoimentos.stream()
                     .map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(depoimentosDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/pendentes")
+    public ResponseEntity<?> listarPendentes() {
+        try {
+            List<Depoimento> depoimentos = depoimentoService.listarDepoimentosPendentes();
+            List<DepoimentoResponseDTO> depoimentoDTO = depoimentos.stream().map(this::converterParaDTO)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(depoimentoDTO);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -107,6 +152,20 @@ public class DepoimentoController {
         }
     }
 
+    @GetMapping("/buscar/{id}")
+    public ResponseEntity<?> buscarDepoimentoPorEgresso(@PathVariable Long id) {
+        Optional<Depoimento> depoimentoOpt = depoimentoService.buscarDepoimentoPorEgresso(id);
+
+        if (depoimentoOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Depoimento não encontrado para o egresso com id " + id);
+        }
+
+        DepoimentoResponseDTO dto = converterParaDTO(depoimentoOpt.get());
+
+        return ResponseEntity.ok(dto);
+    }
+
     private Depoimento converterParaModelo(DepoimentoDto dto) {
         return Depoimento.builder()
                 .id(dto.getId())
@@ -116,14 +175,21 @@ public class DepoimentoController {
                 .build();
     }
 
-    private DepoimentoDto converterParaDTO(Depoimento depoimento) {
-        return DepoimentoDto.builder()
+    private DepoimentoResponseDTO converterParaDTO(Depoimento depoimento) {
+        Optional<CursoEgresso> cursoEgresso = cursoEgressoService.buscarPorId(depoimento.getEgresso().getId());
+        Curso curso = cursoEgresso.isPresent() ? cursoEgresso.get().getCurso() : null;
+
+
+        return DepoimentoResponseDTO.builder()
                 .id(depoimento.getId())
-                .texto(depoimento.getTexto())
+                .descricao(depoimento.getTexto())
                 .data(depoimento.getData())
                 .status(depoimento.getStatus())
                 .idEgresso(depoimento.getEgresso().getId())
                 .nomeEgresso(depoimento.getEgresso().getNome())
+                .curso(curso != null ? curso.getNivel() : null)
+                .anoConclusao(cursoEgresso.isPresent() ? cursoEgresso.get().getAnoFim() : null)
+                .foto(depoimento.getEgresso().getFoto())
                 .build();
     }
 }

@@ -8,12 +8,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Getter 
+@Getter
 @Setter
 @Builder
 public class NoticiaDTO {
 
-    private Long id;
+    private String id;
     private String descricao;
     private String data;
     private String linkNoticia;

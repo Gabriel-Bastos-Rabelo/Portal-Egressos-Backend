@@ -21,6 +21,8 @@ public interface EgressoRepository extends JpaRepository<Egresso, Long> {
 
         Egresso findByUsuario(Usuario usuario);
 
+        Optional<Egresso> findByUsuarioId(Long usuarioId);
+
         List<Egresso> findAllByStatus(Status status);
 
         Page<Egresso> findAllByStatus(Status status, Pageable pageable);

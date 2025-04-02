@@ -304,7 +304,7 @@ public class EgressoServiceTest {
                 // acao
                 Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1, null);
                 Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2, null);
-                List<Egresso> resultado = egressoService.listarEgressos(0);
+                List<Egresso> resultado = egressoService.listarEgressos();
 
                 // rollback
                 egressoRepositorio.delete(egressoSalvo1);
@@ -354,7 +354,7 @@ public class EgressoServiceTest {
                 // acao
                 Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1, null);
                 Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2, null);
-                List<Egresso> resultado = egressoService.listarEgressos(0);
+                List<Egresso> resultado = egressoService.listarEgressos();
 
                 // rollback
                 egressoRepositorio.delete(egressoSalvo1);
@@ -404,7 +404,7 @@ public class EgressoServiceTest {
                 // acao
                 Egresso egressoSalvo1 = egressoService.salvarEgresso(egresso1, null);
                 Egresso egressoSalvo2 = egressoService.salvarEgresso(egresso2, null);
-                List<Egresso> resultado = egressoService.listarEgressos(0);
+                List<Egresso> resultado = egressoService.listarEgressos();
 
                 // rollback
                 egressoRepositorio.delete(egressoSalvo1);

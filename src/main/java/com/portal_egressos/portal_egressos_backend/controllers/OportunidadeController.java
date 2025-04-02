@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.portal_egressos.portal_egressos_backend.dto.EgressoResponseDTO;
 import com.portal_egressos.portal_egressos_backend.dto.OportunidadeDTO;
 import com.portal_egressos.portal_egressos_backend.enums.Status;
 import com.portal_egressos.portal_egressos_backend.models.Egresso;
@@ -36,7 +37,8 @@ public class OportunidadeController {
     public ResponseEntity<?> salvarOportunidade(@RequestBody OportunidadeDTO oportunidadeDTO) {
         try {
             Oportunidade oportunidade = converterParaModelo(oportunidadeDTO);
-            Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade, oportunidadeDTO.getEmail());
+            Oportunidade oportunidadeSalva = oportunidadeService.salvarOportunidade(oportunidade,
+                    oportunidadeDTO.getEmail());
             return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(oportunidadeSalva));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -77,6 +79,28 @@ public class OportunidadeController {
         }
     }
 
+    @PostMapping("/aprovar")
+    public ResponseEntity<?> aprovarOportunidades(@RequestBody List<Long> ids) {
+
+        try {
+            oportunidadeService.aprovarOportunidades(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/reprovar")
+    public ResponseEntity<?> reprovarOportunidades(@RequestBody List<Long> ids) {
+
+        try {
+            oportunidadeService.reprovarOportunidades(ids);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
     @GetMapping("/listar")
     public ResponseEntity<?> listarOportunidades() {
         try {
@@ -96,6 +120,18 @@ public class OportunidadeController {
             List<Oportunidade> oportunidades = oportunidadeService.listarOportunidadesAprovadasOrdenadasPorData();
             List<OportunidadeDTO> oportunidadesDTO = oportunidades.stream()
                     .map(this::converterParaDTO)
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(oportunidadesDTO);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/pendentes")
+    public ResponseEntity<?> listarPendentes() {
+        try {
+            List<Oportunidade> oportunidades = oportunidadeService.listarOportunidadesPendentesOrdenadasPorData();
+            List<OportunidadeDTO> oportunidadesDTO = oportunidades.stream().map(this::converterParaDTO)
                     .collect(Collectors.toList());
             return ResponseEntity.ok(oportunidadesDTO);
         } catch (Exception e) {

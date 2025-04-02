@@ -33,21 +33,20 @@ public class OportunidadeService {
     public Oportunidade salvarOportunidade(Oportunidade oportunidade, String email) {
         Optional<Usuario> usuarioOpt = usuarioRepositorio.findUsuarioByEmail(email);
         Usuario usuario = usuarioOpt.orElseThrow(
-            () -> new RegraNegocioRunTime("Usuário não encontrado para o e-mail: " + email)
-        );
+                () -> new RegraNegocioRunTime("Usuário não encontrado para o e-mail: " + email));
 
         Egresso egresso = egressoRepositorio.findByUsuario(usuario);
 
         if (egresso == null || egresso.getStatus().equals(Status.NAO_APROVADO)) {
             throw new RegraNegocioRunTime("Egresso não encontrado para o usuário de ID: " + usuario.getId());
         }
-        
+
         if (oportunidade == null) {
             throw new RegraNegocioRunTime("A oportunidade não pode ser nula.");
         }
 
         oportunidade.setEgresso(egresso);
-        
+
         validarCamposObrigatorios(oportunidade);
         return oportunidadeRepositorio.save(oportunidade);
     }
@@ -63,6 +62,28 @@ public class OportunidadeService {
         Oportunidade oportunidade = buscarOportunidadePorId(oportunidadeAtualizada.getId());
         oportunidade.setStatus(oportunidadeAtualizada.getStatus());
         return oportunidadeRepositorio.save(oportunidade);
+    }
+
+    @Transactional
+    public void aprovarOportunidades(List<Long> ids) {
+        for (Long id : ids) {
+            Oportunidade oportunidade = oportunidadeRepositorio.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Oportunidade não encontrado com ID: " + id));
+
+            oportunidade.setStatus(Status.APROVADO);
+            oportunidadeRepositorio.save(oportunidade);
+        }
+    }
+
+    @Transactional
+    public void reprovarOportunidades(List<Long> ids) {
+        for (Long id : ids) {
+            Oportunidade oportunidade = oportunidadeRepositorio.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Oportunidade não encontrado com ID: " + id));
+
+            oportunidade.setStatus(Status.NAO_APROVADO);
+            oportunidadeRepositorio.save(oportunidade);
+        }
     }
 
     @Transactional
