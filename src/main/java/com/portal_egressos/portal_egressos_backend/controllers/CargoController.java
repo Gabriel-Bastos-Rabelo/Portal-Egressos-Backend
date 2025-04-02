@@ -47,8 +47,11 @@ public class CargoController {
     public ResponseEntity<?> salvarCargo(@RequestBody CargoDTO cargoDTO) {
         try {
             Egresso egresso = egressoService.buscarPorId(cargoDTO.getEgressoId());
+            if (egresso == null) {
+                throw new IllegalArgumentException("Egresso não encontrado para o usuário associado.");
+            }
             Cargo cargo = converterParaModelo(cargoDTO);
-            cargo.setEgresso(egresso); 
+            cargo.setEgresso(egresso);
             Cargo cargoSalvo = cargoService.salvarCargo(cargo);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(converterParaDTO(cargoSalvo));
@@ -56,7 +59,6 @@ public class CargoController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
 
     @GetMapping("/egresso/{egressoId}")
     public ResponseEntity<?> listarCargosPorEgresso(@PathVariable Long egressoId) {

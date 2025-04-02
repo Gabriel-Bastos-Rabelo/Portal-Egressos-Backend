@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +30,7 @@ import com.portal_egressos.portal_egressos_backend.enums.UserRole;
 import com.portal_egressos.portal_egressos_backend.models.Coordenador;
 import com.portal_egressos.portal_egressos_backend.models.Curso;
 import com.portal_egressos.portal_egressos_backend.models.Usuario;
+import com.portal_egressos.portal_egressos_backend.repositories.CursoRepository;
 import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepository;
 import com.portal_egressos.portal_egressos_backend.services.CoordenadorService;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -49,6 +51,9 @@ public class CoordenadorControllerTest {
 
         @MockBean
         private UsuarioRepository usuarioRepository;
+
+        @MockBean
+        private CursoRepository cursoRepository;
 
         @MockBean
         private TokenProvider tokenProvider;
@@ -193,6 +198,7 @@ public class CoordenadorControllerTest {
                                 .nome("Anderson Lopes Atualizado")
                                 .dataCriacao(LocalDateTime.of(2024, 12, 10, 0, 0))
                                 .ativo(true)
+                                .idCurso(1L)
                                 .build();
 
                 Usuario usuario = Usuario.builder()
@@ -218,20 +224,19 @@ public class CoordenadorControllerTest {
 
                 Coordenador coordenadorAtualizado = Coordenador.builder()
                                 .id(dto.getId())
-                                .nome(dto.getNome()) 
+                                .nome(dto.getNome())
                                 .dataCriacao(dto.getDataCriacao())
                                 .ativo(dto.getAtivo())
                                 .curso(curso)
                                 .usuario(usuario)
                                 .build();
 
-               
+                Mockito.when(cursoRepository.findById(1L)).thenReturn(Optional.of(curso));
                 Mockito.when(coordService.buscarPorId(1L))
-                                .thenReturn(coordenadorExistente); 
-
+                                .thenReturn(coordenadorExistente);
                 Mockito.when(coordService.atualizarCoordenador(Mockito.any(Coordenador.class)))
-                                .thenReturn(coordenadorAtualizado); 
-                                
+                                .thenReturn(coordenadorAtualizado);
+
                 String json = objectMapper.writeValueAsString(dto);
 
                 // Ação
