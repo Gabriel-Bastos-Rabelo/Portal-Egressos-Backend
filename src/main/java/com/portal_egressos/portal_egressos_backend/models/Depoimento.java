@@ -24,7 +24,7 @@ public class Depoimento {
     @JoinColumn(name = "id_egresso", referencedColumnName = "id_egresso", unique = true)
     private Egresso egresso;
 
-    @Column(name = "texto")
+    @Column(name = "texto", columnDefinition = "TEXT")
     private String texto;
 
     @Column(name = "data")
