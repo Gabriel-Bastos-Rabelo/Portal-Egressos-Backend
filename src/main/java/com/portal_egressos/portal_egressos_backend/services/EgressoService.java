@@ -9,10 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +24,9 @@ import com.portal_egressos.portal_egressos_backend.repositories.UsuarioRepositor
 
 @Service
 public class EgressoService {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private EgressoRepository egressoRepositorio;
@@ -60,7 +61,7 @@ public class EgressoService {
         String imagePath = storageService.salvarImagem(imagem);
         egresso.setFoto(imagePath);
 
-        String senhaEncriptada = new BCryptPasswordEncoder().encode(egresso.getUsuario().getSenha());
+        String senhaEncriptada = passwordEncoder.encode(egresso.getUsuario().getSenha());
 
         egresso.getUsuario().setSenha(senhaEncriptada);
         return egressoRepositorio.save(egresso);
@@ -116,7 +117,7 @@ public class EgressoService {
         Egresso egressoExistente = egressoRepositorio.findById(egresso.getId()).get();
 
         if (egresso.getUsuario().getSenha() != null && !egresso.getUsuario().getSenha().isEmpty()) {
-            String senhaEncriptada = new BCryptPasswordEncoder().encode(egresso.getUsuario().getSenha());
+            String senhaEncriptada = passwordEncoder.encode(egresso.getUsuario().getSenha());
             egressoExistente.getUsuario().setSenha(senhaEncriptada);
         }
 
